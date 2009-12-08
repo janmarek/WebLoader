@@ -172,7 +172,7 @@ abstract class WebLoader extends Control
 			$files = $this->files;
 		}
 
-		$hash = md5(implode("|", $files) . "|" . $this->getLastModified($files) . "|" . $this->sourcePath);
+		$hash = md5(implode("|", $files) . "|" . $this->getLastModified($files) . "|" . $this->sourcePath . "|" . $this->tempUri);
 		$origFilenamePart = count($files) === 1 ? String::webalize($files[0]) . "-" : "";
 
 		return $this->generatedFileNamePrefix . $origFilenamePart . $hash . $this->generatedFileNameSuffix;
