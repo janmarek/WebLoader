@@ -232,7 +232,6 @@ abstract class WebLoader extends Control
 	protected function applyFilters($s)
 	{
 		foreach ($this->filters as $filter) {
-			fixCallback($filter);
 			$s = call_user_func($filter, $s);
 		}
 
