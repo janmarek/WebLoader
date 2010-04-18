@@ -1,12 +1,12 @@
-WebLoader
+ï»¿WebLoader
 =========
 
-Komponenta pro naèítání CSS a JS souborù
+Komponenta pro naÄÃ­tÃ¡nÃ­ CSS a JS souborÅ¯
 
 Autor: Jan Marek
 Licence: MIT
 
-Použití
+PouÅ¾itÃ­
 -------
 
 Presenter:
@@ -56,7 +56,7 @@ Presenter:
 
 	?>
 
-Šablona:
+Å ablona:
 
 	{widget js 'jquery.js', 'texyla.js', 'web.js'}
 	{widget css 'reset.css', 'page.css', 'libs/texyla.css', 'libs/jqueryui.css'}
