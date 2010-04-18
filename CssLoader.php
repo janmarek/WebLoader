@@ -1,6 +1,9 @@
 <?php
 
-require_once dirname(__FILE__) . "/WebLoader.php";
+namespace WebLoader;
+
+use Nette\Web\Html;
+use Nette\IComponentContainer;
 
 /**
  * Css loader
@@ -8,114 +11,56 @@ require_once dirname(__FILE__) . "/WebLoader.php";
  * @author Jan Marek
  * @license MIT
  */
-class CssLoader extends WebLoader
-{
+class CssLoader extends WebLoader {
+	
 	/** @var string */
-	public $media;
+	private $media;
 
-	/** @var bool */
-	public $absolutizeUrls = true;
+	
+	/**
+	 * Construct
+	 * @param IComponentContainer parent
+	 * @param string name
+	 */
+	public function __construct(IComponentContainer $parent = null, $name = null) {
+		parent::__construct($parent, $name);
+		$this->setGeneratedFileNamePrefix("ccsloader-");
+		$this->setGeneratedFileNameSuffix(".css");
+		$this->fileFilters[] = new CssUrlsFilter;
+	}
 
-	/** @var string */
-	public $generatedFileNamePrefix = "cssloader-";
-
-	/** @var string */
-	public $generatedFileNameSuffix = ".css";
 
 	/**
-	 * Make relative url absolute
-	 * @param string $url
-	 * @param string $quote
-	 * @param string $file
-	 * @param string $sourceUri
+	 * Get media
 	 * @return string
 	 */
-	public static function absolutizeUrl($url, $quote, $file, $sourceUri) {
-		// is already absolute
-		if (preg_match("/^([a-z]+:\/)?\//", $url)) return $url;
-
-		$lastPos = strrpos($file, "/");
-		$fileFolder = $lastPos === false ? "" : "/" . substr($file, 0, $lastPos);
-		$path = $sourceUri . $fileFolder . "/" . $url;
-
-		$pathPieces = explode("/", $path);
-		$piecesOut = array();
-		
-		foreach ($pathPieces as $piece) {
-			if ($piece === ".") continue;
-
-			if ($piece === "..") {
-				array_pop($piecesOut);
-				continue;
-			}
-
-			$piecesOut[] = $piece;
-		}
-
-		$out = implode("/", $piecesOut);
-
-		if ($quote === '"') $out = addslashes($out);
-
-		return $out;
+	public function getMedia() {
+		return $this->media;
 	}
 
-	private function absolutizeUrls($s, $file) {
-		// thanks to kravco
-		$regexp = '~
-			(?<![a-z])
-			url\(                                     ## url(
-				\s*                                   ##   optional whitespace
-				([\'"])?                              ##   optional single/double quote
-				(   (?: (?:\\\\.)+                    ##     escape sequences
-					|   [^\'"\\\\,()\s]+              ##     safe characters
-					|   (?(1)   (?!\1)[\'"\\\\,() \t] ##       allowed special characters
-						|       ^                     ##       (none, if not quoted)
-						)
-					)*                                ##     (greedy match)
-				)
-				(?(1)\1)                              ##   optional single/double quote
-				\s*                                   ##   optional whitespace
-			\)                                        ## )
-		~xs';
-
-		return preg_replace_callback(
-			$regexp,
-			create_function(
-				'$matches',
-				'return "url(\'" . CssLoader::absolutizeUrl($matches[2], $matches[1], "' .
-				addslashes($file) . '", "' . addslashes($this->sourceUri) .
-				'") . "\')";'
-			),
-			$s
-		);
-	}
 
 	/**
-	 * Load file
-	 * @param string $path
-	 * @return string
+	 * Set media
+	 * @param string media
+	 * @return CssLoader
 	 */
-	protected function loadFile($file) {
-		$content = parent::loadFile($file);
-
-		if ($this->absolutizeUrls && !empty($this->sourceUri)) {
-			$content = $this->absolutizeUrls($content, $file);
-		}
-
-		return $content;
+	public function setMedia($media) {
+		$this->media = $media;
+		return $this;
 	}
+
 	
 	/**
 	 * Get link element
 	 * @param string $source
 	 * @return Html
 	 */
-	public function getElement($source)
-	{
+	public function getElement($source) {
 		return Html::el("link")
 			->rel("stylesheet")
 			->type("text/css")
 			->media($this->media)
 			->href($source);
 	}
+
 }

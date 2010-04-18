@@ -1,55 +1,314 @@
 <?php
 
+namespace WebLoader;
+
+use Nette\IO\SafeStream;
+
 /**
- * WebLoader
+ * Web loader
  *
  * @author Jan Marek
  * @license MIT
  */
-abstract class WebLoader extends Control
-{
-	/** @var string */
-	public $sourcePath;
+abstract class WebLoader extends \Nette\Application\Control {
+
+	// <editor-fold defaultstate="collapsed" desc="variables">
 
 	/** @var string */
-	public $sourceUri;
+	private $sourcePath;
 
 	/** @var string */
-	public $tempPath;
+	private $tempPath;
 
 	/** @var string */
-	public $tempUri;
+	private $tempUri;
 
 	/** @var bool */
-	public $joinFiles = true;
+	private $joinFiles = true;
 
 	/** @var string */
-	public $generatedFileNamePrefix = "webloader-";
+	private $generatedFileNamePrefix = "webloader-";
 
 	/** @var string */
-	public $generatedFileNameSuffix = "";
+	private $generatedFileNameSuffix = "";
 
 	/** @var bool */
-	public $throwExceptions = false;
+	private $throwExceptions = false;
 
 	/** @var array */
 	public $filters = array();
 
 	/** @var array */
+	public $fileFilters = array();
+
+	/** @var array */
 	private $files = array();
+
+	// </editor-fold>
+
+	// <editor-fold defaultstate="collapsed" desc="getters & setters">
+
+	/**
+	 * Get source path
+	 * @return string
+	 */
+	public function getSourcePath() {
+		return $this->sourcePath;
+	}
+
+
+	/**
+	 * Set source path
+	 * @param string source path
+	 * @return WebLoader
+	 */
+	public function setSourcePath($sourcePath) {
+		$sourcePath = realpath($sourcePath);
+
+		if ($sourcePath === false) {
+			throw new \FileNotFoundException("Source path does not exist.");
+		}
+
+		$this->sourcePath = $sourcePath;
+
+		return $this;
+	}
+
+
+	/**
+	 * Get temp path
+	 * @return string
+	 */
+	public function getTempPath() {
+		return $this->tempPath;
+	}
+
+
+	/**
+	 * Set temp path
+	 * @param string temp path
+	 * @return WebLoader
+	 */
+	public function setTempPath($tempPath) {
+		$tempPath = realpath($tempPath);
+
+		if ($tempPath === false) {
+			throw new \FileNotFoundException("Temp path does not exist.");
+		}
+
+		if (!is_writable($tempPath)) {
+			throw new \InvalidStateException("Directory '$tempPath' is not writeable.");
+		}
+
+		$this->tempPath = $tempPath;
+
+		return $this;
+	}
+
+
+	/**
+	 * Get temp uri
+	 * @return string
+	 */
+	public function getTempUri() {
+		return $this->tempUri;
+	}
+
+
+	/**
+	 * Set temp uri
+	 * @param string temp uri
+	 * @return string
+	 */
+	public function setTempUri($tempUri) {
+		$this->tempUri = (string) $tempUri;
+		return $this;
+	}
+
+
+	/**
+	 * Get join files
+	 * @return bool
+	 */
+	public function getJoinFiles() {
+		return $this->joinFiles;
+	}
+
+
+	/**
+	 * Set join files
+	 * @param bool join files
+	 * @return WebLoader
+	 */
+	public function setJoinFiles($joinFiles) {
+		$this->joinFiles = (bool) $joinFiles;
+		return $this;
+	}
+
+
+	/**
+	 * Get generated file name prefix
+	 * @return string
+	 */
+	public function getGeneratedFileNamePrefix() {
+		return $this->generatedFileNamePrefix;
+	}
+
+
+	/**
+	 * Set generated file name prefix
+	 * @param string generated file name prefix
+	 * @return WebLoader
+	 */
+	public function setGeneratedFileNamePrefix($generatedFileNamePrefix) {
+		$this->generatedFileNamePrefix = (string) $generatedFileNamePrefix;
+		return $this;
+	}
+
+
+	/**
+	 * Get generated file name suffix
+	 * @return string
+	 */
+	public function getGeneratedFileNameSuffix() {
+		return $this->generatedFileNameSuffix;
+	}
+
+
+	/**
+	 * Set generated file name suffix
+	 * @param string generated file name suffix
+	 * @return WebLoader
+	 */
+	public function setGeneratedFileNameSuffix($generatedFileNameSuffix) {
+		$this->generatedFileNameSuffix = (string) $generatedFileNameSuffix;
+		return $this;
+	}
+
+
+	/**
+	 * Throw exceptions?
+	 * @return bool
+	 */
+	public function getThrowExceptions() {
+		return $this->throwExceptions;
+	}
+
+
+	/**
+	 * Set throw exceptions
+	 * @param bool throw exceptions
+	 * @return WebLoader
+	 */
+	public function setThrowExceptions($throwExceptions) {
+		$this->throwExceptions = (bool) $throwExceptions;
+		return $this;
+	}
+
+	// </editor-fold>
+
+	// <editor-fold defaultstate="collapsed" desc="files">
+
+	/**
+	 * Get file list
+	 * @return array
+	 */
+	public function getFiles() {
+		return $this->files;
+	}
+
+
+	/**
+	 * Make path absolute
+	 * @param string path
+	 * @throws \FileNotFoundException
+	 * @return string
+	 */
+	public function cannonicalizePath($path) {
+		$rel = realpath($this->sourcePath . "/" . $path);
+		if ($rel !== false) return $rel;
+
+		$abs = realpath($path);
+		if ($abs !== false) return $abs;
+
+		throw new \FileNotFoundException("File '$path' does not exist.");
+	}
+
+
+	/**
+	 * Add file
+	 * @param string filename
+	 */
+	public function addFile($file) {
+		try {
+			$file = $this->cannonicalizePath($file);
+
+			if (in_array($file, $this->files)) {
+				return;
+			}
+
+			$this->files[] = $file;
+
+		} catch (\FileNotFoundException $e) {
+			if ($this->throwExceptions) {
+				throw $e;
+			}
+		}
+	}
+
+
+	/**
+	 * Add files
+	 * @param array list of files
+	 */
+	public function addFiles(array $files) {
+		foreach ($files as $file) {
+			$this->addFile($file);
+		}
+	}
+
+
+	/**
+	 * Remove file
+	 * @param string filename
+	 */
+	public function removeFile($file) {
+		$this->removeFiles(array($file));
+	}
+
+
+	/**
+	 * Remove files
+	 * @param array list of files
+	 */
+	public function removeFiles(array $files) {
+		$files = array_map(array($this, "cannonicalizePath"), $files);
+		$this->files = array_diff($this->files, $files);
+	}
+
+
+	/**
+	 * Remove all files
+	 */
+	public function clear() {
+		$this->files = array();
+	}
+
+	// </editor-fold>
+
 
 	/**
 	 * Get html element including generated content
-	 * @param string $source
+	 * @param string source
 	 * @return Html
 	 */
 	abstract public function getElement($source);
 
+
 	/**
 	 * Generate compiled file(s) and render link(s)
 	 */
-	public function render()
-	{
+	public function render() {
 		$hasArgs = func_num_args() > 0;
 
 		if ($hasArgs) {
@@ -66,8 +325,8 @@ abstract class WebLoader extends Control
 		// separated files
 		} else {
 			foreach ($this->files as $file) {
-				$filename = $this->generate(array($file));
-				echo $this->getElement($this->tempUri . "/" . $filename);
+				$file = $this->generate(array($file));
+				echo $this->getElement($this->tempUri . "/" . $file);
 			}
 		}
 
@@ -76,135 +335,74 @@ abstract class WebLoader extends Control
 		}
 	}
 
-	/**
-	 * Get file list
-	 * @return array
-	 */
-	public function getFiles() {
-		return $this->files;
-	}
-
-	/**
-	 * Add file
-	 * @param string $file filename
-	 */
-	public function addFile($file)
-	{
-		if (in_array($file, $this->files)) {
-			return;
-		}
-
-		if (!file_exists($this->sourcePath . "/" . $file)) {
-			if ($this->throwExceptions) {
-				throw new FileNotFoundException("File '$this->sourcePath/$file' does not exist.");
-			} else {
-				return;
-			}
-		}
-
-		$this->files[] = $file;
-	}
-
-	/**
-	 * Add files
-	 * @param array $files list of files
-	 */
-	public function addFiles(array $files)
-	{
-		foreach ($files as $file) {
-			$this->addFile($file);
-		}
-	}
-
-	/**
-	 * Remove file
-	 * @param string $file filename
-	 */
-	public function removeFile($file)
-	{
-		$this->removeFiles(array($file));
-	}
-
-	/**
-	 * Remove files
-	 * @param array $files list of files
-	 */
-	public function removeFiles(array $files)
-	{
-		$this->files = array_diff($this->files, $files);
-	}
-
-	/**
-	 * Remove all files
-	 */
-	public function clear() {
-		$this->files = array();
-	}
 
 	/**
 	 * Get last modified timestamp of newest file
-	 * @param array $files
+	 * @param array files
 	 * @return int
 	 */
-	public function getLastModified(array $files = null)
-	{
+	public function getLastModified(array $files = null) {
 		if ($files === null) {
 			$files = $this->files;
 		}
-
+		
 		$modified = 0;
 
 		foreach ($files as $file) {
-			$modified = max($modified, filemtime($this->sourcePath . "/" . $file));
+			$modified = max($modified, filemtime($file));
 		}
 
 		return $modified;
 	}
 
+
 	/**
 	 * Filename of generated file
-	 * @param array $files
+	 * @param array files
 	 * @return string
 	 */
-	public function getGeneratedFilename(array $files = null)
-	{
+	public function getGeneratedFilename(array $files = null) {
 		if ($files === null) {
 			$files = $this->files;
 		}
 
-		$hash = md5(implode("|", $files) . "|" . $this->getLastModified($files) . "|" . $this->sourcePath . "|" . $this->tempUri);
-		$origFilenamePart = count($files) === 1 ? String::webalize($files[0]) . "-" : "";
-
-		return $this->generatedFileNamePrefix . $origFilenamePart . $hash . $this->generatedFileNameSuffix;
+		return $this->generatedFileNamePrefix . md5(
+			implode("|", $files) . "|" . $this->getLastModified($files)
+		) . $this->generatedFileNameSuffix;
 	}
+
 
 	/**
 	 * Get joined content of all files
-	 * @param array $files
+	 * @param array files
 	 * @return string
 	 */
-	public function getContent(array $files = null)
-	{
+	public function getContent(array $files = null) {
 		if ($files === null) {
 			$files = $this->files;
 		}
 
+		// load content
 		$content = "";
-
 		foreach ($files as $file) {
 			$content .= $this->loadFile($file);
 		}
 
-		return $this->applyFilters($content);
+		// apply filters
+		foreach ($this->filters as $filter) {
+			$content = call_user_func($filter, $content, $this);
+		}
+
+		return $content;
 	}
+
 
 	/**
 	 * Load content and save file
-	 * @param array $files
+	 * @param array files
 	 * @return string filename of generated file
 	 */
-	protected function generate($files)
-	{
+	protected function generate($files) {
 		$name = $this->getGeneratedFilename($files);
 
 		$path = $this->tempPath . "/" . $name;
@@ -214,37 +412,26 @@ abstract class WebLoader extends Control
 				SafeStream::register();
 			}
 
-			if (is_writable($this->tempPath)) {
-				file_put_contents("safe://" . $path, $this->getContent($files));
-			} else {
-				throw new InvalidStateException("Directory '$this->tempPath' is not writeable.");
-			}
+			file_put_contents("safe://" . $path, $this->getContent($files));
 		}
 
 		return $name;
 	}
 
-	/**
-	 * Apply filters to a string
-	 * @param string $s
-	 * @return string
-	 */
-	protected function applyFilters($s)
-	{
-		foreach ($this->filters as $filter) {
-			$s = call_user_func($filter, $s);
-		}
-
-		return $s;
-	}
 
 	/**
 	 * Load file
-	 * @param string $path
+	 * @param string file path
 	 * @return string
 	 */
-	protected function loadFile($file)
-	{
-		return file_get_contents($this->sourcePath . "/" . $file);
+	protected function loadFile($file) {
+		$content = file_get_contents($file);
+
+		foreach ($this->fileFilters as $filter) {
+			$content = call_user_func($filter, $content, $this, $file);
+		}
+
+		return $content;
 	}
+
 }
