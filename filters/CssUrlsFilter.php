@@ -49,8 +49,8 @@ class CssUrlsFilter extends \Nette\Object {
 	 * @return path
 	 */
 	private static function cannonicalizePath($path) {
-		foreach (explode(DIRECTORY_SEPARATOR, $path) as $name) {
-			if ($name === "." || $name === "") continue;
+		foreach (explode(DIRECTORY_SEPARATOR, $path) as $i => $name) {
+			if ($name === "." || ($name === "" && $i > 0)) continue;
 
 			if ($name === "..") {
 				array_pop($pathArr);
