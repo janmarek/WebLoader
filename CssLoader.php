@@ -24,7 +24,7 @@ class CssLoader extends WebLoader {
 	 */
 	public function __construct(IComponentContainer $parent = null, $name = null) {
 		parent::__construct($parent, $name);
-		$this->setGeneratedFileNamePrefix("ccsloader-");
+		$this->setGeneratedFileNamePrefix("cssloader-");
 		$this->setGeneratedFileNameSuffix(".css");
 		$this->fileFilters[] = new CssUrlsFilter;
 	}
