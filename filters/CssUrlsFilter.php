@@ -37,6 +37,9 @@ class CssUrlsFilter extends \Nette\Object {
 			$path = $basePath . substr($sourcePath, strlen($docroot)) . DIRECTORY_SEPARATOR . $url;
 		}
 
+		// Replace backslashes in $path
+		$path = str_replace('\\', '/', $path);
+
 		//$path = self::cannonicalizePath($path);
 
 		return $quote === '"' ? addslashes($path) : $path;
