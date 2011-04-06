@@ -44,6 +44,9 @@ abstract class WebLoader extends \Nette\Application\Control {
 	/** @var array */
 	private $files = array();
 
+	/** @var array */
+	private $remoteFiles = array();
+
 	// </editor-fold>
 
 	// <editor-fold defaultstate="collapsed" desc="getters & setters">
@@ -288,10 +291,24 @@ abstract class WebLoader extends \Nette\Application\Control {
 
 
 	/**
+	 * Add file in remote repository (for example Google CDN).
+	 * @param string URL address
+	 */
+	public function addRemoteFile($file) {
+		if (in_array($file, $this->remoteFiles)) {
+			return;
+		}
+
+		$this->remoteFiles[] = $file;
+	}
+
+
+	/**
 	 * Remove all files
 	 */
 	public function clear() {
 		$this->files = array();
+		$this->remoteFiles = array();
 	}
 
 	// </editor-fold>
@@ -313,8 +330,14 @@ abstract class WebLoader extends \Nette\Application\Control {
 
 		if ($hasArgs) {
 			$backup = $this->files;
+			$backupRemote = $this->remoteFiles;
 			$this->clear();
 			$this->addFiles(func_get_args());
+		}
+
+		// remote files
+		foreach ($this->remoteFiles as $file) {
+			echo $this->getElement($file);
 		}
 
 		// joined files
@@ -332,6 +355,7 @@ abstract class WebLoader extends \Nette\Application\Control {
 
 		if ($hasArgs) {
 			$this->files = $backup;
+			$this->remoteFiles = $backupRemote;
 		}
 	}
 
