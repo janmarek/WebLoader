@@ -29,7 +29,7 @@ class VariablesFilter extends \Nette\Object {
 			$this->$key = $value;
 		}
 	}
-	
+
 
 	/**
 	 * Set delimiter
@@ -56,7 +56,7 @@ class VariablesFilter extends \Nette\Object {
 		$variables = array_map(function ($key) use ($start, $end) {
 			return $start . $key . $end;
 		}, array_keys($this->variables));
-		
+
 		$values = array_values($this->variables);
 
 		return str_replace($variables, $values, $code);
@@ -77,13 +77,13 @@ class VariablesFilter extends \Nette\Object {
 	 * Magic get variable, do not call directly
 	 * @param string name
 	 * @return string
-	 * @throws \InvalidArgumentException
+	 * @throws \Nette\InvalidArgumentException
 	 */
 	public function & __get($name) {
 		if (array_key_exists($name, $this->variables)) {
 			return $this->variables[$name];
 		} else {
-			throw new \InvalidArgumentException("Variable '$name' is not set.");
+			throw new \Nette\InvalidArgumentException("Variable '$name' is not set.");
 		}
 	}
 

@@ -2,15 +2,13 @@
 
 namespace WebLoader;
 
-use Nette\SafeStream;
-
 /**
  * Web loader
  *
  * @author Jan Marek
  * @license MIT
  */
-abstract class WebLoader extends \Nette\Application\Control {
+abstract class WebLoader extends \Nette\Application\UI\Control {
 
 	// <editor-fold defaultstate="collapsed" desc="variables">
 
@@ -69,7 +67,7 @@ abstract class WebLoader extends \Nette\Application\Control {
 		$sourcePath = realpath($sourcePath);
 
 		if ($sourcePath === false) {
-			throw new \FileNotFoundException("Source path does not exist.");
+			throw new \Nette\FileNotFoundException("Source path does not exist.");
 		}
 
 		$this->sourcePath = $sourcePath;
@@ -96,11 +94,11 @@ abstract class WebLoader extends \Nette\Application\Control {
 		$tempPath = realpath($tempPath);
 
 		if ($tempPath === false) {
-			throw new \FileNotFoundException("Temp path does not exist.");
+			throw new \Nette\FileNotFoundException("Temp path does not exist.");
 		}
 
 		if (!is_writable($tempPath)) {
-			throw new \InvalidStateException("Directory '$tempPath' is not writeable.");
+			throw new \Nette\InvalidStateException("Directory '$tempPath' is not writeable.");
 		}
 
 		$this->tempPath = $tempPath;
@@ -224,7 +222,7 @@ abstract class WebLoader extends \Nette\Application\Control {
 	/**
 	 * Make path absolute
 	 * @param string path
-	 * @throws \FileNotFoundException
+	 * @throws \Nette\FileNotFoundException
 	 * @return string
 	 */
 	public function cannonicalizePath($path) {
@@ -234,7 +232,7 @@ abstract class WebLoader extends \Nette\Application\Control {
 		$abs = realpath($path);
 		if ($abs !== false) return $abs;
 
-		throw new \FileNotFoundException("File '$path' does not exist.");
+		throw new \Nette\FileNotFoundException("File '$path' does not exist.");
 	}
 
 
@@ -252,7 +250,7 @@ abstract class WebLoader extends \Nette\Application\Control {
 
 			$this->files[] = $file;
 
-		} catch (\FileNotFoundException $e) {
+		} catch (\Nette\FileNotFoundException $e) {
 			if ($this->throwExceptions) {
 				throw $e;
 			}
@@ -369,7 +367,7 @@ abstract class WebLoader extends \Nette\Application\Control {
 		if ($files === null) {
 			$files = $this->files;
 		}
-		
+
 		$modified = 0;
 
 		foreach ($files as $file) {
@@ -436,10 +434,6 @@ abstract class WebLoader extends \Nette\Application\Control {
 		$lastModified = $this->getLastModified($files);
 
 		if (!file_exists($path) || $lastModified > filemtime($path)) {
-			if (!in_array(SafeStream::PROTOCOL, stream_get_wrappers())) {
-				SafeStream::register();
-			}
-
 			file_put_contents("safe://" . $path, $this->getContent($files));
 		}
 

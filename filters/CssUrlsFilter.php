@@ -3,7 +3,7 @@
 namespace WebLoader;
 
 use Nette\Environment;
-use Nette\String;
+use Nette\Utils\Strings;
 
 /**
  * Absolutize urls in CSS
@@ -12,7 +12,7 @@ use Nette\String;
  * @license MIT
  */
 class CssUrlsFilter extends \Nette\Object {
-	
+
 	/**
 	 * Make relative url absolute
 	 * @param string image url
@@ -26,10 +26,10 @@ class CssUrlsFilter extends \Nette\Object {
 		if (preg_match("/^([a-z]+:\/)?\//", $url)) return $url;
 
 		$docroot = realpath(WWW_DIR);
-		$basePath = rtrim(Environment::getVariable("baseUri"), '/');
+		$basePath = Environment::getContext()->httpRequest->getUrl()->getBasePath();
 
 		// inside document root
-		if (String::startsWith($cssFile, $docroot)) {
+		if (Strings::startsWith($cssFile, $docroot)) {
 			$path = $basePath . substr(dirname($cssFile), strlen($docroot)) . DIRECTORY_SEPARATOR . $url;
 
 		// outside document root
@@ -99,5 +99,5 @@ class CssUrlsFilter extends \Nette\Object {
 			$code
 		);
 	}
-	
+
 }

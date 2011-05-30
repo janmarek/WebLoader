@@ -2,8 +2,8 @@
 
 namespace WebLoader;
 
-use Nette\Web\Html;
-use Nette\IComponentContainer;
+use Nette\Utils\Html;
+use Nette\ComponentModel\IContainer;
 
 /**
  * JavaScript loader
@@ -18,7 +18,7 @@ class JavaScriptLoader extends WebLoader {
 	 * @param IComponentContainer parent
 	 * @param string name
 	 */
-	public function __construct(IComponentContainer $parent = null, $name = null) {
+	public function __construct(IContainer $parent = null, $name = null) {
 		parent::__construct($parent, $name);
 		$this->setGeneratedFileNamePrefix("jsloader-");
 		$this->setGeneratedFileNameSuffix(".js");
