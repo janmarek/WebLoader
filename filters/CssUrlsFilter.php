@@ -2,8 +2,8 @@
 
 namespace WebLoader;
 
-use Nette\Environment;
 use Nette\Utils\Strings;
+
 
 /**
  * Absolutize urls in CSS
@@ -11,7 +11,19 @@ use Nette\Utils\Strings;
  * @author Jan Marek
  * @license MIT
  */
-class CssUrlsFilter extends \Nette\Object {
+class CssUrlsFilter extends \Nette\Object
+{
+	/** @var \Nette\DI\IContainer */
+	private $context;
+
+
+
+	public function __construct(\Nette\DI\IContainer $container)
+	{
+		$this->context = $container;
+	}
+
+
 
 	/**
 	 * Make relative url absolute
@@ -21,26 +33,28 @@ class CssUrlsFilter extends \Nette\Object {
 	 * @param string source path
 	 * @return string
 	 */
-	public static function absolutizeUrl($url, $quote, $cssFile, $sourcePath) {
+	public function absolutizeUrl($url, $quote, $cssFile, $sourcePath)
+	{
 		// is already absolute
-		if (preg_match("/^([a-z]+:\/)?\//", $url)) return $url;
+		if (preg_match('~^([a-z]+:/)?/~', $url)) return $url;
 
-		$docroot = realpath(WWW_DIR);
-		$basePath = Environment::getContext()->httpRequest->getUrl()->getBasePath();
+		$docroot = realpath($this->context->params['wwwDir']);
+		$basePath = $this->context->httpRequest->url->basePath;
 
 		// inside document root
 		if (Strings::startsWith($cssFile, $docroot)) {
-			$path = $basePath . substr(dirname($cssFile), strlen($docroot)) . DIRECTORY_SEPARATOR . $url;
+			$path = $basePath . substr(dirname($cssFile), strlen($docroot)) . '/' . $url;
 
 		// outside document root
 		} else {
-			$path = $basePath . substr($sourcePath, strlen($docroot)) . DIRECTORY_SEPARATOR . $url;
+			$path = $basePath . substr($sourcePath, strlen($docroot)) . '/' . $url;
 		}
 
-		//$path = self::cannonicalizePath($path);
+		$path = self::cannonicalizePath($path);
 
 		return $quote === '"' ? addslashes($path) : $path;
 	}
+
 
 
 	/**
@@ -48,8 +62,9 @@ class CssUrlsFilter extends \Nette\Object {
 	 * @param string path
 	 * @return path
 	 */
-	private static function cannonicalizePath($path) {
-		foreach (explode(DIRECTORY_SEPARATOR, $path) as $i => $name) {
+	private static function cannonicalizePath($path)
+	{
+		foreach (explode('/', $path) as $i => $name) {
 			if ($name === "." || ($name === "" && $i > 0)) continue;
 
 			if ($name === "..") {
@@ -64,6 +79,7 @@ class CssUrlsFilter extends \Nette\Object {
 	}
 
 
+
 	/**
 	 * Invoke filter
 	 * @param string code
@@ -71,7 +87,7 @@ class CssUrlsFilter extends \Nette\Object {
 	 * @param string file
 	 * @return string
 	 */
-	public function __invoke($code, WebLoader $loader, $file = null)
+	public function __invoke($code, WebLoader $loader, $file = NULL)
 	{
 		// thanks to kravco
 		$regexp = '~
@@ -91,13 +107,11 @@ class CssUrlsFilter extends \Nette\Object {
 			\)                                        ## )
 		~xs';
 
-		return preg_replace_callback(
-			$regexp,
-			function ($matches) use ($loader, $file) {
-				return "url('" . CssUrlsFilter::absolutizeUrl($matches[2], $matches[1], $file, $loader->sourcePath) . "')";
-			},
-			$code
-		);
+		$that = $this;
+
+		return Strings::replace($code, $regexp, function ($matches) use ($that, $loader, $file) {
+			return "url('" . $that->absolutizeUrl($matches[2], $matches[1], $file, $loader->sourcePath) . "')";
+		});
 	}
 
 }
