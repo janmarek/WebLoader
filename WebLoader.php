@@ -2,16 +2,15 @@
 
 namespace WebLoader;
 
+
 /**
  * Web loader
  *
  * @author Jan Marek
  * @license MIT
  */
-abstract class WebLoader extends \Nette\Application\UI\Control {
-
-	// <editor-fold defaultstate="collapsed" desc="variables">
-
+abstract class WebLoader extends \Nette\Application\UI\Control
+{
 	/** @var string */
 	private $sourcePath;
 
@@ -22,7 +21,7 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	private $tempUri;
 
 	/** @var bool */
-	private $joinFiles = true;
+	private $joinFiles = TRUE;
 
 	/** @var string */
 	private $generatedFileNamePrefix = "webloader-";
@@ -31,7 +30,7 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	private $generatedFileNameSuffix = "";
 
 	/** @var bool */
-	private $throwExceptions = false;
+	private $throwExceptions = FALSE;
 
 	/** @var array */
 	public $filters = array();
@@ -45,17 +44,17 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	/** @var array */
 	private $remoteFiles = array();
 
-	// </editor-fold>
 
-	// <editor-fold defaultstate="collapsed" desc="getters & setters">
 
 	/**
 	 * Get source path
 	 * @return string
 	 */
-	public function getSourcePath() {
+	public function getSourcePath()
+	{
 		return $this->sourcePath;
 	}
+
 
 
 	/**
@@ -63,10 +62,11 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param string source path
 	 * @return WebLoader
 	 */
-	public function setSourcePath($sourcePath) {
+	public function setSourcePath($sourcePath)
+	{
 		$sourcePath = realpath($sourcePath);
 
-		if ($sourcePath === false) {
+		if ($sourcePath === FALSE) {
 			throw new \Nette\FileNotFoundException("Source path does not exist.");
 		}
 
@@ -76,13 +76,16 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Get temp path
 	 * @return string
 	 */
-	public function getTempPath() {
+	public function getTempPath()
+	{
 		return $this->tempPath;
 	}
+
 
 
 	/**
@@ -90,10 +93,11 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param string temp path
 	 * @return WebLoader
 	 */
-	public function setTempPath($tempPath) {
+	public function setTempPath($tempPath)
+	{
 		$tempPath = realpath($tempPath);
 
-		if ($tempPath === false) {
+		if ($tempPath === FALSE) {
 			throw new \Nette\FileNotFoundException("Temp path does not exist.");
 		}
 
@@ -107,13 +111,16 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Get temp uri
 	 * @return string
 	 */
-	public function getTempUri() {
+	public function getTempUri()
+	{
 		return $this->tempUri;
 	}
+
 
 
 	/**
@@ -121,19 +128,23 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param string temp uri
 	 * @return string
 	 */
-	public function setTempUri($tempUri) {
+	public function setTempUri($tempUri)
+	{
 		$this->tempUri = (string) $tempUri;
 		return $this;
 	}
+
 
 
 	/**
 	 * Get join files
 	 * @return bool
 	 */
-	public function getJoinFiles() {
+	public function getJoinFiles()
+	{
 		return $this->joinFiles;
 	}
+
 
 
 	/**
@@ -141,19 +152,23 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param bool join files
 	 * @return WebLoader
 	 */
-	public function setJoinFiles($joinFiles) {
+	public function setJoinFiles($joinFiles)
+	{
 		$this->joinFiles = (bool) $joinFiles;
 		return $this;
 	}
+
 
 
 	/**
 	 * Get generated file name prefix
 	 * @return string
 	 */
-	public function getGeneratedFileNamePrefix() {
+	public function getGeneratedFileNamePrefix()
+	{
 		return $this->generatedFileNamePrefix;
 	}
+
 
 
 	/**
@@ -161,19 +176,23 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param string generated file name prefix
 	 * @return WebLoader
 	 */
-	public function setGeneratedFileNamePrefix($generatedFileNamePrefix) {
+	public function setGeneratedFileNamePrefix($generatedFileNamePrefix)
+	{
 		$this->generatedFileNamePrefix = (string) $generatedFileNamePrefix;
 		return $this;
 	}
+
 
 
 	/**
 	 * Get generated file name suffix
 	 * @return string
 	 */
-	public function getGeneratedFileNameSuffix() {
+	public function getGeneratedFileNameSuffix()
+	{
 		return $this->generatedFileNameSuffix;
 	}
+
 
 
 	/**
@@ -181,19 +200,23 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param string generated file name suffix
 	 * @return WebLoader
 	 */
-	public function setGeneratedFileNameSuffix($generatedFileNameSuffix) {
+	public function setGeneratedFileNameSuffix($generatedFileNameSuffix)
+	{
 		$this->generatedFileNameSuffix = (string) $generatedFileNameSuffix;
 		return $this;
 	}
+
 
 
 	/**
 	 * Throw exceptions?
 	 * @return bool
 	 */
-	public function getThrowExceptions() {
+	public function getThrowExceptions()
+	{
 		return $this->throwExceptions;
 	}
+
 
 
 	/**
@@ -201,22 +224,23 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param bool throw exceptions
 	 * @return WebLoader
 	 */
-	public function setThrowExceptions($throwExceptions) {
+	public function setThrowExceptions($throwExceptions)
+	{
 		$this->throwExceptions = (bool) $throwExceptions;
 		return $this;
 	}
 
-	// </editor-fold>
 
-	// <editor-fold defaultstate="collapsed" desc="files">
 
 	/**
 	 * Get file list
 	 * @return array
 	 */
-	public function getFiles() {
+	public function getFiles()
+	{
 		return $this->files;
 	}
+
 
 
 	/**
@@ -225,22 +249,25 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @throws \Nette\FileNotFoundException
 	 * @return string
 	 */
-	public function cannonicalizePath($path) {
+	public function cannonicalizePath($path)
+	{
 		$rel = realpath($this->sourcePath . "/" . $path);
-		if ($rel !== false) return $rel;
+		if ($rel !== FALSE) return $rel;
 
 		$abs = realpath($path);
-		if ($abs !== false) return $abs;
+		if ($abs !== FALSE) return $abs;
 
 		throw new \Nette\FileNotFoundException("File '$path' does not exist.");
 	}
+
 
 
 	/**
 	 * Add file
 	 * @param string filename
 	 */
-	public function addFile($file) {
+	public function addFile($file)
+	{
 		try {
 			$file = $this->cannonicalizePath($file);
 
@@ -258,41 +285,49 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Add files
 	 * @param array list of files
 	 */
-	public function addFiles(array $files) {
+	public function addFiles(array $files)
+	{
 		foreach ($files as $file) {
 			$this->addFile($file);
 		}
 	}
 
 
+
 	/**
 	 * Remove file
 	 * @param string filename
 	 */
-	public function removeFile($file) {
+	public function removeFile($file)
+	{
 		$this->removeFiles(array($file));
 	}
+
 
 
 	/**
 	 * Remove files
 	 * @param array list of files
 	 */
-	public function removeFiles(array $files) {
+	public function removeFiles(array $files)
+	{
 		$files = array_map(array($this, "cannonicalizePath"), $files);
 		$this->files = array_diff($this->files, $files);
 	}
+
 
 
 	/**
 	 * Add file in remote repository (for example Google CDN).
 	 * @param string URL address
 	 */
-	public function addRemoteFile($file) {
+	public function addRemoteFile($file)
+	{
 		if (in_array($file, $this->remoteFiles)) {
 			return;
 		}
@@ -301,15 +336,16 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Remove all files
 	 */
-	public function clear() {
+	public function clear()
+	{
 		$this->files = array();
 		$this->remoteFiles = array();
 	}
 
-	// </editor-fold>
 
 
 	/**
@@ -320,10 +356,12 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	abstract public function getElement($source);
 
 
+
 	/**
 	 * Generate compiled file(s) and render link(s)
 	 */
-	public function render() {
+	public function render()
+	{
 		$hasArgs = func_num_args() > 0;
 
 		if ($hasArgs) {
@@ -358,13 +396,15 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Get last modified timestamp of newest file
 	 * @param array files
 	 * @return int
 	 */
-	public function getLastModified(array $files = null) {
-		if ($files === null) {
+	public function getLastModified(array $files = NULL)
+	{
+		if ($files === NULL) {
 			$files = $this->files;
 		}
 
@@ -378,13 +418,15 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Filename of generated file
 	 * @param array files
 	 * @return string
 	 */
-	public function getGeneratedFilename(array $files = null) {
-		if ($files === null) {
+	public function getGeneratedFilename(array $files = NULL)
+	{
+		if ($files === NULL) {
 			$files = $this->files;
 		}
 
@@ -398,13 +440,15 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Get joined content of all files
 	 * @param array files
 	 * @return string
 	 */
-	public function getContent(array $files = null) {
-		if ($files === null) {
+	public function getContent(array $files = NULL)
+	{
+		if ($files === NULL) {
 			$files = $this->files;
 		}
 
@@ -423,12 +467,14 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Load content and save file
 	 * @param array files
 	 * @return string filename of generated file
 	 */
-	protected function generate($files) {
+	protected function generate($files)
+	{
 		$name = $this->getGeneratedFilename($files);
 		$path = $this->tempPath . "/" . $name;
 		$lastModified = $this->getLastModified($files);
@@ -441,12 +487,14 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 
+
 	/**
 	 * Load file
 	 * @param string file path
 	 * @return string
 	 */
-	protected function loadFile($file) {
+	protected function loadFile($file)
+	{
 		$content = file_get_contents($file);
 
 		foreach ($this->fileFilters as $filter) {
@@ -455,5 +503,4 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 
 		return $content;
 	}
-
 }
