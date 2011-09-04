@@ -24,8 +24,8 @@ class CssUrlsFilter extends \Nette\Object {
 	public static function absolutizeUrl($url, $quote, $cssFile, $sourcePath) {
 		// is already absolute
 		if (preg_match("/^([a-z]+:\/)?\//", $url)) return $url;
-
-		$docroot = realpath(WWW_DIR);
+		$www = \Nette\Configurator::$instance->container->params['wwwDir'];
+		$docroot = realpath($www);
 		$basePath = Environment::getContext()->httpRequest->getUrl()->getBasePath();
 
 		// inside document root
