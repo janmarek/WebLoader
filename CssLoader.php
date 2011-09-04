@@ -14,7 +14,7 @@ use Nette\ComponentModel\IContainer;
 class CssLoader extends WebLoader {
 
 	/** @var string */
-	private $media;
+	private $media = 'all';
 
 
 	/**
@@ -22,10 +22,10 @@ class CssLoader extends WebLoader {
 	 * @param IComponentContainer parent
 	 * @param string name
 	 */
-	public function __construct(IContainer $parent = null, $name = null) {
+	public function __construct(IContainer $parent = NULL, $name = NULL) {
 		parent::__construct($parent, $name);
-		$this->setGeneratedFileNamePrefix("cssloader-");
-		$this->setGeneratedFileNameSuffix(".css");
+		$this->setGeneratedFileNamePrefix('cssloader-');
+		$this->setGeneratedFileNameSuffix('.css');
 		$this->fileFilters[] = new CssUrlsFilter;
 	}
 
@@ -48,6 +48,11 @@ class CssLoader extends WebLoader {
 		$this->media = $media;
 		return $this;
 	}
+	
+	public function setPaths($path = 'css')
+	{
+		parent::setPaths($path);
+	}
 
 
 	/**
@@ -56,9 +61,9 @@ class CssLoader extends WebLoader {
 	 * @return Html
 	 */
 	public function getElement($source) {
-		return Html::el("link")
-			->rel("stylesheet")
-			->type("text/css")
+		return Html::el('link')
+			->rel('stylesheet')
+			->type('text/css')
 			->media($this->media)
 			->href($source);
 	}

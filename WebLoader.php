@@ -2,6 +2,8 @@
 
 namespace WebLoader;
 
+use Nette;
+
 /**
  * Web loader
  *
@@ -9,7 +11,6 @@ namespace WebLoader;
  * @license MIT
  */
 abstract class WebLoader extends \Nette\Application\UI\Control {
-
 	// <editor-fold defaultstate="collapsed" desc="variables">
 
 	/** @var string */
@@ -44,8 +45,19 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 
 	/** @var array */
 	private $remoteFiles = array();
+	
+	/** @var Nette\DI\Container */
+	protected $context;
 
 	// </editor-fold>
+
+
+
+	public function __construct(Nette\ComponentModel\IContainer $parent = NULL, $name = NULL) {
+		$this->context = \Nette\Configurator::$instance->container;
+		parent::__construct($parent, $name);
+		$this->throwExceptions = !Nette\Diagnostics\Debugger::$productionMode;
+	}
 
 	// <editor-fold defaultstate="collapsed" desc="getters & setters">
 
@@ -56,7 +68,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function getSourcePath() {
 		return $this->sourcePath;
 	}
-
 
 	/**
 	 * Set source path
@@ -75,6 +86,24 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $this;
 	}
 
+	/**
+	 * set most use paths
+	 * @param type $path 
+	 * @throw \FileNotFoundException
+	 */
+	public function setPaths($path) {
+		$wwwDir = $this->context->params['wwwDir'];
+		$source = $wwwDir . DIRECTORY_SEPARATOR . $path;
+		$temp = $wwwDir . DIRECTORY_SEPARATOR .'temp';
+		if (file_exists($source) && file_exists($temp)) {
+			$baseUrl = $this->context->application->presenter->template->baseUrl;
+			$this->sourcePath = $source;
+			$this->tempPath = $temp;
+			$this->tempUri = $baseUrl . '/temp';
+		} elseif ($this->throwExceptions) {
+			throw new \FileNotFoundException($source . ' or ' . $temp);
+		}
+	}
 
 	/**
 	 * Get temp path
@@ -83,7 +112,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function getTempPath() {
 		return $this->tempPath;
 	}
-
 
 	/**
 	 * Set temp path
@@ -106,7 +134,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $this;
 	}
 
-
 	/**
 	 * Get temp uri
 	 * @return string
@@ -114,7 +141,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function getTempUri() {
 		return $this->tempUri;
 	}
-
 
 	/**
 	 * Set temp uri
@@ -126,7 +152,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $this;
 	}
 
-
 	/**
 	 * Get join files
 	 * @return bool
@@ -134,7 +159,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function getJoinFiles() {
 		return $this->joinFiles;
 	}
-
 
 	/**
 	 * Set join files
@@ -146,7 +170,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $this;
 	}
 
-
 	/**
 	 * Get generated file name prefix
 	 * @return string
@@ -154,7 +177,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function getGeneratedFileNamePrefix() {
 		return $this->generatedFileNamePrefix;
 	}
-
 
 	/**
 	 * Set generated file name prefix
@@ -166,7 +188,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $this;
 	}
 
-
 	/**
 	 * Get generated file name suffix
 	 * @return string
@@ -174,7 +195,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function getGeneratedFileNameSuffix() {
 		return $this->generatedFileNameSuffix;
 	}
-
 
 	/**
 	 * Set generated file name suffix
@@ -186,7 +206,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $this;
 	}
 
-
 	/**
 	 * Throw exceptions?
 	 * @return bool
@@ -194,7 +213,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function getThrowExceptions() {
 		return $this->throwExceptions;
 	}
-
 
 	/**
 	 * Set throw exceptions
@@ -207,7 +225,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	}
 
 	// </editor-fold>
-
 	// <editor-fold defaultstate="collapsed" desc="files">
 
 	/**
@@ -218,7 +235,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $this->files;
 	}
 
-
 	/**
 	 * Make path absolute
 	 * @param string path
@@ -226,15 +242,16 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @return string
 	 */
 	public function cannonicalizePath($path) {
-		$rel = realpath($this->sourcePath . "/" . $path);
-		if ($rel !== false) return $rel;
+		$rel = realpath($this->sourcePath . '/' . $path);
+		if ($rel !== false)
+			return $rel;
 
 		$abs = realpath($path);
-		if ($abs !== false) return $abs;
+		if ($abs !== false)
+			return $abs;
 
 		throw new \Nette\FileNotFoundException("File '$path' does not exist.");
 	}
-
 
 	/**
 	 * Add file
@@ -242,21 +259,19 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 */
 	public function addFile($file) {
 		try {
-			$file = $this->cannonicalizePath($file);
+			$file = $this->cannonicalizePath($file . $this->generatedFileNameSuffix);
 
 			if (in_array($file, $this->files)) {
 				return;
 			}
 
 			$this->files[] = $file;
-
 		} catch (\Nette\FileNotFoundException $e) {
 			if ($this->throwExceptions) {
 				throw $e;
 			}
 		}
 	}
-
 
 	/**
 	 * Add files
@@ -268,7 +283,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		}
 	}
 
-
 	/**
 	 * Remove file
 	 * @param string filename
@@ -276,7 +290,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	public function removeFile($file) {
 		$this->removeFiles(array($file));
 	}
-
 
 	/**
 	 * Remove files
@@ -286,7 +299,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		$files = array_map(array($this, "cannonicalizePath"), $files);
 		$this->files = array_diff($this->files, $files);
 	}
-
 
 	/**
 	 * Add file in remote repository (for example Google CDN).
@@ -300,7 +312,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		$this->remoteFiles[] = $file;
 	}
 
-
 	/**
 	 * Remove all files
 	 */
@@ -311,14 +322,12 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 
 	// </editor-fold>
 
-
 	/**
 	 * Get html element including generated content
 	 * @param string source
 	 * @return Html
 	 */
 	abstract public function getElement($source);
-
 
 	/**
 	 * Generate compiled file(s) and render link(s)
@@ -343,7 +352,7 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 			$file = $this->generate($this->files);
 			echo $this->getElement($this->tempUri . "/" . $file);
 
-		// separated files
+			// separated files
 		} else {
 			foreach ($this->files as $file) {
 				$file = $this->generate(array($file));
@@ -356,7 +365,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 			$this->remoteFiles = $backupRemote;
 		}
 	}
-
 
 	/**
 	 * Get last modified timestamp of newest file
@@ -377,7 +385,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $modified;
 	}
 
-
 	/**
 	 * Filename of generated file
 	 * @param array files
@@ -396,7 +403,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 
 		return $this->generatedFileNamePrefix . $name . $this->generatedFileNameSuffix;
 	}
-
 
 	/**
 	 * Get joined content of all files
@@ -422,6 +428,23 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		return $content;
 	}
 
+	/**
+	 * add file by url Modul:Presenter:action
+	 * @return void
+	 */
+	public function addFileByNette() {
+		$p = $this->context->application->getPresenter();
+		$source = explode(':', strtolower($p->name . ':' . $p->action));
+		$file = $this->sourcePath;
+		foreach ($source as $path) {
+			$file .= DIRECTORY_SEPARATOR . $path;
+			if(file_exists($file . $this->generatedFileNameSuffix)) {
+				$this->addFile($file);
+			}
+			if(!file_exists($file))
+				break;
+		}
+	}
 
 	/**
 	 * Load content and save file
@@ -439,7 +462,6 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 
 		return $name . "?" . $lastModified;
 	}
-
 
 	/**
 	 * Load file
