@@ -23,25 +23,16 @@ class CssUrlsFilter extends \Nette\Object {
 	 */
 	public static function absolutizeUrl($url, $quote, $cssFile, $sourcePath) {
 		// is already absolute
-		if (preg_match("/^([a-z]+:\/)?\//", $url)) return $url;
-		$www = \Nette\Configurator::$instance->container->params['wwwDir'];
+		if (preg_match("/^([a-z]+:\/)?\//", $url))
+			return $url;
+		$www = Environment::getContext()->params['wwwDir'];
 		$docroot = realpath($www);
 		$basePath = Environment::getContext()->httpRequest->getUrl()->getBasePath();
 
-		// inside document root
-		if (Strings::startsWith($cssFile, $docroot)) {
-			$path = $basePath . substr(dirname($cssFile), strlen($docroot)) . DIRECTORY_SEPARATOR . $url;
-
-		// outside document root
-		} else {
-			$path = $basePath . substr($sourcePath, strlen($docroot)) . DIRECTORY_SEPARATOR . $url;
-		}
-
-		//$path = self::cannonicalizePath($path);
+		$path = $basePath . $url;
 
 		return $quote === '"' ? addslashes($path) : $path;
 	}
-
 
 	/**
 	 * Cannonicalize path
@@ -50,7 +41,8 @@ class CssUrlsFilter extends \Nette\Object {
 	 */
 	private static function cannonicalizePath($path) {
 		foreach (explode(DIRECTORY_SEPARATOR, $path) as $i => $name) {
-			if ($name === "." || ($name === "" && $i > 0)) continue;
+			if ($name === "." || ($name === "" && $i > 0))
+				continue;
 
 			if ($name === "..") {
 				array_pop($pathArr);
@@ -63,7 +55,6 @@ class CssUrlsFilter extends \Nette\Object {
 		return implode("/", $pathArr);
 	}
 
-
 	/**
 	 * Invoke filter
 	 * @param string code
@@ -71,8 +62,7 @@ class CssUrlsFilter extends \Nette\Object {
 	 * @param string file
 	 * @return string
 	 */
-	public function __invoke($code, WebLoader $loader, $file = null)
-	{
+	public function __invoke($code, WebLoader $loader, $file = null) {
 		// thanks to kravco
 		$regexp = '~
 			(?<![a-z])
@@ -92,11 +82,9 @@ class CssUrlsFilter extends \Nette\Object {
 		~xs';
 
 		return preg_replace_callback(
-			$regexp,
-			function ($matches) use ($loader, $file) {
-				return "url('" . CssUrlsFilter::absolutizeUrl($matches[2], $matches[1], $file, $loader->sourcePath) . "')";
-			},
-			$code
+										$regexp, function ($matches) use ($loader, $file) {
+											return "url('" . CssUrlsFilter::absolutizeUrl($matches[2], $matches[1], $file, $loader->sourcePath) . "')";
+										}, $code
 		);
 	}
 
