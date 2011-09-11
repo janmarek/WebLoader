@@ -45,7 +45,7 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 
 	/** @var array */
 	private $remoteFiles = array();
-	
+
 	/** @var Nette\DI\Container */
 	protected $context;
 
@@ -88,7 +88,7 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 
 	/**
 	 * set most use paths
-	 * @param type $path 
+	 * @param type $path
 	 * @throw \FileNotFoundException
 	 */
 	public function setPaths($path) {
@@ -350,7 +350,7 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 		// joined files
 		if ($this->joinFiles) {
 			$file = $this->generate($this->files);
-			echo $this->getElement($this->tempUri . "/" . $file);
+			echo $this->getElement($this->tempUri . '/' . $file);
 
 			// separated files
 		} else {
