@@ -48,7 +48,7 @@ class CssLoader extends WebLoader {
 		$this->media = $media;
 		return $this;
 	}
-	
+
 	public function setPaths($path = 'css')
 	{
 		parent::setPaths($path);

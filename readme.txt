@@ -1,4 +1,4 @@
-﻿WebLoader
+WebLoader
 =========
 
 Komponenta pro načítání CSS a JS souborů
