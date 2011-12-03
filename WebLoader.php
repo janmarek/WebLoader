@@ -277,7 +277,10 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * Add files
 	 * @param array list of files
 	 */
-	public function addFiles(array $files) {
+	public function addFiles($files) {
+		if(!is_array($files)) {
+			$files = func_get_args();
+		}
 		foreach ($files as $file) {
 			$this->addFile($file);
 		}
