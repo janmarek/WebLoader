@@ -25,7 +25,8 @@ class CssUrlsFilter extends \Nette\Object {
 		// is already absolute
 		if (preg_match("/^([a-z]+:\/)?\//", $url)) return $url;
 
-		$docroot = realpath(WWW_DIR);
+		//$docroot = realpath(WWW_DIR);
+		$docroot = realpath(Environment::getContext()->params['wwwDir']);
 		$basePath = Environment::getContext()->httpRequest->getUrl()->getBasePath();
 
 		// inside document root
@@ -37,7 +38,7 @@ class CssUrlsFilter extends \Nette\Object {
 			$path = $basePath . substr($sourcePath, strlen($docroot)) . DIRECTORY_SEPARATOR . $url;
 		}
 
-		//$path = self::cannonicalizePath($path);
+		$path = self::cannonicalizePath($path);
 
 		return $quote === '"' ? addslashes($path) : $path;
 	}

@@ -428,16 +428,20 @@ abstract class WebLoader extends \Nette\Application\UI\Control {
 	 * @param array files
 	 * @return string filename of generated file
 	 */
-	protected function generate($files) {
-		$name = $this->getGeneratedFilename($files);
-		$path = $this->tempPath . "/" . $name;
-		$lastModified = $this->getLastModified($files);
+    protected function generate($files) {
+		if($this->joinFiles){
+		    $name = $this->getGeneratedFilename($files);
+		    $path = $this->tempPath . "/" . $name;
+		    $lastModified = $this->getLastModified($files);
 
-		if (!file_exists($path) || $lastModified > filemtime($path)) {
-			file_put_contents("safe://" . $path, $this->getContent($files));
+		    if (!file_exists($path) || $lastModified > filemtime($path)) {
+			    file_put_contents("safe://" . $path, $this->getContent($files));
+		    }
+
+		    return $name . "?" . $lastModified;
+		} else {
+			return str_replace($this->sourcePath.'/','',$files[0]);
 		}
-
-		return $name . "?" . $lastModified;
 	}
 
 
