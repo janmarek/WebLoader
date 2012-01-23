@@ -30,6 +30,17 @@ class JavaScriptLoader extends WebLoader {
 	 * @return Html
 	 */
 	public function getElement($source) {
-		return Html::el("script")->type("text/javascript")->src($source);
+		if ($this->joinFiles == TRUE) {
+			return Html::el("script")->type("text/javascript")->setText("
+				var node = document.createElement('script');
+				node.type = 'text/javascript';
+				node.async = true;
+				node.src = '$source';
+				document.body.appendChild(node);
+			");
+		} else {
+			return Html::el("script")->type("text/javascript")->src($source);
+		}
 	}
+
 }
