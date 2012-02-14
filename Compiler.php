@@ -35,6 +35,16 @@ class Compiler
 		$this->setOutputDir($outputDir);
 	}
 
+	public static function createCssCompiler(IFileCollection $files, $outputDir)
+	{
+		return new static($files, DefaultOutputNamingConvention::createCssConvention(), $outputDir);
+	}
+
+	public static function createJsCompiler(IFileCollection $files, $outputDir)
+	{
+		return new static($files, DefaultOutputNamingConvention::createJsConvention(), $outputDir);
+	}
+
 	/**
 	 * Get temp path
 	 * @return string
