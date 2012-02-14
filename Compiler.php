@@ -35,11 +35,23 @@ class Compiler
 		$this->setOutputDir($outputDir);
 	}
 
+	/**
+	 * Create compiler with predefined css output naming convention
+	 * @param IFileCollection $files
+	 * @param string $outputDir
+	 * @return Compiler
+	 */
 	public static function createCssCompiler(IFileCollection $files, $outputDir)
 	{
 		return new static($files, DefaultOutputNamingConvention::createCssConvention(), $outputDir);
 	}
 
+	/**
+	 * Create compiler with predefined javascript output naming convention
+	 * @param IFileCollection $files
+	 * @param string $outputDir
+	 * @return Compiler
+	 */
 	public static function createJsCompiler(IFileCollection $files, $outputDir)
 	{
 		return new static($files, DefaultOutputNamingConvention::createJsConvention(), $outputDir);

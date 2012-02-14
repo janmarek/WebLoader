@@ -17,6 +17,10 @@ class CssUrlsFilter
 
 	private $basePath;
 
+	/**
+	 * @param string $docRoot web document root
+	 * @param string $basePath base path
+	 */
 	public function __construct($docRoot, $basePath = '/')
 	{
 		$this->docRoot = realpath($docRoot);

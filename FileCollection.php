@@ -116,6 +116,10 @@ class FileCollection implements IFileCollection
 		$this->remoteFiles[] = $file;
 	}
 
+	/**
+	 * Add multiple remote files
+	 * @param array $files
+	 */
 	public function addRemoteFiles(array $files)
 	{
 		foreach ($files as $file) {
