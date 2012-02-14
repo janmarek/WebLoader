@@ -20,7 +20,7 @@ Example:
 			WWW_DIR . '/colorbox/colorbox.css',
 		));
 
-		$compiler = new WebLoader\Compiler::createCssCompiler($files, WWW_DIR . '/temp');
+		$compiler = WebLoader\Compiler::createCssCompiler($files, WWW_DIR . '/temp');
 
 		$compiler->addFilter(new WebLoader\Filter\VariablesFilter(array('foo' => 'bar'));
 		$compiler->addFilter(function ($code) {
