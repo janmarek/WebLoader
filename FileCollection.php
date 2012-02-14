@@ -140,4 +140,12 @@ class FileCollection implements IFileCollection
 		return $this->remoteFiles;
 	}
 
+	/**
+	 * @return string
+	 */
+	public function getRoot()
+	{
+		return $this->root;
+	}
+
 }

@@ -53,8 +53,8 @@ abstract class WebLoader extends \Nette\Application\UI\Control
 			echo $this->getElement($file);
 		}
 
-		foreach ($this->compiler->generate() as $fileName) {
-			echo $this->getElement($this->tempPath . '/' . $file);
+		foreach ($this->compiler->generate() as $file) {
+			echo $this->getElement($this->tempPath . '/' . $file->filename . '?' . $file->lastModified);
 		}
 
 		if ($hasArgs) {

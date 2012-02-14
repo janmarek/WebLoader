@@ -57,14 +57,13 @@ class Compiler
 	/**
 	 * Set temp path
 	 * @param string $tempPath
-	 * @return WebLoader
 	 */
 	public function setOutputDir($tempPath)
 	{
 		$tempPath = realpath($tempPath);
 
-		if ($tempPath === false) {
-			throw new FileNotFoundException("Temp path does not exist.");
+		if (!is_dir($tempPath)) {
+			throw new FileNotFoundException('Temp path does not exist.');
 		}
 
 		if (!is_writable($tempPath)) {
@@ -72,8 +71,6 @@ class Compiler
 		}
 
 		$this->outputDir = $tempPath;
-
-		return $this;
 	}
 
 	/**
@@ -88,12 +85,10 @@ class Compiler
 	/**
 	 * Set join files
 	 * @param bool $joinFiles
-	 * @return WebLoader
 	 */
 	public function setJoinFiles($joinFiles)
 	{
 		$this->joinFiles = (bool) $joinFiles;
-		return $this;
 	}
 
 	/**
@@ -128,13 +123,13 @@ class Compiler
 		}
 
 		// load content
-		$content = "";
+		$content = '';
 		foreach ($files as $file) {
 			$content .= $this->loadFile($file);
 		}
 
 		// apply filters
-		foreach ($this->collection->getFilters() as $filter) {
+		foreach ($this->filters as $filter) {
 			$content = call_user_func($filter, $content, $this);
 		}
 
@@ -143,21 +138,41 @@ class Compiler
 
 	/**
 	 * Load content and save file
-	 * @param array $files
 	 * @param bool $ifModified
-	 * @return string filename of generated file
+	 * @return array filenames of generated files
 	 */
-	public function generate($files = NULL, $ifModified = TRUE)
+	public function generate($ifModified = TRUE)
+	{
+		if ($this->joinFiles) {
+			return array(
+				$this->generateFiles($this->collection->getFiles(), $ifModified)
+			);
+		} else {
+			$arr = array();
+
+			foreach ($this->collection->getFiles() as $file) {
+				$arr[] = $this->generateFiles(array($file), $ifModified);
+			}
+
+			return $arr;
+		}
+	}
+
+	protected function generateFiles(array $files, $ifModified)
 	{
 		$name = $this->namingConvention->getFilename($files, $this);
-		$path = $this->outputDir . "/" . $name;
+		$path = $this->outputDir . '/' . $name;
 		$lastModified = $this->getLastModified($files);
 
 		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path)) {
-			file_put_contents("safe://" . $path, $this->getContent($files));
+			$outPath = in_array('safe', stream_get_wrappers()) ? 'safe://' . $path : $path;
+			file_put_contents($outPath, $this->getContent($files));
 		}
 
-		return $name . "?" . $lastModified;
+		return (object) array(
+			'file' => $name,
+			'lastModified' => $lastModified
+		);
 	}
 
 	/**
@@ -169,7 +184,7 @@ class Compiler
 	{
 		$content = file_get_contents($file);
 
-		foreach ($this->collection->getFileFilters() as $filter) {
+		foreach ($this->fileFilters as $filter) {
 			$content = call_user_func($filter, $content, $this, $file);
 		}
 

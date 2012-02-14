@@ -11,10 +11,10 @@ class DefaultOutputNamingConvention implements IOutputNamingConvention
 {
 
 	/** @var string */
-	private $prefix = "webloader-";
+	private $prefix = 'webloader-';
 
 	/** @var string */
-	private $suffix = "";
+	private $suffix = '';
 
 	/**
 	 * @return DefaultOutputNamingConvention
@@ -51,13 +51,11 @@ class DefaultOutputNamingConvention implements IOutputNamingConvention
 
 	/**
 	 * Set generated file name prefix
-	 * @param string generated file name prefix
-	 * @return WebLoader
+	 * @param string $prefix generated file name prefix
 	 */
-	public function setPrefix($generatedFileNamePrefix)
+	public function setPrefix($prefix)
 	{
-		$this->prefix = (string) $generatedFileNamePrefix;
-		return $this;
+		$this->prefix = (string) $prefix;
 	}
 
 
@@ -73,13 +71,11 @@ class DefaultOutputNamingConvention implements IOutputNamingConvention
 
 	/**
 	 * Set generated file name suffix
-	 * @param string generated file name suffix
-	 * @return WebLoader
+	 * @param string $suffix generated file name suffix
 	 */
-	public function setSuffix($generatedFileNameSuffix)
+	public function setSuffix($suffix)
 	{
-		$this->suffix = (string) $generatedFileNameSuffix;
-		return $this;
+		$this->suffix = (string) $suffix;
 	}
 
 	/**

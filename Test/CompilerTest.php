@@ -20,23 +20,79 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 	protected function setUp()
 	{
 		$fileCollection = new FileCollection(__DIR__ . '/fixtures');
+		$fileCollection->addFiles(array(
+			'a.txt', 'b.txt', 'c.txt'
+		));
+
 		$convention = new DefaultOutputNamingConvention();
 
 		$this->object = new Compiler($fileCollection, $convention, __DIR__ . '/temp');
+
+		foreach ($this->getTempFiles() as $file) {
+			unlink($file);
+		}
 	}
 
-	public function testGenerate()
+	/**
+	 * @return array
+	 */
+	private function getTempFiles()
 	{
-
-
+		return glob(__DIR__ . '/temp/webloader-*');
 	}
 
-	public function testGenerateIfModified()
+	public function testJoinFiles()
 	{
+		$this->assertTrue($this->object->getJoinFiles());
 
+		$ret = $this->object->generate();
+		$this->assertEquals(1, count($ret), 'Multiple files are generated instead of join.');
+		$this->assertEquals(1, count($this->getTempFiles()), 'Multiple files are generated instead of join.');
 	}
 
-	//
+	public function testNotJoinFiles()
+	{
+		$this->object->setJoinFiles(FALSE);
+		$this->assertFalse($this->object->getJoinFiles());
+
+		$ret = $this->object->generate();
+		$this->assertEquals(3, count($ret), 'Wrong file count generated.');
+		$this->assertEquals(3, count($this->getTempFiles()), 'Wrong file count generated.');
+	}
+
+	/**
+	 * @expectedException \WebLoader\FileNotFoundException
+	 */
+	public function testSetOutDir()
+	{
+		$this->object->setOutputDir('blablabla');
+	}
+
+	public function testGeneratingAndFilters()
+	{
+		$this->object->addFileFilter(function ($code) {
+			return strrev($code);
+		});
+		$this->object->addFileFilter(function ($code, Compiler $compiler, $file) {
+			return pathinfo($file, PATHINFO_FILENAME) . ':' . $code . ',';
+		});
+		$this->object->addFilter(function ($code, Compiler $compiler) {
+			return '-' . $code;
+		});
+		$this->object->addFilter(function ($code) {
+			return $code . $code;
+		});
+
+		$expectedContent = '-a:cba,b:fed,c:ihg,-a:cba,b:fed,c:ihg,';
+
+		$files = $this->object->generate();
+
+		$this->assertTrue(is_numeric($files[0]->lastModified), 'Generate does not provide last modified timestamp correctly.');
+
+		$content = file_get_contents($this->object->getOutputDir() . '/' . $files[0]->file);
+
+		$this->assertEquals($expectedContent, $content);
+	}
 
 	public function testFilters()
 	{
