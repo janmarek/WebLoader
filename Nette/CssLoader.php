@@ -1,9 +1,8 @@
 <?php
 
-namespace WebLoader;
+namespace WebLoader\Nette;
 
 use Nette\Utils\Html;
-use Nette\ComponentModel\IContainer;
 
 /**
  * Css loader
@@ -18,16 +17,6 @@ class CssLoader extends WebLoader
 	private $media;
 
 	/**
-	 * Construct
-	 * @param IComponentContainer parent
-	 * @param string name
-	 */
-	public function __construct(IContainer $parent = null, $name = null)
-	{
-		parent::__construct($parent, $name);
-	}
-
-	/**
 	 * Get media
 	 * @return string
 	 */
@@ -36,10 +25,9 @@ class CssLoader extends WebLoader
 		return $this->media;
 	}
 
-
 	/**
 	 * Set media
-	 * @param string media
+	 * @param string $media
 	 * @return CssLoader
 	 */
 	public function setMedia($media)
@@ -47,7 +35,6 @@ class CssLoader extends WebLoader
 		$this->media = $media;
 		return $this;
 	}
-
 
 	/**
 	 * Get link element

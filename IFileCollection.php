@@ -11,6 +11,11 @@ interface IFileCollection
 {
 
 	/**
+	 * @return string
+	 */
+	public function getRoot();
+
+	/**
 	 * @return array
 	 */
 	public function getFiles();

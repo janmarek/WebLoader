@@ -27,7 +27,7 @@ Example:
 			return cssmin::minify($code, "remove-last-semicolon");
 		});
 
-		$control = new WebLoader\Nette\CssLoader($compiler);
+		$control = new WebLoader\Nette\CssLoader($compiler, '/webtemp');
 		$control->setMedia('screen');
 
 		return $control;
