@@ -1,62 +1,38 @@
 ﻿WebLoader
 =========
 
-Komponenta pro načítání CSS a JS souborů
+Component for CSS and JS files loading
 
-Autor: Jan Marek
+Author: Jan Marek
 Licence: MIT
 
-Použití
--------
-
-Presenter:
+Example:
 
 	<?php
 
-	use WebLoader\JavaScriptLoader;
-	use WebLoader\VariablesFilter;
-	use WebLoader\CssLoader;
+	// presenter factory in nette
 
-	abstract class BasePresenter extends Presenter {
+	protected function createComponentCss()
+	{
+		$files = new WebLoader\FileCollection(WWW_DIR . '/css');
+		$files->addFiles(array(
+			'style.css',
+			WWW_DIR . '/colorbox/colorbox.css',
+		));
 
-		protected function createComponentJs() {
-			$js = new JavaScriptLoader;
+		$compiler = new WebLoader\Compiler($files, WebLoader\OutputNamingConvention::createCssConvention(), WWW_DIR . '/temp');
 
-			$js->tempUri = Environment::getVariable("baseUri") . "data/webtemp";
-			$js->tempPath = WWW_DIR . "/data/webtemp";
-			$js->sourcePath = WWW_DIR . "/js";
+		$compiler->addFilter(new WebLoader\Filter\VariablesFilter(array('foo' => 'bar'));
+		$compiler->addFilter(function ($code) {
+			return cssmin::minify($code, "remove-last-semicolon");
+		});
 
-			$js->filters[] = new VariablesFilter(array(
-				// texyla
-				"baseUri" => Environment::getVariable("baseUri"),
-				"texylaPreviewPath" => $this->link(":Texyla:preview"),
-				"texylaFilesPath" => $this->link(":Texyla:listFiles"),
-				"texylaFilesUploadPath" => $this->link(":Texyla:upload"),
-			));
+		$control = new WebLoader\Nette\CssLoader($compiler);
+		$control->setMedia('screen');
 
-			return $js;
-		}
-
-
-		protected function createComponentCss() {
-			$css = new CssLoader;
-
-			$css->sourcePath = WWW_DIR . "/css";
-			$css->tempUri = Environment::getVariable("baseUri") . "data/webtemp";
-			$css->tempPath = WWW_DIR . "/data/webtemp";
-
-			$css->filters[] = function ($code) {
-				return cssmin::minify($code, "remove-last-semicolon");
-			};
-
-			return $css;
-		}
-
+		return $control;
 	}
 
-	?>
+Template:
 
-Šablona:
-
-	{widget js 'jquery.js', 'texyla.js', 'web.js'}
-	{widget css 'reset.css', 'page.css', 'libs/texyla.css', 'libs/jqueryui.css'}
+	{control css}
