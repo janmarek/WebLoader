@@ -30,7 +30,7 @@ abstract class WebLoader extends \Nette\Application\UI\Control
 	/**
 	 * Get html element including generated content
 	 * @param string $source
-	 * @return Html
+	 * @return \Nette\Utils\Html
 	 */
 	abstract public function getElement($source);
 
