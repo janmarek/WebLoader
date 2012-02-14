@@ -1,6 +1,6 @@
 <?php
 
-namespace WebLoader;
+namespace WebLoader\Filter;
 
 /**
  * Variables filter for WebLoader
@@ -8,7 +8,8 @@ namespace WebLoader;
  * @author Jan Marek
  * @license MIT
  */
-class VariablesFilter extends \Nette\Object {
+class VariablesFilter
+{
 
 	/** @var string */
 	private $startVariable = '{{$';
@@ -24,7 +25,8 @@ class VariablesFilter extends \Nette\Object {
 	 * Construct
 	 * @param array variables
 	 */
-	public function __construct(array $variables = array()) {
+	public function __construct(array $variables = array())
+	{
 		foreach ($variables as $key => $value) {
 			$this->$key = $value;
 		}
@@ -37,9 +39,10 @@ class VariablesFilter extends \Nette\Object {
 	 * @param string end
 	 * @return VariablesFilter
 	 */
-	public function setDelimiter($start, $end) {
-		$this->startVariable = (string) $start;
-		$this->endVariable = (string) $end;
+	public function setDelimiter($start, $end)
+	{
+		$this->startVariable = (string)$start;
+		$this->endVariable = (string)$end;
 		return $this;
 	}
 
@@ -49,11 +52,13 @@ class VariablesFilter extends \Nette\Object {
 	 * @param string code
 	 * @return string
 	 */
-	public function __invoke($code) {
+	public function __invoke($code)
+	{
 		$start = $this->startVariable;
 		$end = $this->endVariable;
 
-		$variables = array_map(function ($key) use ($start, $end) {
+		$variables = array_map(function ($key) use ($start, $end)
+		{
 			return $start . $key . $end;
 		}, array_keys($this->variables));
 
@@ -68,8 +73,9 @@ class VariablesFilter extends \Nette\Object {
 	 * @param string name
 	 * @param string value
 	 */
-	public function __set($name, $value) {
-		$this->variables[$name] = (string) $value;
+	public function __set($name, $value)
+	{
+		$this->variables[$name] = (string)$value;
 	}
 
 
@@ -79,12 +85,12 @@ class VariablesFilter extends \Nette\Object {
 	 * @return string
 	 * @throws \Nette\InvalidArgumentException
 	 */
-	public function & __get($name) {
+	public function & __get($name)
+	{
 		if (array_key_exists($name, $this->variables)) {
 			return $this->variables[$name];
 		} else {
 			throw new \Nette\InvalidArgumentException("Variable '$name' is not set.");
 		}
 	}
-
 }
