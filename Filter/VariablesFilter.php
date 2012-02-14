@@ -80,14 +80,14 @@ class VariablesFilter
 	 * Magic get variable, do not call directly
 	 * @param string $name
 	 * @return string
-	 * @throws \InvalidArgumentException
+	 * @throws \WebLoader\InvalidArgumentException
 	 */
 	public function & __get($name)
 	{
 		if (array_key_exists($name, $this->variables)) {
 			return $this->variables[$name];
 		} else {
-			throw new \InvalidArgumentException("Variable '$name' is not set.");
+			throw new \WebLoader\InvalidArgumentException("Variable '$name' is not set.");
 		}
 	}
 

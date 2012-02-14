@@ -67,7 +67,7 @@ class Compiler
 		}
 
 		if (!is_writable($tempPath)) {
-			throw new \InvalidArgumentException("Directory '$tempPath' is not writeable.");
+			throw new InvalidArgumentException("Directory '$tempPath' is not writeable.");
 		}
 
 		$this->outputDir = $tempPath;
@@ -225,12 +225,12 @@ class Compiler
 
 	/**
 	 * @param callback $filter
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function addFilter($filter)
 	{
 		if (!is_callable($filter)) {
-			throw new \InvalidArgumentException('Filter is not callable.');
+			throw new InvalidArgumentException('Filter is not callable.');
 		}
 
 		$this->filters[] = $filter;
@@ -246,12 +246,12 @@ class Compiler
 
 	/**
 	 * @param callback $filter
-	 * @throws \InvalidArgumentException
+	 * @throws InvalidArgumentException
 	 */
 	public function addFileFilter($filter)
 	{
 		if (!is_callable($filter)) {
-			throw new \InvalidArgumentException('Filter is not callable.');
+			throw new InvalidArgumentException('Filter is not callable.');
 		}
 
 		$this->fileFilters[] = $filter;

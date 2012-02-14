@@ -7,7 +7,7 @@ namespace WebLoader;
  *
  * @author Jan Marek
  */
-class FileNotFoundException extends \Exception
+class FileNotFoundException extends WebLoaderException
 {
 
 }

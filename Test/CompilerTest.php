@@ -115,7 +115,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \InvalidArgumentException
+	 * @expectedException \WebLoader\InvalidArgumentException
 	 */
 	public function testNonCallableFilter()
 	{
@@ -123,7 +123,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException \InvalidArgumentException
+	 * @expectedException \WebLoader\InvalidArgumentException
 	 */
 	public function testNonCallableFileFilter()
 	{
