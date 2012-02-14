@@ -23,7 +23,7 @@ class VariablesFilter
 
 	/**
 	 * Construct
-	 * @param array variables
+	 * @param array $variables
 	 */
 	public function __construct(array $variables = array())
 	{
@@ -35,8 +35,8 @@ class VariablesFilter
 
 	/**
 	 * Set delimiter
-	 * @param string start
-	 * @param string end
+	 * @param string $start
+	 * @param string $end
 	 * @return VariablesFilter
 	 */
 	public function setDelimiter($start, $end)
@@ -49,7 +49,7 @@ class VariablesFilter
 
 	/**
 	 * Invoke filter
-	 * @param string code
+	 * @param string $code
 	 * @return string
 	 */
 	public function __invoke($code)
@@ -57,8 +57,7 @@ class VariablesFilter
 		$start = $this->startVariable;
 		$end = $this->endVariable;
 
-		$variables = array_map(function ($key) use ($start, $end)
-		{
+		$variables = array_map(function ($key) use ($start, $end) {
 			return $start . $key . $end;
 		}, array_keys($this->variables));
 
@@ -67,30 +66,29 @@ class VariablesFilter
 		return str_replace($variables, $values, $code);
 	}
 
-
 	/**
 	 * Magic set variable, do not call directly
-	 * @param string name
-	 * @param string value
+	 * @param string $name
+	 * @param string $value
 	 */
 	public function __set($name, $value)
 	{
-		$this->variables[$name] = (string)$value;
+		$this->variables[$name] = (string) $value;
 	}
-
 
 	/**
 	 * Magic get variable, do not call directly
-	 * @param string name
+	 * @param string $name
 	 * @return string
-	 * @throws \Nette\InvalidArgumentException
+	 * @throws \InvalidArgumentException
 	 */
 	public function & __get($name)
 	{
 		if (array_key_exists($name, $this->variables)) {
 			return $this->variables[$name];
 		} else {
-			throw new \Nette\InvalidArgumentException("Variable '$name' is not set.");
+			throw new \InvalidArgumentException("Variable '$name' is not set.");
 		}
 	}
+
 }
