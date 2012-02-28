@@ -1,6 +1,6 @@
 <?php
 
-namespace Webloader\Filter;
+namespace WebLoader\Filter;
 
 /**
  * Less CSS filter
