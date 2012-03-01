@@ -17,10 +17,10 @@ class Compiler
 	private $joinFiles = true;
 
 	/** @var array */
-	public $filters = array();
+	private $filters = array();
 
 	/** @var array */
-	public $fileFilters = array();
+	private $fileFilters = array();
 
 	/** @var IFileCollection */
 	private $collection;
