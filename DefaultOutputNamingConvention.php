@@ -86,7 +86,7 @@ class DefaultOutputNamingConvention implements IOutputNamingConvention
 	 */
 	public function getFilename(array $files, Compiler $compiler)
 	{
-		$name = substr(md5(implode("|", $files)), 0, 12);
+		$name = $this->createHash($files, $compiler);
 
 		if (count($files) === 1) {
 			$name .= "-" . pathinfo($files[0], PATHINFO_FILENAME);
@@ -94,4 +94,10 @@ class DefaultOutputNamingConvention implements IOutputNamingConvention
 
 		return $this->prefix . $name . $this->suffix;
 	}
+
+	protected function createHash(array $files, Compiler $compiler)
+	{
+		return substr(md5(implode("|", $files)), 0, 12);
+	}
+
 }
