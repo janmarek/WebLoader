@@ -97,4 +97,22 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $this->object->getRemoteFiles());
 	}
 
+	public function testTraversableFiles()
+	{
+		$this->object->addFiles(new \ArrayIterator(array('a.txt')));
+		$this->assertEquals(1, count($this->object->getFiles()));
+	}
+
+	public function testTraversableRemoteFiles()
+	{
+		$this->object->addRemoteFiles(new \ArrayIterator(array('http://jquery.com/jquery.js')));
+		$this->assertEquals(1, count($this->object->getRemoteFiles()));
+	}
+
+	public function testSplFileInfo()
+	{
+		$this->object->addFile(new \SplFileInfo(__DIR__ . '/fixtures/a.txt'));
+		$this->assertEquals(1, count($this->object->getFiles()));
+	}
+
 }

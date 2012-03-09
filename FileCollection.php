@@ -60,7 +60,7 @@ class FileCollection implements IFileCollection
 	 */
 	public function addFile($file)
 	{
-		$file = $this->cannonicalizePath($file);
+		$file = $this->cannonicalizePath((string) $file);
 
 		if (in_array($file, $this->files)) {
 			return;
@@ -72,9 +72,9 @@ class FileCollection implements IFileCollection
 
 	/**
 	 * Add files
-	 * @param $files array list of files
+	 * @param array|\Traversable $files array list of files
 	 */
-	public function addFiles(array $files)
+	public function addFiles($files)
 	{
 		foreach ($files as $file) {
 			$this->addFile($file);
@@ -118,9 +118,9 @@ class FileCollection implements IFileCollection
 
 	/**
 	 * Add multiple remote files
-	 * @param array $files
+	 * @param array|\Traversable $files
 	 */
-	public function addRemoteFiles(array $files)
+	public function addRemoteFiles($files)
 	{
 		foreach ($files as $file) {
 			$this->addRemoteFile($file);
