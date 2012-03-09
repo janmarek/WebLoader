@@ -28,6 +28,38 @@ abstract class WebLoader extends \Nette\Application\UI\Control
 	}
 
 	/**
+	 * @return \WebLoader\Compiler
+	 */
+	public function getCompiler()
+	{
+		return $this->compiler;
+	}
+
+	/**
+	 * @param \WebLoader\Compiler
+	 */
+	public function setCompiler(Compiler $compiler)
+	{
+		$this->compiler = $compiler;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTempPath()
+	{
+		return $this->tempPath;
+	}
+
+	/**
+	 * @param string
+	 */
+	public function setTempPath($tempPath)
+	{
+		$this->tempPath = $tempPath;
+	}
+
+	/**
 	 * Get html element including generated content
 	 * @param string $source
 	 * @return \Nette\Utils\Html
