@@ -36,6 +36,7 @@ class LessFilter
 	public function __invoke($code, \WebLoader\Compiler $loader, $file)
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
+			$this->getLessC()->importDir=pathinfo($file, PATHINFO_DIRNAME).'/';
 			return $this->getLessC()->parse($code);
 		}
 
