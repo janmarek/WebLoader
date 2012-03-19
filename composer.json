@@ -1,16 +1,21 @@
 {
-    "name": "JanMarek/WebLoader",
-    "description": "Tool for loading or deploying CSS and JS files into web pages",
-    "authors": [
-        {
-            "name": "Jan Marek",
-            "email": "mail@janmarek.net"
-        }
-    ],
-    "autoload": {
-        "psr-0": {"WebLoader": ""}
-    },
-    "require": {},
+	"name": "JanMarek/WebLoader",
+	"description": "Tool for loading or deploying CSS and JS files into web pages",
+	"keywords": ["webloader", "css", "javascript", "assets", "nette"],
+	"homepage": "http://addons.nette.org/cs/webloader",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jan Marek",
+			"email": "mail@janmarek.net"
+		}
+	],
+	"autoload": {
+		"psr-0": {
+			"WebLoader": ""
+		}
+	},
+	"require": {},
 	"recommend": {
 		"nette/nette": "*"
 	}
