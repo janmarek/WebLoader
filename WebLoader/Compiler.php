@@ -163,7 +163,14 @@ class Compiler
 			$arr = array();
 
 			foreach ($this->collection->getFiles() as $file) {
-				$arr[] = $this->generateFiles(array($file), $ifModified);
+				if((count($this->getFilters()) >= 1) || ($this->collection->getRoot() != $this->getOutputDir())){
+					$arr[] = $this->generateFiles(array($file), $ifModified);
+				} else {
+					$arr[] = (object) array(
+						'file' => pathinfo($file,PATHINFO_BASENAME),
+						'lastModified' => NULL
+					);
+				}
 			}
 
 			return $arr;
