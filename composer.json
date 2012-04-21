@@ -15,8 +15,7 @@
 			"WebLoader": ""
 		}
 	},
-	"require": {},
-	"recommend": {
-		"nette/nette": "*"
+	"require": {
+		"nette/nette": "2.0.*"
 	}
 }
