@@ -82,11 +82,11 @@ abstract class WebLoader extends \Nette\Application\UI\Control
 
 		// remote files
 		foreach ($this->compiler->getFileCollection()->getRemoteFiles() as $file) {
-			echo $this->getElement($file);
+			echo $this->getElement($file), PHP_EOL;
 		}
 
 		foreach ($this->compiler->generate() as $file) {
-			echo $this->getElement($this->tempPath . '/' . $file->file . '?' . $file->lastModified);
+			echo $this->getElement($this->tempPath . '/' . $file->file . '?' . $file->lastModified), PHP_EOL;
 		}
 
 		if ($hasArgs) {
