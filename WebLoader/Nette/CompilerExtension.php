@@ -2,6 +2,8 @@
 
 namespace WebLoader\Nette;
 
+use Nette\Config;
+use Nette\Config\Compiler;
 use Nette\Config\Configurator;
 
 /**
@@ -10,7 +12,7 @@ use Nette\Config\Configurator;
  * @author Patrik Votoček
  * @license MIT
  */
-class CompilerExtension extends \Nette\Config\CompilerExtension
+class CompilerExtension extends Config\CompilerExtension
 {
 	public function loadConfiguration()
 	{
@@ -194,13 +196,13 @@ class CompilerExtension extends \Nette\Config\CompilerExtension
 	/**
 	 * Register extension to compiler.
 	 *
-	 * @param \Nette\Config\Configurator
+	 * @param Configurator
 	 * @param string
 	 */
 	public static function register(Configurator $configurator, $name = 'webloader')
 	{
 		$class = get_called_class();
-		$configurator->onCompile[] = function(Configurator $configurator, \Nette\Config\Compiler $compiler) use($class, $name) {
+		$configurator->onCompile[] = function(Configurator $configurator, Compiler $compiler) use($class, $name) {
 			$compiler->addExtension($name, new $class);
 		};
 	}
