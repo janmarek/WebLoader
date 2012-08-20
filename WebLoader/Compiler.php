@@ -137,7 +137,7 @@ class Compiler
 		// load content
 		$content = '';
 		foreach ($files as $file) {
-			$content .= $this->loadFile($file);
+			$content .= PHP_EOL . $this->loadFile($file);
 		}
 
 		// apply filters
