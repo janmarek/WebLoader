@@ -58,14 +58,14 @@ class Extension extends \Nette\Config\CompilerExtension
 		foreach (array('css', 'js') as $type) {
 			foreach ($config[$type] as $name => $wlConfig) {
 				$configDefault = $config[$type . 'Defaults'];
-				$this->addWebLoader($builder, $type . '_' . $name, array_merge($configDefault, $wlConfig));
+				$this->addWebLoader($builder, $type . ucfirst($name), array_merge($configDefault, $wlConfig));
 			}
 		}
 	}
 
 	private function addWebLoader(\Nette\DI\ContainerBuilder $builder, $name, $config)
 	{
-		$filesServiceName = $this->prefix($name . '_files');
+		$filesServiceName = $this->prefix($name . 'Files');
 
 		$files = $builder->addDefinition($filesServiceName)
 			->setClass('WebLoader\FileCollection')
@@ -92,7 +92,7 @@ class Extension extends \Nette\Config\CompilerExtension
 
 		$files->addSetup('addRemoteFiles', array($config['remoteFiles']));
 
-		$compiler = $builder->addDefinition($this->prefix($name . '_compiler'))
+		$compiler = $builder->addDefinition($this->prefix($name . 'Compiler'))
 			->setClass('WebLoader\Compiler')
 			->setArguments(array(
 				'@' . $filesServiceName,
