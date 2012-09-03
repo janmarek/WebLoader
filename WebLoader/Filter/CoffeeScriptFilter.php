@@ -11,15 +11,18 @@ namespace WebLoader\Filter;
 class CoffeeScriptFilter
 {
 
-	/** @var CoffeeScriptCompiler */
-	private $compiler;
+	/** @var path to coffee bin */
+	private $bin;
+
+	/** @var bool */
+	public $bare = FALSE;
 
 	/**
-	 * @param CoffeeScriptCompiler
+	 * @param string
 	 */
-	public function __construct(CoffeeScriptCompiler $compiler)
+	public function __construct($bin = 'coffee')
 	{
-		$this->compiler = $compiler;
+		$this->bin = $bin;
 	}
 
 	/**
@@ -33,10 +36,26 @@ class CoffeeScriptFilter
 	public function __invoke($code, \WebLoader\Compiler $loader, $file = NULL)
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'coffee') {
-			$code = $this->compiler->compile($code);
+			$code = $this->compileCoffee($code);
 		}
 
 		return $code;
+	}
+
+	/**
+	 * @param string
+	 * @param bool|NULL
+	 * @return string
+	 */
+	public function compileCoffee($source, $bare = NULL)
+	{
+		if (is_null($bare)) {
+			$bare = $this->bare;
+		}
+
+		$cmd = $this->bin . ' -p -s' . ($bare ? ' -b' : '');
+
+		return Process::run($cmd, $source);
 	}
 
 }
