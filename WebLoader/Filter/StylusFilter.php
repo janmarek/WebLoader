@@ -10,8 +10,10 @@ namespace WebLoader\Filter;
  */
 class StylusFilter
 {
+
 	/** @var string */
 	private $bin;
+
 	/** @var bool */
 	public $compress = FALSE;
 
@@ -40,4 +42,5 @@ class StylusFilter
 
 		return $code;
 	}
+
 }

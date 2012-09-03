@@ -10,6 +10,7 @@ namespace WebLoader\Filter;
  */
 class Process
 {
+
 	/**
 	 * @param string
 	 * @param string|NULL
@@ -43,4 +44,5 @@ class Process
 
 		return $stdout;
 	}
+
 }

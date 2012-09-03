@@ -10,6 +10,7 @@ namespace WebLoader\Filter;
  */
 class CoffeeScriptFilter
 {
+
 	/** @var CoffeeScriptCompiler */
 	private $compiler;
 
@@ -37,4 +38,5 @@ class CoffeeScriptFilter
 
 		return $code;
 	}
+
 }

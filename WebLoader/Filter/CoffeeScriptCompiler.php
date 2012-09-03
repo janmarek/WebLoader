@@ -10,8 +10,10 @@ namespace WebLoader\Filter;
  */
 class CoffeeScriptCompiler
 {
+
 	/** @var path to coffee bin */
 	private $bin;
+
 	/** @var bool */
 	public $bare = FALSE;
 
@@ -33,7 +35,9 @@ class CoffeeScriptCompiler
 		if (is_null($bare)) {
 			$bare = $this->bare;
 		}
+
 		$cmd = $this->bin . ' -p -s' . ($bare ? ' -b' : '');
 		return Process::run($cmd, $source);
 	}
+
 }
