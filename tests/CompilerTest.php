@@ -83,7 +83,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 			return $code . $code;
 		});
 
-		$expectedContent = '-a:cba,b:fed,c:ihg,-a:cba,b:fed,c:ihg,';
+		$expectedContent = '-' . PHP_EOL . 'a:cba,' . PHP_EOL . 'b:fed,' . PHP_EOL .
+			'c:ihg,-' . PHP_EOL . 'a:cba,' . PHP_EOL . 'b:fed,' . PHP_EOL . 'c:ihg,';
 
 		$files = $this->object->generate();
 

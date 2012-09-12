@@ -16,7 +16,7 @@ class Extension extends \Nette\Config\CompilerExtension
 			'jsDefaults' => array(
 				'sourceDir' => '%wwwDir%/js',
 				'tempDir' => '%wwwDir%/webtemp',
-				'tempPath' => './webtemp',
+				'tempPath' => 'webtemp',
 				'files' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
@@ -26,7 +26,7 @@ class Extension extends \Nette\Config\CompilerExtension
 			'cssDefaults' => array(
 				'sourceDir' => '%wwwDir%/css',
 				'tempDir' => '%wwwDir%/webtemp',
-				'tempPath' => './webtemp',
+				'tempPath' => 'webtemp',
 				'files' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),

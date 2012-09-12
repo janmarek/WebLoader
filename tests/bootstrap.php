@@ -10,3 +10,4 @@ require __DIR__ . '/../WebLoader/IOutputNamingConvention.php';
 require __DIR__ . '/../WebLoader/DefaultOutputNamingConvention.php';
 require __DIR__ . '/../WebLoader/Filter/CssUrlsFilter.php';
 require __DIR__ . '/../WebLoader/Filter/VariablesFilter.php';
+require __DIR__ . '/../vendor/autoload.php';

@@ -1,0 +1,27 @@
+services:
+  variablesFilter: WebLoader\Filter\VariablesFilter({foo: bar})
+
+webloader:
+  jsDefaults:
+    sourceDir: %fixturesDir%
+    tempDir: %tempDir%
+  cssDefaults:
+    sourceDir: %fixturesDir%
+    tempDir: %tempDir%
+
+  css:
+    default:
+      files:
+        - style.css
+        - {files: ["*.css"], from: %fixturesDir%/dir}
+
+  js:
+    default:
+      remoteFiles:
+        - http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js
+        - http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js
+      files:
+        - %fixturesDir%/dir/one.js
+        - dir/two.js
+      filters:
+        - @variablesFilter
