@@ -25,3 +25,6 @@ webloader:
         - dir/two.js
       filters:
         - @variablesFilter
+    exclude:
+      files:
+        - {files: ["*"], from: %fixturesDir%, exclude: [dir/*]}
