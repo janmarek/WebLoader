@@ -2,9 +2,8 @@
 
 namespace WebLoader\Test;
 
+use Mockery;
 use WebLoader\Compiler;
-use WebLoader\FileCollection;
-use WebLoader\DefaultOutputNamingConvention;
 
 /**
  * CompilerTest
@@ -19,12 +18,17 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
 	protected function setUp()
 	{
-		$fileCollection = new FileCollection(__DIR__ . '/fixtures');
-		$fileCollection->addFiles(array(
-			'a.txt', 'b.txt', 'c.txt'
+		$fileCollection = Mockery::mock('WebLoader\IFileCollection');
+		$fileCollection->shouldReceive('getFiles')->andReturn(array(
+			__DIR__ . '/fixtures/a.txt',
+			__DIR__ . '/fixtures/b.txt',
+			__DIR__ . '/fixtures/c.txt',
 		));
 
-		$convention = new DefaultOutputNamingConvention();
+		$convention = Mockery::mock('WebLoader\IOutputNamingConvention');
+		$convention->shouldReceive('getFilename')->andReturnUsing(function ($files, $compiler) {
+			return 'webloader-' . md5(join(',', $files));
+		});
 
 		$this->object = new Compiler($fileCollection, $convention, __DIR__ . '/temp');
 

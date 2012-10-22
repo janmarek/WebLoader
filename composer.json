@@ -17,5 +17,8 @@
 	},
 	"require": {
 		"nette/nette": "2.0.*"
+	},
+	"require-dev": {
+		"mockery/mockery": "*"
 	}
 }
