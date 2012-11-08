@@ -86,12 +86,17 @@ abstract class WebLoader extends \Nette\Application\UI\Control
 		}
 
 		foreach ($this->compiler->generate() as $file) {
-			echo $this->getElement($this->tempPath . '/' . $file->file . '?' . $file->lastModified), PHP_EOL;
+			echo $this->getElement($this->getGeneratedFilePath($file)), PHP_EOL;
 		}
 
 		if ($hasArgs) {
 			$this->compiler->setFileCollection($backup);
 		}
+	}
+
+	protected function getGeneratedFilePath($file)
+	{
+		return $this->tempPath . '/' . $file->file . '?' . $file->lastModified;
 	}
 
 }

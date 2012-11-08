@@ -99,6 +99,14 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expectedContent, $content);
 	}
 
+	public function testGenerateReturnsSourceFilePaths()
+	{
+		$res = $this->object->generate();
+		$this->assertInternalType('array', $res[0]->sourceFiles);
+		$this->assertCount(3, $res[0]->sourceFiles);
+		$this->assertFileExists($res[0]->sourceFiles[0]);
+	}
+
 	public function testFilters()
 	{
 		$filter = function ($code, \WebLoader\Compiler $loader) {

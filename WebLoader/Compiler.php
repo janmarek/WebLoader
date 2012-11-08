@@ -183,7 +183,8 @@ class Compiler
 
 		return (object) array(
 			'file' => $name,
-			'lastModified' => $lastModified
+			'lastModified' => $lastModified,
+			'sourceFiles' => $files,
 		);
 	}
 
