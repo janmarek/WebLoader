@@ -4,16 +4,18 @@
 Component for CSS and JS files loading
 
 Author: Jan Marek
+
 Licence: MIT
 
-Example:
+Example
+-------
+```php
+<?php
 
-	<?php
+// presenter factory in nette
 
-	// presenter factory in nette
-
-	protected function createComponentCss()
-	{
+protected function createComponentCss()
+{
 		$files = new WebLoader\FileCollection(WWW_DIR . '/css');
 		$files->addFiles(array(
 			'style.css',
@@ -31,12 +33,13 @@ Example:
 		$control->setMedia('screen');
 
 		return $control;
-	}
+}
+```
 
 Template:
-
-	{control css}
-
+```html
+{control css}
+```
 
 
 Example with Nette Framework extension used
@@ -46,12 +49,13 @@ Example with Nette Framework extension used
 
 Extension is registered in bootstrap.php:
 
+```php
 	$webloaderExtension = new \WebLoader\Nette\Extension();
 	$webloaderExtension->install($configurator);
-
+```
 
 Configuration in config.neon:
-
+```html
 	services:
 	  wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
 
@@ -71,9 +75,9 @@ Configuration in config.neon:
 		  files:
 			- %appDir%/../libs/nette/nette/client-side/forms/netteForms.js
 			- web.js
+```
 
-
-
+```php
 BasePresenter.php:
 
 	public function createComponentCss()
@@ -91,3 +95,4 @@ BasePresenter.php:
 			$this->template->basePath . '/webtemp'
 		);
 	}
+```
