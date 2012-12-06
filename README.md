@@ -7,7 +7,8 @@ Author: Jan Marek
 
 Licence: MIT
 
-Example:
+Example
+-------
 ```php
 <?php
 
@@ -48,9 +49,10 @@ Example with Nette Framework extension used
 
 Extension is registered in bootstrap.php:
 
+```php
 	$webloaderExtension = new \WebLoader\Nette\Extension();
 	$webloaderExtension->install($configurator);
-
+```
 
 Configuration in config.neon:
 ```html
