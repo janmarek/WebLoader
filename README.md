@@ -3,16 +3,16 @@
 
 Component for CSS and JS files loading
 
-Author: Jan Marek
+Author: Jan Marek  
 Licence: MIT
 
 Example
 -------
 
+Control factory in Nette presenter:
+
 ```php
 <?php
-
-// presenter factory in nette
 
 protected function createComponentCss()
 {
@@ -42,11 +42,8 @@ Template:
 {control css}
 ```
 
-
 Example with Nette Framework extension used
 -------------------------------------------
-
-
 
 Extension is registered in bootstrap.php:
 
@@ -59,7 +56,7 @@ Configuration in config.neon:
 
 ```html
 services:
-wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
+	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
 
 webloader:
 	css:
@@ -79,8 +76,8 @@ webloader:
 				- web.js
 ```
 
-
 BasePresenter.php:
+
 ```php
 public function createComponentCss()
 {
