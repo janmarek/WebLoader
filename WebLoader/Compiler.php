@@ -28,6 +28,9 @@ class Compiler
 	/** @var IOutputNamingConvention */
 	private $namingConvention;
 
+	/** @var bool */
+	private $checkLastModified = true;
+
 	public function __construct(IFileCollection $files, IOutputNamingConvention $convention, $outputDir)
 	{
 		$this->collection = $files;
@@ -104,6 +107,15 @@ class Compiler
 	}
 
 	/**
+	 * Set check last modified
+	 * @param bool $checkLastModified
+	 */
+	public function setCheckLastModified($checkLastModified)
+	{
+		$this->checkLastModified = (bool) $checkLastModified;
+	}
+
+	/**
 	 * Get last modified timestamp of newest file
 	 * @param array $files
 	 * @return int
@@ -174,7 +186,7 @@ class Compiler
 	{
 		$name = $this->namingConvention->getFilename($files, $this);
 		$path = $this->outputDir . '/' . $name;
-		$lastModified = $this->getLastModified($files);
+		$lastModified = $this->checkLastModified ? $this->getLastModified($files) : 0;
 
 		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path)) {
 			$outPath = in_array('safe', stream_get_wrappers()) ? 'safe://' . $path : $path;
