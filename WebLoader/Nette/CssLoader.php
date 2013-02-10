@@ -58,7 +58,7 @@ class CssLoader extends WebLoader
 	 */
 	public function isAlternate()
 	{
-		return $this->$alternate;
+		return $this->alternate;
 	}
 
 	/**
