@@ -104,11 +104,8 @@ class Extension extends \Nette\Config\CompilerExtension
 				'@' . $filesServiceName,
 				$config['namingConvention'],
 				$config['tempDir'],
-			));
-
-        if ($config['joinFiles'] === TRUE) {
-            $compiler->addSetup('setJoinFiles', array(TRUE));
-        }
+			))
+            ->addSetup('setJoinFiles', $config['joinFiles']);
 
 		foreach ($config['filters'] as $filter) {
 			$compiler->addSetup('addFilter', $filter);
