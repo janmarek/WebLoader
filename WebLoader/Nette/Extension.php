@@ -22,7 +22,7 @@ class Extension extends \Nette\Config\CompilerExtension
 				'filters' => array(),
 				'fileFilters' => array(),
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
-                'joinFiles' => FALSE,
+				'joinFiles' => FALSE,
 			),
 			'cssDefaults' => array(
 				'sourceDir' => '%wwwDir%/css',
@@ -33,7 +33,7 @@ class Extension extends \Nette\Config\CompilerExtension
 				'filters' => array(),
 				'fileFilters' => array(),
 				'namingConvention' => '@' . $this->prefix('cssNamingConvention'),
-                'joinFiles' => FALSE,
+				'joinFiles' => FALSE,
 			),
 			'js' => array(
 
@@ -105,7 +105,7 @@ class Extension extends \Nette\Config\CompilerExtension
 				$config['namingConvention'],
 				$config['tempDir'],
 			))
-            ->addSetup('setJoinFiles', $config['joinFiles']);
+			->addSetup('setJoinFiles', $config['joinFiles']);
 
 		foreach ($config['filters'] as $filter) {
 			$compiler->addSetup('addFilter', $filter);
@@ -122,7 +122,7 @@ class Extension extends \Nette\Config\CompilerExtension
 	{
 		$self = $this;
 		$configurator->onCompile[] = function ($configurator, $compiler) use ($self) {
-		    $compiler->addExtension($self::EXTENSION_NAME, $self);
+			$compiler->addExtension($self::EXTENSION_NAME, $self);
 		};
 	}
 
