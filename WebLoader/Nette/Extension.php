@@ -21,6 +21,7 @@ class Extension extends \Nette\Config\CompilerExtension
 				'remoteFiles' => array(),
 				'filters' => array(),
 				'fileFilters' => array(),
+				'joinFiles' => TRUE,
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
 			),
 			'cssDefaults' => array(
@@ -31,6 +32,7 @@ class Extension extends \Nette\Config\CompilerExtension
 				'remoteFiles' => array(),
 				'filters' => array(),
 				'fileFilters' => array(),
+				'joinFiles' => TRUE,
 				'namingConvention' => '@' . $this->prefix('cssNamingConvention'),
 			),
 			'js' => array(
@@ -103,6 +105,8 @@ class Extension extends \Nette\Config\CompilerExtension
 				$config['namingConvention'],
 				$config['tempDir'],
 			));
+
+		$compiler->addSetup('setJoinFiles', $config['joinFiles']);
 
 		foreach ($config['filters'] as $filter) {
 			$compiler->addSetup('addFilter', $filter);

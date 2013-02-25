@@ -1,3 +1,10 @@
+parameters:
+  cssJoinFiles: false
+
+nette:
+  security:
+    frames: yes
+
 services:
   variablesFilter: WebLoader\Filter\VariablesFilter({foo: bar})
 
@@ -14,6 +21,10 @@ webloader:
       files:
         - style.css
         - {files: ["*.css"], from: %fixturesDir%/dir}
+    joinOff:
+      joinFiles: %cssJoinFiles%
+      files:
+        - style.css
 
   js:
     default:

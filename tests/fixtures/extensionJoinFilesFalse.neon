@@ -1,0 +1,3 @@
+webloader:
+  jsDefaults:
+    joinFiles: false

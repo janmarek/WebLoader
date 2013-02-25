@@ -19,6 +19,7 @@
 		"nette/nette": "2.0.*"
 	},
 	"require-dev": {
-		"mockery/mockery": "*"
+		"mockery/mockery": "0.7.*",
+		"phpunit/phpunit": "3.7.*"
 	}
 }

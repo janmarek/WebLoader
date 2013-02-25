@@ -10,37 +10,73 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 	/** @var \Nette\DI\Container */
 	private $container;
 
-	protected function setUp()
+	private function prepareContainer($class, $configFiles)
 	{
-		$fixturesDir = __DIR__ . '/../fixtures';
 		$tempDir = __DIR__ . '/../temp';
-		Finder::findFiles('*')->exclude('.*')->in($tempDir . '/cache');
+		foreach (Finder::findFiles('*')->exclude('.gitignore')->from($tempDir . '/cache') as $file) {
+			unlink((string) $file);
+		}
 
 		$configurator = new \Nette\Config\Configurator();
 		$configurator->setTempDirectory($tempDir);
-		$configurator->addConfig($fixturesDir . '/extension.neon', FALSE);
+
+		foreach ($configFiles as $file) {
+			$configurator->addConfig($file, FALSE);
+		}
+
 		$configurator->addParameters(array(
-			'fixturesDir' => $fixturesDir,
+			'fixturesDir' =>  __DIR__ . '/../fixtures',
 			'tempDir' => $tempDir,
+			'container' => array(
+				'class' => $class,
+			),
 		));
 
 		$extension = new \WebLoader\Nette\Extension();
 		$extension->install($configurator);
 
-		$this->container = @$configurator->createContainer(); // @ - headers already sent
+		$this->container = $configurator->createContainer();
 	}
 
 	public function testJsCompilerService()
 	{
+		$this->prepareContainer('JsCompilerServiceContainer', array(__DIR__ . '/../fixtures/extension.neon'));
 		$this->assertInstanceOf('WebLoader\Compiler', $this->container->webloader->jsDefaultCompiler);
 	}
 
 	public function testExcludeFiles()
 	{
+		$this->prepareContainer('ExcludeFilesContainer', array(__DIR__ . '/../fixtures/extension.neon'));
 		$files = $this->container->webloader->jsExcludeCompiler->getFileCollection()->getFiles();
 
 		$this->assertTrue(in_array(realpath(__DIR__ . '/../fixtures/a.txt'), $files));
 		$this->assertFalse(in_array(realpath(__DIR__ . '/../fixtures/dir/one.js'), $files));
+	}
+
+	public function testJoinFilesOn()
+	{
+		$this->prepareContainer('JoinFilesOnContainer', array(
+			__DIR__ . '/../fixtures/extension.neon',
+			__DIR__ . '/../fixtures/extensionJoinFilesTrue.neon',
+		));
+		$this->assertTrue($this->container->webloader->jsDefaultCompiler->getJoinFiles());
+	}
+
+	public function testJoinFilesOff()
+	{
+		$this->prepareContainer('JoinFilesOffContainer', array(
+			__DIR__ . '/../fixtures/extension.neon',
+			__DIR__ . '/../fixtures/extensionJoinFilesFalse.neon',
+		));
+		$this->assertFalse($this->container->webloader->jsDefaultCompiler->getJoinFiles());
+	}
+
+	public function testJoinFilesOffInOneService()
+	{
+		$this->prepareContainer('JoinFilesOffInOneServiceContainer', array(
+			__DIR__ . '/../fixtures/extension.neon',
+		));
+		$this->assertFalse($this->container->webloader->cssJoinOffCompiler->getJoinFiles());
 	}
 
 }
