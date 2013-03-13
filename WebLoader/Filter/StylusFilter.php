@@ -17,6 +17,9 @@ class StylusFilter
 	/** @var bool */
 	public $compress = FALSE;
 
+	/** @var bool */
+	public $includeCss = FALSE;
+
 	/**
 	 * @param string
 	 */
@@ -36,7 +39,8 @@ class StylusFilter
 	public function __invoke($code, \WebLoader\Compiler $loader, $file = NULL)
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'styl') {
-			$cmd = $this->bin . ($this->compress ? ' -c' : '');
+			$path =
+			$cmd = $this->bin . ($this->compress ? ' -c' : '') . ($this->includeCss ? ' --include-css' : '') . ' -I ' . pathinfo($file, PATHINFO_DIRNAME);
 			$code = Process::run($cmd, $code);
 		}
 
