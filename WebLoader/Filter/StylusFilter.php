@@ -41,7 +41,11 @@ class StylusFilter
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'styl') {
 			$path =
 			$cmd = $this->bin . ($this->compress ? ' -c' : '') . ($this->includeCss ? ' --include-css' : '') . ' -I ' . pathinfo($file, PATHINFO_DIRNAME);
-			$code = Process::run($cmd, $code);
+			try {
+				$code = Process::run($cmd, $code);
+			} catch (\RuntimeException $e) {
+				throw new \WebLoader\WebLoaderException('Stylus Filter Error', 0, $e);
+			}
 		}
 
 		return $code;
