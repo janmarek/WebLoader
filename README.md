@@ -57,6 +57,7 @@ Configuration in config.neon:
 ```html
 services:
 	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
+	lessFilter: WebLoader\Filter\LessFilter
 
 webloader:
 	css:
@@ -66,6 +67,8 @@ webloader:
 				- {files: ["*.css", "*.less"], from: %appDir%/presenters} # Nette\Utils\Finder support
 			filters:
 				- @wlCssFilter
+			fileFilters:
+				- @lessFilter
 	js:
 		default:
 			remoteFiles:
