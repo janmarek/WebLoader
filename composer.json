@@ -16,7 +16,7 @@
 		}
 	},
 	"require": {
-		"nette/nette": "2.1-dev"
+    "nette/nette": "2.1.*@dev"
 	},
 	"require-dev": {
 		"mockery/mockery": "0.7.*",
