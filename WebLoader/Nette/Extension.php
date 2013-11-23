@@ -106,14 +106,14 @@ class Extension extends \Nette\Config\CompilerExtension
 				$config['tempDir'],
 			));
 
-		$compiler->addSetup('setJoinFiles', $config['joinFiles']);
+		$compiler->addSetup('setJoinFiles', array($config['joinFiles']));
 
 		foreach ($config['filters'] as $filter) {
-			$compiler->addSetup('addFilter', $filter);
+			$compiler->addSetup('addFilter', array($filter));
 		}
 
 		foreach ($config['fileFilters'] as $filter) {
-			$compiler->addSetup('addFileFilter', $filter);
+			$compiler->addSetup('addFileFilter', array($filter));
 		}
 
 		// todo css media
