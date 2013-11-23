@@ -45,16 +45,13 @@ Template:
 Example with Nette Framework extension used
 -------------------------------------------
 
-Extension is registered in bootstrap.php:
-
-```php
-$webloaderExtension = new \WebLoader\Nette\Extension();
-$webloaderExtension->install($configurator);
-```
 
 Configuration in config.neon:
 
 ```html
+extensions:
+    webloader: WebLoader\Nette\Extension
+
 services:
 	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
 	lessFilter: WebLoader\Filter\LessFilter
