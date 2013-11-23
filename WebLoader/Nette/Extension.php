@@ -20,6 +20,7 @@ class Extension extends \Nette\DI\CompilerExtension
     {
         return array(
             'jsDefaults' => array(
+                'factory' => 'createJavaScriptLoader',
                 'sourceDir' => '%wwwDir%/js',
                 'tempDir' => '%wwwDir%/webtemp',
                 'tempPath' => 'webtemp',
@@ -31,6 +32,7 @@ class Extension extends \Nette\DI\CompilerExtension
                 'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
             ),
             'cssDefaults' => array(
+                'factory' => 'createCssLoader',
                 'sourceDir' => '%wwwDir%/css',
                 'tempDir' => '%wwwDir%/webtemp',
                 'tempPath' => 'webtemp',
@@ -63,12 +65,18 @@ class Extension extends \Nette\DI\CompilerExtension
 
         $builder->parameters['webloader'] = $config;
 
+        $builder->addDefinition($this->prefix('factory'))
+            ->setClass('WebLoader\LoaderFactory');
+
+
         foreach (array('css', 'js') as $type) {
             foreach ($config[$type] as $name => $wlConfig) {
                 $configDefault = $config[$type . 'Defaults'];
                 $this->addWebLoader($builder, $type . ucfirst($name), array_merge($configDefault, $wlConfig));
             }
         }
+
+
     }
 
     private function addWebLoader(\Nette\DI\ContainerBuilder $builder, $name, $config)
@@ -122,6 +130,15 @@ class Extension extends \Nette\DI\CompilerExtension
             $compiler->addSetup('addFileFilter', array($filter) );
         }
 
+        if( isset($config['factory']) ) {
+
+            $builder->addDefinition($this->prefix($name . 'Loader'))
+                ->setFactory('@' . $this->prefix('factory') . '::' . $config['factory'])
+                ->setArguments(array(
+                    $builder->getDefinition( $this->prefix($name . 'Compiler') ),
+                    $config['tempPath']
+                ));
+        }
 
         // todo css media
     }
