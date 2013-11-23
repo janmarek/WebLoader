@@ -75,7 +75,7 @@ class Compiler
 	 */
 	public function setOutputDir($tempPath)
 	{
-		$tempPath = realpath($tempPath);
+		$tempPath = Path::normalize($tempPath);
 
 		if (!is_dir($tempPath)) {
 			throw new FileNotFoundException('Temp path does not exist.');

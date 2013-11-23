@@ -23,7 +23,7 @@ class CssUrlsFilter
 	 */
 	public function __construct($docRoot, $basePath = '/')
 	{
-		$this->docRoot = realpath($docRoot);
+		$this->docRoot = \WebLoader\Path::normalize($docRoot);
 
 		if (!is_dir($this->docRoot)) {
 			throw new \WebLoader\InvalidArgumentException('Given document root is not directory.');
@@ -46,7 +46,7 @@ class CssUrlsFilter
 			return $url;
 		}
 
-		$cssFile = realpath($cssFile);
+		$cssFile = \WebLoader\Path::normalize($cssFile);
 
 		// inside document root
 		if (strncmp($cssFile, $this->docRoot, strlen($this->docRoot)) === 0) {

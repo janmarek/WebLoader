@@ -2,10 +2,16 @@
 
 namespace WebLoader\Nette;
 
+if (!class_exists('Nette\DI\CompilerExtension')) {
+	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
+	class_alias('Nette\Config\Configurator', 'Nette\Configurator');
+	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
+}
+
 /**
  * @author Jan Marek
  */
-class Extension extends \Nette\Config\CompilerExtension
+class Extension extends \Nette\DI\CompilerExtension
 {
 
 	const EXTENSION_NAME = 'webloader';
@@ -14,6 +20,7 @@ class Extension extends \Nette\Config\CompilerExtension
 	{
 		return array(
 			'jsDefaults' => array(
+				'factory' => 'createJavaScriptLoader',
 				'sourceDir' => '%wwwDir%/js',
 				'tempDir' => '%wwwDir%/webtemp',
 				'tempPath' => 'webtemp',
@@ -25,6 +32,7 @@ class Extension extends \Nette\Config\CompilerExtension
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
 			),
 			'cssDefaults' => array(
+				'factory' => 'createCssLoader',
 				'sourceDir' => '%wwwDir%/css',
 				'tempDir' => '%wwwDir%/webtemp',
 				'tempPath' => 'webtemp',
@@ -57,12 +65,18 @@ class Extension extends \Nette\Config\CompilerExtension
 
 		$builder->parameters['webloader'] = $config;
 
+		$builder->addDefinition($this->prefix('factory'))
+			->setClass('WebLoader\LoaderFactory');
+
+
 		foreach (array('css', 'js') as $type) {
 			foreach ($config[$type] as $name => $wlConfig) {
 				$configDefault = $config[$type . 'Defaults'];
 				$this->addWebLoader($builder, $type . ucfirst($name), array_merge($configDefault, $wlConfig));
 			}
 		}
+
+
 	}
 
 	private function addWebLoader(\Nette\DI\ContainerBuilder $builder, $name, $config)
@@ -106,24 +120,34 @@ class Extension extends \Nette\Config\CompilerExtension
 				$config['tempDir'],
 			));
 
-		$compiler->addSetup('setJoinFiles', $config['joinFiles']);
+		$compiler->addSetup('setJoinFiles', array($config['joinFiles']) );
 
 		foreach ($config['filters'] as $filter) {
-			$compiler->addSetup('addFilter', $filter);
+			$compiler->addSetup('addFilter', array($filter) );
 		}
 
 		foreach ($config['fileFilters'] as $filter) {
-			$compiler->addSetup('addFileFilter', $filter);
+			$compiler->addSetup('addFileFilter', array($filter) );
+		}
+
+		if( isset($config['factory']) ) {
+
+			$builder->addDefinition($this->prefix($name . 'Loader'))
+				->setFactory('@' . $this->prefix('factory') . '::' . $config['factory'])
+				->setArguments(array(
+					$builder->getDefinition( $this->prefix($name . 'Compiler') ),
+					$config['tempPath']
+				));
 		}
 
 		// todo css media
 	}
 
-	public function install(\Nette\Config\Configurator $configurator)
+	public function install(\Nette\Configurator $configurator)
 	{
 		$self = $this;
 		$configurator->onCompile[] = function ($configurator, $compiler) use ($self) {
-		    $compiler->addExtension($self::EXTENSION_NAME, $self);
+			$compiler->addExtension($self::EXTENSION_NAME, $self);
 		};
 	}
 

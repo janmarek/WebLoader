@@ -1,0 +1,11 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+
+before_script:
+  - "sh -c 'curl -s http://getcomposer.org/installer | php'"
+  - "sh -c 'php composer.phar install --dev --quiet'"
+
+script: phpunit --configuration tests/phpunit.xml tests

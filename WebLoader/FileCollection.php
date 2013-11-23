@@ -44,11 +44,16 @@ class FileCollection implements IFileCollection
 	 */
 	public function cannonicalizePath($path)
 	{
-		$rel = realpath($this->root . "/" . $path);
-		if ($rel !== false) return $rel;
 
-		$abs = realpath($path);
-		if ($abs !== false) return $abs;
+		$rel = Path::normalize($this->root . "/" . $path);
+		if (file_exists($rel)) {
+			return $rel;
+		}
+
+		$abs = Path::normalize($path);
+		if (file_exists($abs)) {
+			return $abs;
+		}
 
 		throw new FileNotFoundException("File '$path' does not exist.");
 	}
