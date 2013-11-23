@@ -114,11 +114,13 @@ class Extension extends \Nette\DI\CompilerExtension
 
         $compiler->addSetup('setJoinFiles', array($config['joinFiles']) );
 
-        if( is_array($config['filters']) && count($config['filters']) )
-            $compiler->addSetup('addFilter', $config['filters']);
+        foreach ($config['filters'] as $filter) {
+            $compiler->addSetup('addFilter', array($filter) );
+        }
 
-        if( is_array($config['fileFilters']) && count($config['filters']) )
-            $compiler->addSetup('addFileFilter', $config['fileFilters']);
+        foreach ($config['fileFilters'] as $filter) {
+            $compiler->addSetup('addFileFilter', array($filter) );
+        }
 
 
         // todo css media
