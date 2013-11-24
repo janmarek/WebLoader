@@ -6,7 +6,7 @@ php:
   - 5.5
 
 before_script:
-  - "sh -c 'curl -s http://getcomposer.org/installer | php'"
-  - "sh -c 'php composer.phar install --dev --quiet'"
+  - composer self-update
+  - composer install --no-interaction --prefer-source --dev
 
 script: phpunit --configuration tests/phpunit.xml tests
