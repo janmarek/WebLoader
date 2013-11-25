@@ -2,10 +2,22 @@
 
 namespace WebLoader\Nette;
 
+// from Kdyby
+if (!class_exists('Nette\DI\CompilerExtension')) {
+	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
+	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
+	class_alias('Nette\Config\Helpers', 'Nette\DI\Config\Helpers');
+}
+
+if (isset(\Nette\Loaders\NetteLoader::getInstance()->renamed['Nette\Configurator']) || !class_exists('Nette\Configurator')) {
+	unset(\Nette\Loaders\NetteLoader::getInstance()->renamed['Nette\Configurator']); // fuck you
+	class_alias('Nette\Config\Configurator', 'Nette\Configurator');
+}
+
 /**
  * @author Jan Marek
  */
-class Extension extends \Nette\Config\CompilerExtension
+class Extension extends \Nette\DI\CompilerExtension
 {
 
 	const EXTENSION_NAME = 'webloader';
@@ -14,6 +26,7 @@ class Extension extends \Nette\Config\CompilerExtension
 	{
 		return array(
 			'jsDefaults' => array(
+				'factory' => 'createJavaScriptLoader',
 				'sourceDir' => '%wwwDir%/js',
 				'tempDir' => '%wwwDir%/webtemp',
 				'tempPath' => 'webtemp',
@@ -25,6 +38,7 @@ class Extension extends \Nette\Config\CompilerExtension
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
 			),
 			'cssDefaults' => array(
+				'factory' => 'createCssLoader',
 				'sourceDir' => '%wwwDir%/css',
 				'tempDir' => '%wwwDir%/webtemp',
 				'tempPath' => 'webtemp',
@@ -56,6 +70,10 @@ class Extension extends \Nette\Config\CompilerExtension
 			->setFactory('WebLoader\DefaultOutputNamingConvention::createJsConvention');
 
 		$builder->parameters['webloader'] = $config;
+
+		$builder->addDefinition($this->prefix('factory'))
+			->setClass('WebLoader\LoaderFactory');
+
 
 		foreach (array('css', 'js') as $type) {
 			foreach ($config[$type] as $name => $wlConfig) {
@@ -116,14 +134,23 @@ class Extension extends \Nette\Config\CompilerExtension
 			$compiler->addSetup('addFileFilter', array($filter));
 		}
 
+		if (isset($config['factory'])) {
+			$builder->addDefinition($this->prefix($name . 'Loader'))
+				->setFactory('@' . $this->prefix('factory') . '::' . $config['factory'])
+				->setArguments(array(
+					$builder->getDefinition($this->prefix($name . 'Compiler')),
+					$config['tempPath']
+				));
+		}
+
 		// todo css media
 	}
 
-	public function install(\Nette\Config\Configurator $configurator)
+	public function install(\Nette\Configurator $configurator)
 	{
 		$self = $this;
 		$configurator->onCompile[] = function ($configurator, $compiler) use ($self) {
-		    $compiler->addExtension($self::EXTENSION_NAME, $self);
+			$compiler->addExtension($self::EXTENSION_NAME, $self);
 		};
 	}
 
