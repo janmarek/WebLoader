@@ -124,22 +124,21 @@ class Extension extends \Nette\DI\CompilerExtension
 				$config['tempDir'],
 			));
 
-		$compiler->addSetup('setJoinFiles', array($config['joinFiles']) );
+		$compiler->addSetup('setJoinFiles', array($config['joinFiles']));
 
 		foreach ($config['filters'] as $filter) {
-			$compiler->addSetup('addFilter', array($filter) );
+			$compiler->addSetup('addFilter', array($filter));
 		}
 
 		foreach ($config['fileFilters'] as $filter) {
-			$compiler->addSetup('addFileFilter', array($filter) );
+			$compiler->addSetup('addFileFilter', array($filter));
 		}
 
-		if (isset($config['factory']) ) {
-
+		if (isset($config['factory'])) {
 			$builder->addDefinition($this->prefix($name . 'Loader'))
 				->setFactory('@' . $this->prefix('factory') . '::' . $config['factory'])
 				->setArguments(array(
-					$builder->getDefinition( $this->prefix($name . 'Compiler') ),
+					$builder->getDefinition($this->prefix($name . 'Compiler')),
 					$config['tempPath']
 				));
 		}
