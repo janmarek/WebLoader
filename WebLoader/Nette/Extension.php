@@ -23,6 +23,7 @@ if (!class_exists('Nette\DI\CompilerExtension')) {
 class Extension extends CompilerExtension
 {
 
+	const DEFAULT_TEMP_PATH = 'webtemp';
 	const EXTENSION_NAME = 'webloader';
 
 	public function getDefaultConfig()
@@ -30,8 +31,8 @@ class Extension extends CompilerExtension
 		return array(
 			'jsDefaults' => array(
 				'sourceDir' => '%wwwDir%/js',
-				'tempDir' => '%wwwDir%/webtemp',
-				'tempPath' => 'webtemp',
+				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
+				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
@@ -41,8 +42,8 @@ class Extension extends CompilerExtension
 			),
 			'cssDefaults' => array(
 				'sourceDir' => '%wwwDir%/css',
-				'tempDir' => '%wwwDir%/webtemp',
-				'tempPath' => 'webtemp',
+				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
+				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
@@ -72,12 +73,18 @@ class Extension extends CompilerExtension
 
 		$builder->parameters['webloader'] = $config;
 
+		$loaderFactoryTempPaths = array();
+
 		foreach (array('css', 'js') as $type) {
 			foreach ($config[$type] as $name => $wlConfig) {
-				$configDefault = $config[$type . 'Defaults'];
-				$this->addWebLoader($builder, $type . ucfirst($name), array_merge($configDefault, $wlConfig));
+				$wlConfig = Helpers::merge($wlConfig, $config[$type . 'Defaults']);
+				$this->addWebLoader($builder, $type . ucfirst($name), $wlConfig);
+				$loaderFactoryTempPaths[strtolower($name)] = $wlConfig['tempPath'];
 			}
 		}
+
+		$builder->addDefinition($this->prefix('factory'))
+			->setClass('WebLoader\LoaderFactory', array($loaderFactoryTempPaths));
 	}
 
 	private function addWebLoader(ContainerBuilder $builder, $name, $config)
