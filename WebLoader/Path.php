@@ -8,7 +8,7 @@ class Path
 	public static function normalize($path)
 	{
 		$path = strtr($path, '\\', '/');
-		$root = ($path[0] === '/') ? '/' : '';
+		$root = (strpos($path, '/') === 0) ? '/' : '';
 		$pieces = explode('/', trim($path, '/'));
 		$res = array();
 
