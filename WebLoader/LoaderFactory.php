@@ -16,9 +16,7 @@ class LoaderFactory
 	/** @var \Nette\DI\Container */
 	private $serviceLocator;
 
-	/**
-	 * @var array
-	 */
+	/** @var array */
 	private $tempPaths;
 
 	/**

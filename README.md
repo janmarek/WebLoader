@@ -106,5 +106,5 @@ Template:
 
 ```html
 {control css}
-{control css}
+{control js}
 ```
