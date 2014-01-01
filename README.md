@@ -71,7 +71,7 @@ webloader:
 				- http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js
 				- http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js
 			files:
-				- %appDir%/../libs/nette/nette/client-side/forms/netteForms.js
+				- %appDir%/../libs/nette/nette/client-side/netteForms.js
 				- web.js
 ```
 
@@ -97,7 +97,7 @@ Usage in `app/presenters/BasePresenter.php`:
 	/** @return JavaScriptLoader */
 	protected function createComponentJs()
 	{
-		return $this->jsLoader->createJavaScriptLoader('default');
+		return $this->webLoader->createJavaScriptLoader('default');
 	}
 ```
 
