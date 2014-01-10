@@ -38,14 +38,20 @@ class LessFilter
 	 * @param string $file
 	 * @return string
 	 */
-	public function __invoke($code, \WebLoader\Compiler $loader, $file)
+	public function __invoke($code, \WebLoader\Compiler $loader, $file = NULL)
 	{
-		if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
-			$this->getLessC()->importDir = pathinfo($file, PATHINFO_DIRNAME) . '/';
+		if ($file) {
+			if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
+				$this->getLessC()->importDir = pathinfo($file, PATHINFO_DIRNAME) . '/';
+				return $this->getLessC()->parse($code);
+
+			} else {
+				return $code;
+			}
+
+		} else {
 			return $this->getLessC()->parse($code);
 		}
-
-		return $code;
 	}
 
 }
