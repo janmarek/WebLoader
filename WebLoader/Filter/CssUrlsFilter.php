@@ -7,8 +7,6 @@ namespace WebLoader\Filter;
  *
  * @author Jan Marek
  * @license MIT
- *
- * @deprecated
  */
 class CssUrlsFilter
 {
