@@ -40,7 +40,7 @@ class CssUrlsFilter
 	public function absolutizeUrl($url, $quote, $cssFile)
 	{
 		// is already absolute
-		if (preg_match('/^([a-z]+:\/)?\//', $url)) {
+		if (preg_match('~^(data:|([a-z]+:/)/)~', $url)) {
 			return $url;
 		}
 
