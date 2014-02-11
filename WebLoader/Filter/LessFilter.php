@@ -8,18 +8,21 @@ namespace WebLoader\Filter;
  * @author Jan Marek
  * @license MIT
  */
-class LessFilter {
+class LessFilter
+{
 
     private $lc;
 
-    public function __construct(\lessc $lc = null) {
+    public function __construct(\lessc $lc = null)
+    {
         $this->lc = $lc;
     }
 
     /**
      * @return \lessc
      */
-    private function getLessC() {
+    private function getLessC()
+    {
         // lazy loading
         if (empty($this->lc)) {
             $this->lc = new \lessc();
@@ -35,7 +38,8 @@ class LessFilter {
      * @param string $file
      * @return string
      */
-    public function __invoke($code, \WebLoader\Compiler $loader, $file) {
+    public function __invoke($code, \WebLoader\Compiler $loader, $file)
+    {
         if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
             $lessc = $this->getLessC();
             $lessc->importDir = pathinfo($file, PATHINFO_DIRNAME) . '/';
