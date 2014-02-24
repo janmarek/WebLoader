@@ -53,6 +53,7 @@ extensions:
 
 services:
 	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
+	scssFilter: WebLoader\Filter\ScssFilter
 	lessFilter: WebLoader\Filter\LessFilter
 
 webloader:
@@ -61,10 +62,12 @@ webloader:
 			files:
 				- style.css
 				- {files: ["*.css", "*.less"], from: %appDir%/presenters} # Nette\Utils\Finder support
+				- "%wwwDir%/Path_to_file/scssStyle.scss"  #load scss
 			filters:
 				- @wlCssFilter
 			fileFilters:
 				- @lessFilter
+				- @scssFilter
 	js:
 		default:
 			remoteFiles:
