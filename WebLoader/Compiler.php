@@ -188,7 +188,9 @@ class Compiler
 		$path = $this->outputDir . '/' . $name;
 		$lastModified = $this->checkLastModified ? $this->getLastModified($files) : 0;
 
-		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path)) {
+		$scssChecker = new ScssChecker($files);
+
+		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path) || $scssChecker->getLastModification() > filemtime($path)) {
 			$outPath = in_array('safe', stream_get_wrappers()) ? 'safe://' . $path : $path;
 			file_put_contents($outPath, $this->getContent($files));
 		}
