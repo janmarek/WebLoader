@@ -2,6 +2,13 @@
 
 namespace WebLoader;
 
+
+/**
+ * SCSS imported file modification checker
+ *
+ * @author Erik Pöhm
+ * @license MIT
+ */
 class ScssChecker
 {
 	/**
