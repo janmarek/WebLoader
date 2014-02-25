@@ -13,7 +13,7 @@ class LessFilter
 
 	private $lc;
 
-	public function __construct(\lessc $lc = null)
+	public function __construct(\lessc $lc = NULL)
 	{
 		$this->lc = $lc;
 	}
