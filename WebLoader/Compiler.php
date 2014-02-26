@@ -187,10 +187,14 @@ class Compiler
 		$name = $this->namingConvention->getFilename($files, $this);
 		$path = $this->outputDir . '/' . $name;
 		$lastModified = $this->checkLastModified ? $this->getLastModified($files) : 0;
+		$compileScssFile = false;
 
-		$scssChecker = new ScssChecker($files);
+		if (in_array(new Filter\ScssFilter() ,$this->fileFilters)) {
+			$scssChecker = new ScssModifyChecker($files);
+			$compileScssFile = $scssChecker->getLastModification() > filemtime($path);
+		}
 
-		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path) || $scssChecker->getLastModification() > filemtime($path)) {
+		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path) || $compileScssFile) {
 			$outPath = in_array('safe', stream_get_wrappers()) ? 'safe://' . $path : $path;
 			file_put_contents($outPath, $this->getContent($files));
 		}

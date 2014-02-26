@@ -9,7 +9,7 @@ namespace WebLoader;
  * @author Erik Pöhm
  * @license MIT
  */
-class ScssChecker
+class ScssModifyChecker
 {
 	/**
 	 * @var int Last modified file
@@ -26,6 +26,9 @@ class ScssChecker
 	 */
 	private $scssImportFiles;
 
+	/**
+	 * @param array $files All webloaded files
+	 */
 	public function __construct(array $files)
 	{
 		$this->scssFiles = self::findScssFiles($files);
@@ -35,6 +38,10 @@ class ScssChecker
 		}
 	}
 
+	/**
+	 * @param $files All loaded webloaded files
+	 * @return array Only scss files
+	 */
 	private static function findScssFiles($files)
 	{
 		$scssFiles = array();
@@ -49,6 +56,9 @@ class ScssChecker
 		return $scssFiles;
 	}
 
+	/**
+	 * @return array Searches the Scss file for imports
+	 */
 	private function parseScssImportFiles()
 	{
 		$importFiles = array();
@@ -72,6 +82,9 @@ class ScssChecker
 		return $importFiles;
 	}
 
+	/**
+	 * @return int
+	 */
 	private function getLastImportedFileModification()
 	{
 		$lastModified = 0;
@@ -82,6 +95,9 @@ class ScssChecker
 		return $lastModified;
 	}
 
+	/**
+	 * @return int Last modified
+	 */
 	public function getLastModification()
 	{
 		return $this->lastModifiedScss;
