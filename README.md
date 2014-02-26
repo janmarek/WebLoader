@@ -78,12 +78,6 @@ webloader:
 				- web.js
 ```
 
-SCSS Requirements (composer):
-```php
-require "leafo/scssphp": "dev-master"
-require "leafo/scssphp-compass": "dev-master" #compass for scss
-```
-
 For older versions of Nette, you have to register the extension in `app/bootstrap.php`:
 
 ```php
@@ -116,4 +110,15 @@ Template:
 ```html
 {control css}
 {control js}
+```
+
+### Working with SCSS:
+
+The recommended scss structure:
+- http://thesassway.com/beginner/how-to-structure-a-sass-project
+
+Requirements (composer):
+```php
+require "leafo/scssphp": "dev-master"
+require "leafo/scssphp-compass": "dev-master" #compass for scss
 ```
