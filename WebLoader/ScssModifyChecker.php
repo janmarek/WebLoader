@@ -68,7 +68,7 @@ class ScssModifyChecker
 			if ($sourceFile) {
 				while (!feof($sourceFile)) {
 					$line = fgets($sourceFile);
-					preg_match("/\s*@import\s*\"([\w|\-|\/]*)\"/", $line, $match);
+					preg_match("/\s*@import\s*[\"\']([\w|\-|\/]*)(.scss)?[\"\']/", $line, $match);
 					if (!empty($match)) {
 						$scssFile = $filePath . '/' . $match[1] . '.scss';
 						if (file_exists($scssFile)) {
