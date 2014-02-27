@@ -189,7 +189,7 @@ class Compiler
 		$lastModified = $this->checkLastModified ? $this->getLastModified($files) : 0;
 		$compileScssFile = false;
 
-		if (in_array(new Filter\ScssFilter() ,$this->fileFilters)) {
+		if (in_array(new Filter\ScssFilter() ,$this->fileFilters) && file_exists($path)) {
 			$scssChecker = new ScssModifyChecker($files);
 			$compileScssFile = $scssChecker->getLastModification() > filemtime($path);
 		}
