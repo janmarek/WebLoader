@@ -1,12 +1,10 @@
 <?php
 
-namespace WebLoader;
+namespace WebLoader\Nette;
 
 use Nette\DI\Container;
 use Nette\Http\IRequest;
-use WebLoader\Nette\CssLoader;
-use WebLoader\Nette\Extension;
-use WebLoader\Nette\JavaScriptLoader;
+use WebLoader\Compiler;
 
 class LoaderFactory
 {
@@ -62,7 +60,7 @@ class LoaderFactory
 	{
 		$lName = strtolower($name);
 		$tempPath = isset($this->tempPaths[$lName]) ? $this->tempPaths[$lName] : Extension::DEFAULT_TEMP_PATH;
-		return rtrim($this->httpRequest->url->basePath, '/') . '/' . $tempPath;
+		return rtrim($this->httpRequest->getUrl()->basePath, '/') . '/' . $tempPath;
 	}
 
 }

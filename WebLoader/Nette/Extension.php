@@ -87,7 +87,7 @@ class Extension extends CompilerExtension
 		}
 
 		$builder->addDefinition($this->prefix('factory'))
-			->setClass('WebLoader\LoaderFactory', array($loaderFactoryTempPaths));
+			->setClass('WebLoader\Nette\LoaderFactory', array($loaderFactoryTempPaths));
 	}
 
 	private function addWebLoader(ContainerBuilder $builder, $name, $config)
