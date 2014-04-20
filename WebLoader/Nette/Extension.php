@@ -9,6 +9,7 @@ use Nette\DI\Config\Helpers;
 use Nette\DI\ContainerBuilder;
 use Nette\Utils\Finder;
 use Nette;
+use WebLoader\FileNotFoundException;
 
 if (!class_exists('Nette\DI\CompilerExtension')) {
 	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
@@ -119,9 +120,12 @@ class Extension extends CompilerExtension
 				}
 
 				foreach ($finder as $foundFile) {
-					$files->addSetup('addFile', array((string) $foundFile));
+					/** @var \SplFileInfo $foundFile */
+					$files->addSetup('addFile', array($foundFile->getPathname()));
 				}
+
 			} else {
+				$this->checkFileExists($file, $config['sourceDir']);
 				$files->addSetup('addFile', array($file));
 			}
 		}
@@ -164,6 +168,21 @@ class Extension extends CompilerExtension
 		$configurator->onCompile[] = function ($configurator, Compiler $compiler) use ($self) {
 			$compiler->addExtension($self::EXTENSION_NAME, $self);
 		};
+	}
+
+	/**
+	 * @param string $file
+	 * @param string $sourceDir
+	 * @throws FileNotFoundException
+	 */
+	protected function checkFileExists($file, $sourceDir)
+	{
+		if (!file_exists($file)) {
+			$tmp = rtrim($sourceDir, '/\\') . DIRECTORY_SEPARATOR . $file;
+			if (!file_exists($tmp)) {
+				throw new FileNotFoundException(sprintf("Neither '%s' or '%s' was found", $file, $tmp));
+			}
+		}
 	}
 
 }
