@@ -84,6 +84,10 @@ class Extension extends CompilerExtension
 				$wlConfig = Helpers::merge($wlConfig, $config[$type . 'Defaults']);
 				$this->addWebLoader($builder, $type . ucfirst($name), $wlConfig);
 				$loaderFactoryTempPaths[strtolower($name)] = $wlConfig['tempPath'];
+
+				if (!is_dir($wlConfig['tempDir']) || !is_writable($wlConfig['tempDir'])) {
+					throw new CompilationException(sprintf("You must create a writable directory '%s'", $wlConfig['tempDir']));
+				}
 			}
 		}
 
