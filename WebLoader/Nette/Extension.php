@@ -8,6 +8,7 @@ use Nette\DI\CompilerExtension;
 use Nette\DI\Config\Helpers;
 use Nette\DI\ContainerBuilder;
 use Nette\Utils\Finder;
+use Nette;
 
 if (!class_exists('Nette\DI\CompilerExtension')) {
 	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
@@ -87,7 +88,7 @@ class Extension extends CompilerExtension
 		}
 
 		$builder->addDefinition($this->prefix('factory'))
-			->setClass('WebLoader\LoaderFactory', array($loaderFactoryTempPaths));
+			->setClass('WebLoader\Nette\LoaderFactory', array($loaderFactoryTempPaths));
 	}
 
 	private function addWebLoader(ContainerBuilder $builder, $name, $config)
@@ -142,6 +143,15 @@ class Extension extends CompilerExtension
 		}
 
 		// todo css media
+	}
+
+	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	{
+		$meta = $class->properties['meta'];
+		$meta->value['types']['webloader\\loaderfactory'] = $meta->value['types']['webloader\\nette\\loaderfactory'];
+
+		$init = $class->methods['initialize'];
+		$init->addBody('if (!class_exists(?, ?)) class_alias(?, ?);', array('WebLoader\\LoaderFactory', FALSE, 'WebLoader\\Nette\\LoaderFactory', 'WebLoader\\LoaderFactory'));
 	}
 
 	public function install(Configurator $configurator)
