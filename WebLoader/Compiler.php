@@ -14,7 +14,7 @@ class Compiler
 	private $outputDir;
 
 	/** @var bool */
-	private $joinFiles = true;
+	private $joinFiles = TRUE;
 
 	/** @var array */
 	private $filters = array();
@@ -29,7 +29,7 @@ class Compiler
 	private $namingConvention;
 
 	/** @var bool */
-	private $checkLastModified = true;
+	private $checkLastModified = TRUE;
 
 	public function __construct(IFileCollection $files, IOutputNamingConvention $convention, $outputDir)
 	{
