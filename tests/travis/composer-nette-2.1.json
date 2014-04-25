@@ -23,6 +23,7 @@
 	},
 	"require-dev": {
 		"leafo/lessphp": "~0.4",
+		"leafo/scssphp": "~0.1",
 
 		"mockery/mockery": "0.7.*",
 		"phpunit/phpunit": "3.7.*",

@@ -19,10 +19,12 @@
 		"nette/nette": "2.1.*@dev"
 	},
 	"suggest": {
-		"leafo/lessphp": "Lessphp is a composer for LESS written in PHP."
+		"leafo/lessphp": "Lessphp is a composer for LESS written in PHP.",
+		"leafo/scssphp": "Scssphp is a composer for SCSS written in PHP."
 	},
 	"require-dev": {
 		"leafo/lessphp": "~0.4",
+		"leafo/scssphp": "~0.1",
 
 		"mockery/mockery": "0.7.*",
 		"phpunit/phpunit": "3.7.*",
