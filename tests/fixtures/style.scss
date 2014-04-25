@@ -1,0 +1,19 @@
+
+@import 'style2.scss';
+
+.navigation {
+    ul {
+        line-height: 20px;
+        color: blue;
+        a {
+            color: red;
+        }
+    }
+}
+
+.footer {
+    .copyright {
+        color: silver;
+    }
+}
+
