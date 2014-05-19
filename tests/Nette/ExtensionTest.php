@@ -42,7 +42,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$extension = new \WebLoader\Nette\Extension();
 		$extension->install($configurator);
 
-		$this->container = $configurator->createContainer();
+		$this->container = @$configurator->createContainer(); // sends header X-Powered-By, ...
 	}
 
 	public function testJsCompilerService()
