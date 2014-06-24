@@ -141,7 +141,7 @@ class WebLoaderPanel implements IBarPanel
 			$table .= '<table style="width: 100%;"><tr><th>File</th><th>Size</th></tr>';
 			
 			foreach ($files as $file) {
-				$table .= '<tr><td title="' . $file['full'] . '">' . $file['name'] . '</td><td>' . Filters::bytes($file['size']) . '</td></tr>';
+				$table .= '<tr><td title="' . htmlspecialchars($file['full']) . '">' . htmlspecialchars($file['name']) . '</td><td>' . Filters::bytes($file['size']) . '</td></tr>';
 			}
 			
 			$table .= '</table>';
@@ -156,7 +156,7 @@ class WebLoaderPanel implements IBarPanel
 			$table .= '<table style="width: 100%;"><tr><th>File URL</th></tr>';
 			
 			foreach ($files as $file) {
-				$table .= '<tr><td title="' . $file['full'] . '">' . $file['url'] . '</td></tr>';
+				$table .= '<tr><td title="' . htmlspecialchars($file['full']) . '">' . htmlspecialchars($file['url']) . '</td></tr>';
 			}
 			
 			$table .= '</table>';
