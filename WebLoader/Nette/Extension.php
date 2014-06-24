@@ -53,6 +53,7 @@ class Extension extends CompilerExtension
 			'css' => array(
 
 			),
+			'debug' => TRUE
 		);
 	}
 
@@ -67,7 +68,9 @@ class Extension extends CompilerExtension
 		$builder->addDefinition($this->prefix('jsNamingConvention'))
 			->setFactory('WebLoader\DefaultOutputNamingConvention::createJsConvention');
 		
-		$this->addTracyPanel($builder, $config);
+		if($config['debug']) {
+			$this->addTracyPanel($builder);
+		}
 
 		$builder->parameters['webloader'] = $config;
 
@@ -89,7 +92,7 @@ class Extension extends CompilerExtension
 			->setClass('WebLoader\Nette\LoaderFactory', array($loaderFactoryTempPaths));
 	}
 	
-	private function addTracyPanel(ContainerBuilder $builder, $config)
+	private function addTracyPanel(ContainerBuilder $builder)
 	{		
 		$builder->addDefinition($this->prefix('tracyPanel'))
 			->setClass('WebLoader\Nette\Diagnostics\WebLoaderPanel')
@@ -142,10 +145,12 @@ class Extension extends CompilerExtension
 
 		$compiler->addSetup('setJoinFiles', array($config['joinFiles']));
 		
-		$compiler->addSetup('@' . $this->prefix('tracyPanel') . '::addLoader', array(
-			$name,
-			'@' . $this->prefix($name . 'Compiler')
-		));
+		if($builder->parameters['webloader']['debug']) {
+			$compiler->addSetup('@' . $this->prefix('tracyPanel') . '::addLoader', array(
+				$name,
+				'@' . $this->prefix($name . 'Compiler')
+			));
+		}
 
 		foreach ($config['filters'] as $filter) {
 			$compiler->addSetup('addFilter', array($filter));
