@@ -1,7 +1,6 @@
 <?php
 
 namespace WebLoader\Nette\Diagnostics;
-use Nette\Object;
 use Latte\Runtime\Filters;
 use Tracy\Debugger;
 use Tracy\IBarPanel;
@@ -11,7 +10,7 @@ use WebLoader\Compiler;
  * Debugger panel.
  * @author Adam Klvač
  */
-class WebLoaderPanel extends Object implements IBarPanel {
+class WebLoaderPanel implements IBarPanel {
 	
 	/** @var Compiler[] */
 	private $compilers = array();
@@ -32,7 +31,9 @@ class WebLoaderPanel extends Object implements IBarPanel {
 	private static $types = array(
 		'css' => 'CSS files',
 		'js' => 'JavaScript files',
-		'less' => 'Less files'
+		'less' => 'Less files',
+		'scss' => 'Sass files',
+		'coffee' => 'CoffeeScript files'
 	);
 	
 	/** @var string */
@@ -68,7 +69,7 @@ class WebLoaderPanel extends Object implements IBarPanel {
 	 */
 	private function compute() {
 		
-		if($this->size !== NULL) {
+		if ($this->size !== NULL) {
 			return;
 		}
 		
@@ -77,16 +78,16 @@ class WebLoaderPanel extends Object implements IBarPanel {
 		$this->remoteFiles = array();
 		$this->sizes = array();
 		
-		foreach($this->compilers as $name => $compiler) {
+		foreach ($this->compilers as $name => $compiler) {
 			
 			$this->size += $combinedSize = strlen($compiler->getContent());
 			
-			foreach($compiler->getFileCollection()->getFiles() as $file) {
+			foreach ($compiler->getFileCollection()->getFiles() as $file) {
 				
 				$file = realpath($file);
 				$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 				
-				if(!isset($this->files[$extension])) {
+				if (!isset($this->files[$extension])) {
 					$this->files[$extension] = array();
 				}
 				
@@ -96,7 +97,7 @@ class WebLoaderPanel extends Object implements IBarPanel {
 					'size' => $size = filesize($file)
 				);
 				
-				if(!isset($this->sizes[$extension])) {
+				if (!isset($this->sizes[$extension])) {
 					$this->sizes[$extension] = array(
 						'total' => 0,
 						'combined' => $combinedSize
@@ -107,11 +108,11 @@ class WebLoaderPanel extends Object implements IBarPanel {
 				
 			}
 			
-			foreach($compiler->getFileCollection()->getRemoteFiles() as $file) {
+			foreach ($compiler->getFileCollection()->getRemoteFiles() as $file) {
 				
 				$url = parse_url($file);
 				$extension = strtolower(pathinfo($url['path'], PATHINFO_EXTENSION));
-				if(!isset($this->remoteFiles[$extension])) {
+				if (!isset($this->remoteFiles[$extension])) {
 					$this->remoteFiles[$extension] = array();
 				}
 				
@@ -134,14 +135,14 @@ class WebLoaderPanel extends Object implements IBarPanel {
 		
 		$table = '';
 		
-		foreach($this->files as $extension => $files) {
+		foreach ($this->files as $extension => $files) {
 			
 			$type = isset(static::$types[$extension]) ? static::$types[$extension] : ('.' . $extension . ' files');
 			
 			$table .= '<h2>' . $type . ' (' . Filters::bytes($this->sizes[$extension]['total']) . ' total, ' . Filters::bytes($this->sizes[$extension]['combined']) . ' combined)</h2>';
 			$table .= '<table style="width: 100%;"><tr><th>File</th><th>Size</th></tr>';
 			
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				$table .= '<tr><td title="' . $file['full'] . '">' . $file['name'] . '</td><td>' . Filters::bytes($file['size']) . '</td></tr>';
 			}
 			
@@ -149,14 +150,14 @@ class WebLoaderPanel extends Object implements IBarPanel {
 			
 		}
 		
-		foreach($this->remoteFiles as $extension => $files) {
+		foreach ($this->remoteFiles as $extension => $files) {
 			
 			$type = 'Remote ' . (isset(static::$types[$extension]) ? static::$types[$extension] : ('.' . $extension . ' files'));
 			
 			$table .= '<h2>' . $type . '</h2>';
 			$table .= '<table style="width: 100%;"><tr><th>File URL</th></tr>';
 			
-			foreach($files as $file) {
+			foreach ($files as $file) {
 				$table .= '<tr><td title="' . $file['full'] . '">' . $file['url'] . '</td></tr>';
 			}
 			
@@ -170,7 +171,7 @@ class WebLoaderPanel extends Object implements IBarPanel {
 	
 	/**
 	 * Returns panel content.
-	 * @return Html
+	 * @return string
 	 */
 	public function getPanel() {
 		
@@ -187,7 +188,7 @@ class WebLoaderPanel extends Object implements IBarPanel {
 
 	/**
 	 * Returns panel tab.
-	 * @return Html
+	 * @return string
 	 */
 	public function getTab() {
 		
