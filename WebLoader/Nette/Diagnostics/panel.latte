@@ -1,0 +1,36 @@
+<h1>WebLoader</h1>
+<div class="tracy-inner">
+	<table style="min-width: 400px; margin-bottom: 10px;" n:foreach="$files as $group => $extensions">
+		<thead>
+			<tr>
+				<th style="font-size: 1.1em;">{$group}</th>
+				<th style="text-align: right;">{$sizes[$group]['.']['original']|bytes} original, {$sizes[$group]['.']['combined']|bytes} combined</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr n:foreach="$extensions as $extension => $files">
+				<td colspan="2" style="padding: 0;">
+					<table style="width: 100%;">
+						<thead>
+							<tr>
+								<th>{$extension|extension}</th>
+								<th style="width: 70px;">{$sizes[$group][$extension]['original']|bytes}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr n:foreach="$files as $file">
+								<td title="{$file['full']}">{$file['name']}</td>
+								<td>{$file['size']|bytes}</td>
+							</tr>
+						</tbody>
+					</table>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p style="margin-left: 2px;">
+		Loaded resources original size: <strong>{$size['original']|bytes}</strong><br />
+		Combined resources size: <strong>{$size['combined']|bytes}</strong><br />
+		Ratio: <strong>{$size['ratio']|number:0}%</strong>
+	</p>
+</div>

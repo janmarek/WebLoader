@@ -55,6 +55,7 @@ class Extension extends CompilerExtension
 			'css' => array(
 
 			),
+			'debugger' => '%debugMode%'
 		);
 	}
 
@@ -68,6 +69,12 @@ class Extension extends CompilerExtension
 
 		$builder->addDefinition($this->prefix('jsNamingConvention'))
 			->setFactory('WebLoader\DefaultOutputNamingConvention::createJsConvention');
+
+		if ($config['debugger']) {
+			$builder->addDefinition($this->prefix('tracyPanel'))
+				->setClass('WebLoader\Nette\Diagnostics\Panel')
+				->setArguments(array($builder->expand('%appDir%')));
+		}
 
 		$builder->parameters['webloader'] = $config;
 
@@ -142,6 +149,13 @@ class Extension extends CompilerExtension
 			));
 
 		$compiler->addSetup('setJoinFiles', array($config['joinFiles']));
+
+		if ($builder->parameters['webloader']['debugger']) {
+			$compiler->addSetup('@' . $this->prefix('tracyPanel') . '::addLoader', array(
+				$name,
+				'@' . $this->prefix($name . 'Compiler')
+			));
+		}
 
 		foreach ($config['filters'] as $filter) {
 			$compiler->addSetup('addFilter', array($filter));
