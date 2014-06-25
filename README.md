@@ -53,6 +53,7 @@ extensions:
 
 services:
 	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
+	scssFilter: WebLoader\Filter\ScssFilter
 	lessFilter: WebLoader\Filter\LessFilter
 
 webloader:
@@ -61,10 +62,12 @@ webloader:
 			files:
 				- style.css
 				- {files: ["*.css", "*.less"], from: %appDir%/presenters} # Nette\Utils\Finder support
+				- "%wwwDir%/Path_to_file/scssStyle.scss"  #load scss
 			filters:
 				- @wlCssFilter
 			fileFilters:
 				- @lessFilter
+				- @scssFilter
 	js:
 		default:
 			remoteFiles:
@@ -107,4 +110,15 @@ Template:
 ```html
 {control css}
 {control js}
+```
+
+### Working with SCSS:
+
+The recommended scss structure:
+- http://thesassway.com/beginner/how-to-structure-a-sass-project
+
+Requirements (composer):
+```php
+require "leafo/scssphp": "dev-master"
+require "leafo/scssphp-compass": "dev-master" #compass for scss
 ```
