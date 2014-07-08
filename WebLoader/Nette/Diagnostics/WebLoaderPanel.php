@@ -112,6 +112,7 @@ class WebLoaderPanel implements IBarPanel
 				$url = parse_url($file);
 				$extension = strtolower(pathinfo($url['path'], PATHINFO_EXTENSION));
 				
+				// fixes http://fonts.googleapis.com/css?...
 				if (!$extension) {
 					$extension = strtolower(trim($url['path'], '/'));
 				}
@@ -121,7 +122,7 @@ class WebLoaderPanel implements IBarPanel
 				}
 				
 				$this->remoteFiles[$extension][] = array(
-					'url' => (isset($url['scheme']) ? $url['scheme'] . ':' : '') . '//' . $url['host'] . $url['path'],
+					'url' => (isset($url['scheme']) ? $url['scheme'] . ':' : '') . '//' . $url['host'] . $url['path'] . '?' . $url['query'],
 					'full' => $file
 				);
 				
