@@ -111,6 +111,11 @@ class WebLoaderPanel implements IBarPanel
 				
 				$url = parse_url($file);
 				$extension = strtolower(pathinfo($url['path'], PATHINFO_EXTENSION));
+				
+				if (!$extension) {
+					$extension = strtolower(trim($url['path'], '/'));
+				}
+
 				if (!isset($this->remoteFiles[$extension])) {
 					$this->remoteFiles[$extension] = array();
 				}
