@@ -167,14 +167,21 @@ class Compiler
 	 */
 	public function generate($ifModified = TRUE)
 	{
+		$files = $this->collection->getFiles();
+
+		if (!count($files)) {
+			return array();
+		}
+
 		if ($this->joinFiles) {
 			return array(
-				$this->generateFiles($this->collection->getFiles(), $ifModified)
+				$this->generateFiles($files, $ifModified),
 			);
+
 		} else {
 			$arr = array();
 
-			foreach ($this->collection->getFiles() as $file) {
+			foreach ($files as $file) {
 				$arr[] = $this->generateFiles(array($file), $ifModified);
 			}
 
