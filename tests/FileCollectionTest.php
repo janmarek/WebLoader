@@ -31,7 +31,7 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 			__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'b.txt',
 			__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'c.txt',
 		);
-		$this->assertEquals($expected, $this->object->getFiles());
+		$this->assertEqualPaths($expected, $this->object->getFiles());
 	}
 
 	/**
@@ -51,7 +51,7 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 		$expected = array(
 			__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'b.txt',
 		);
-		$this->assertEquals($expected, $this->object->getFiles());
+		$this->assertEqualPaths($expected, $this->object->getFiles());
 
 		$this->object->removeFiles(array(__DIR__ . '/fixtures/b.txt'));
 	}
@@ -62,8 +62,8 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 		$rel = 'a.txt';
 		$expected = __DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'a.txt';
 
-		$this->assertEquals($expected, $this->object->cannonicalizePath($abs));
-		$this->assertEquals($expected, $this->object->cannonicalizePath($rel));
+		$this->assertEqualPaths($expected, $this->object->cannonicalizePath($abs));
+		$this->assertEqualPaths($expected, $this->object->cannonicalizePath($rel));
 
 		try {
 			$this->object->cannonicalizePath('nesdagf');
@@ -113,6 +113,15 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->addFile(new \SplFileInfo(__DIR__ . '/fixtures/a.txt'));
 		$this->assertEquals(1, count($this->object->getFiles()));
+	}
+
+	private function assertEqualPaths($expected, $actual)
+	{
+		$actual = (array) $actual;
+		foreach ((array) $expected as $key => $path) {
+			$this->assertTrue(isset($actual[$key]));
+			$this->assertEquals(\WebLoader\Path::normalize($path), \WebLoader\Path::normalize($actual[$key]));
+		}
 	}
 
 }
