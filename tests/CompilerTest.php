@@ -54,6 +54,16 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1, count($this->getTempFiles()), 'Multiple files are generated instead of join.');
 	}
 
+	public function testEmptyFiles()
+	{
+		$this->assertTrue($this->object->getJoinFiles());
+		$this->object->setFileCollection(new \WebLoader\FileCollection());
+
+		$ret = $this->object->generate();
+		$this->assertEquals(0, count($ret));
+		$this->assertEquals(0, count($this->getTempFiles()));
+	}
+
 	public function testNotJoinFiles()
 	{
 		$this->object->setJoinFiles(FALSE);
