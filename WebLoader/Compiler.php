@@ -78,7 +78,7 @@ class Compiler
 		$tempPath = Path::normalize($tempPath);
 
 		if (!is_dir($tempPath)) {
-			throw new FileNotFoundException('Temp path does not exist.');
+			throw new FileNotFoundException('Temp path "'.$tempPath.'" does not exist.');
 		}
 
 		if (!is_writable($tempPath)) {
