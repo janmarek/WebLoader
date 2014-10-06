@@ -16,13 +16,27 @@
 		}
 	},
 	"require": {
-		"nette/nette": "~2.0@rc"
+		"nette/di": "~2.2@dev",
+		"nette/finder": "~2.2@dev",
+		"nette/http": "~2.2@dev",
+		"nette/utils": "~2.2@dev",
+		"latte/latte": "~2.2@dev"
 	},
 	"suggest": {
 		"leafo/lessphp": "Lessphp is a composer for LESS written in PHP."
 	},
 	"require-dev": {
-		"mockery/mockery": "0.7.*",
-		"phpunit/phpunit": "3.7.*"
+		"nette/application": "~2.2@dev",
+		"nette/bootstrap": "~2.2@dev",
+		"nette/di": "~2.2@dev",
+		"nette/finder": "~2.2@dev",
+		"nette/http": "~2.2@dev",
+		"nette/mail": "~2.2@dev",
+		"nette/safe-stream": "~2.2@dev",
+		"nette/utils": "~2.2@dev",
+		"latte/latte": "~2.2@dev",
+
+		"mockery/mockery": "0.9.*",
+		"phpunit/phpunit": "4.3.*"
 	}
 }

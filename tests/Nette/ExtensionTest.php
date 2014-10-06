@@ -4,13 +4,6 @@ namespace WebLoader\Test\Nette;
 
 use Nette\Utils\Finder;
 
-if (!class_exists('Nette\DI\CompilerExtension')) {
-	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
-	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
-	class_alias('Nette\Config\Helpers', 'Nette\DI\Config\Helpers');
-	class_alias('Nette\Config\Configurator', 'Nette\Configurator');
-}
-
 class ExtensionTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -28,7 +21,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$configurator->setTempDirectory($tempDir);
 
 		foreach ($configFiles as $file) {
-			$configurator->addConfig($file, FALSE);
+			$configurator->addConfig($file);
 		}
 
 		$configurator->addParameters(array(
@@ -42,15 +35,21 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$extension = new \WebLoader\Nette\Extension();
 		$extension->install($configurator);
 
-		$this->container = @$configurator->createContainer(); // sends header X-Powered-By, ...
+		$this->container = $configurator->createContainer(); // sends header X-Powered-By, ...
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testJsCompilerService()
 	{
 		$this->prepareContainer('JsCompilerServiceContainer', array(__DIR__ . '/../fixtures/extension.neon'));
 		$this->assertInstanceOf('WebLoader\Compiler', $this->container->getService('webloader.jsDefaultCompiler'));
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testExcludeFiles()
 	{
 		$this->prepareContainer('ExcludeFilesContainer', array(__DIR__ . '/../fixtures/extension.neon'));
@@ -60,6 +59,9 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(in_array(realpath(__DIR__ . '/../fixtures/dir/one.js'), $files));
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testJoinFilesOn()
 	{
 		$this->prepareContainer('JoinFilesOnContainer', array(
@@ -69,6 +71,9 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$this->assertTrue($this->container->getService('webloader.jsDefaultCompiler')->getJoinFiles());
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testJoinFilesOff()
 	{
 		$this->prepareContainer('JoinFilesOffContainer', array(
@@ -78,6 +83,9 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($this->container->getService('webloader.jsDefaultCompiler')->getJoinFiles());
 	}
 
+	/**
+	 * @runInSeparateProcess
+	 */
 	public function testJoinFilesOffInOneService()
 	{
 		$this->prepareContainer('JoinFilesOffInOneServiceContainer', array(
