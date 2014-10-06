@@ -1,0 +1,42 @@
+{
+	"name": "janmarek/webloader",
+	"description": "Tool for loading or deploying CSS and JS files into web pages",
+	"keywords": ["webloader", "css", "javascript", "assets", "nette"],
+	"homepage": "http://addons.nette.org/cs/webloader",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jan Marek",
+			"email": "mail@janmarek.net"
+		}
+	],
+	"autoload": {
+		"psr-0": {
+			"WebLoader": ""
+		}
+	},
+	"require": {
+		"nette/di": "2.2.*",
+		"nette/finder": "2.2.*",
+		"nette/http": "2.2.*",
+		"nette/utils": "2.2.*",
+		"latte/latte": "2.2.*"
+	},
+	"suggest": {
+		"leafo/lessphp": "Lessphp is a composer for LESS written in PHP."
+	},
+	"require-dev": {
+		"nette/application": "2.2.*",
+		"nette/bootstrap": "2.2.*",
+		"nette/di": "2.2.*",
+		"nette/finder": "2.2.*",
+		"nette/http": "2.2.*",
+		"nette/mail": "2.2.*",
+		"nette/safe-stream": "2.2.*",
+		"nette/utils": "2.2.*",
+		"latte/latte": "2.2.*",
+
+		"mockery/mockery": "0.9.*",
+		"phpunit/phpunit": "4.3.*"
+	}
+}
