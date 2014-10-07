@@ -9,6 +9,7 @@ use Nette\DI\Config\Helpers;
 use Nette\DI\ContainerBuilder;
 use Nette\Utils\Finder;
 use Nette;
+use WebLoader\FileNotFoundException;
 
 if (!class_exists('Nette\DI\CompilerExtension')) {
 	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
@@ -84,6 +85,10 @@ class Extension extends CompilerExtension
 				$wlConfig = Helpers::merge($wlConfig, $config[$type . 'Defaults']);
 				$this->addWebLoader($builder, $type . ucfirst($name), $wlConfig);
 				$loaderFactoryTempPaths[strtolower($name)] = $wlConfig['tempPath'];
+
+				if (!is_dir($wlConfig['tempDir']) || !is_writable($wlConfig['tempDir'])) {
+					throw new CompilationException(sprintf("You must create a writable directory '%s'", $wlConfig['tempDir']));
+				}
 			}
 		}
 
@@ -109,15 +114,18 @@ class Extension extends CompilerExtension
 				}
 
 				if (isset($file['in'])) {
-					$finder->in($file['in']);
+					$finder->in(is_dir($file['in']) ? $file['in'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['in']);
 				} else {
-					$finder->from($file['from']);
+					$finder->from(is_dir($file['from']) ? $file['from'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['from']);
 				}
 
 				foreach ($finder as $foundFile) {
-					$files->addSetup('addFile', array((string) $foundFile));
+					/** @var \SplFileInfo $foundFile */
+					$files->addSetup('addFile', array($foundFile->getPathname()));
 				}
+
 			} else {
+				$this->checkFileExists($file, $config['sourceDir']);
 				$files->addSetup('addFile', array($file));
 			}
 		}
@@ -160,6 +168,21 @@ class Extension extends CompilerExtension
 		$configurator->onCompile[] = function ($configurator, Compiler $compiler) use ($self) {
 			$compiler->addExtension($self::EXTENSION_NAME, $self);
 		};
+	}
+
+	/**
+	 * @param string $file
+	 * @param string $sourceDir
+	 * @throws FileNotFoundException
+	 */
+	protected function checkFileExists($file, $sourceDir)
+	{
+		if (!file_exists($file)) {
+			$tmp = rtrim($sourceDir, '/\\') . DIRECTORY_SEPARATOR . $file;
+			if (!file_exists($tmp)) {
+				throw new FileNotFoundException(sprintf("Neither '%s' or '%s' was found", $file, $tmp));
+			}
+		}
 	}
 
 }
