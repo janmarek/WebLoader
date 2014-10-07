@@ -114,9 +114,9 @@ class Extension extends CompilerExtension
 				}
 
 				if (isset($file['in'])) {
-					$finder->in($file['in']);
+					$finder->in(is_dir($file['in']) ? $file['in'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['in']);
 				} else {
-					$finder->from($file['from']);
+					$finder->from(is_dir($file['from']) ? $file['from'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['from']);
 				}
 
 				foreach ($finder as $foundFile) {
