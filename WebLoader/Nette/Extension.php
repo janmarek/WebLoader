@@ -81,8 +81,34 @@ class Extension extends CompilerExtension
 		$loaderFactoryTempPaths = array();
 
 		foreach (array('css', 'js') as $type) {
+			$defaultConfig = $config[$type . 'Defaults'];
 			foreach ($config[$type] as $name => $wlConfig) {
-				$wlConfig = Helpers::merge($wlConfig, $config[$type . 'Defaults']);
+				if (Helpers::isInheriting($wlConfig)) {
+					$parent = Helpers::takeParent($wlConfig);
+					if (!isset($config[$type][$parent])) {
+						throw new CompilationException(sprintf(
+							'The section %s.%s.%s inherits from %s.%s.%s, but the parent section is not defined.',
+							$this->name, $type, $name,
+							$this->name, $type, $parent
+						));
+					}
+
+					$parentConfig = Helpers::merge($defaultConfig, $config[$type][$parent]);
+
+					$mergedConfig = Helpers::merge($parentConfig, $wlConfig);
+					foreach ($mergedConfig as $key => $val) {
+						if (is_array($val) && isset($wlConfig[$key])) {
+							// the Helpers::merge puts the added files to the beginning, but we want them at the end
+							$mergedConfig[$key] = array_merge($parentConfig[$key], $wlConfig[$key]);
+						}
+					}
+
+					$wlConfig = $mergedConfig;
+
+				} else {
+					$wlConfig = Helpers::merge($wlConfig, $defaultConfig);
+				}
+
 				$this->addWebLoader($builder, $type . ucfirst($name), $wlConfig);
 				$loaderFactoryTempPaths[strtolower($name)] = $wlConfig['tempPath'];
 

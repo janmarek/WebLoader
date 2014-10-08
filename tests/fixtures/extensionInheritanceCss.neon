@@ -1,0 +1,27 @@
+services:
+  variablesFilter: WebLoader\Filter\VariablesFilter({foo: bar})
+
+webloader:
+  cssDefaults:
+    sourceDir: %fixturesDir%
+    tempDir: %tempDir%
+
+  css:
+    common:
+      remoteFiles:
+        - https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css
+
+      files:
+        - %fixturesDir%/dir/one.css
+        - dir/two.css
+
+      filters:
+        - @variablesFilter
+
+    front < common:
+      files:
+        - b.txt
+
+    admin < common:
+      files:
+        - a.txt
