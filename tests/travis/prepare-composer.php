@@ -1,10 +1,10 @@
 <?php
 
-$rootDir = __DIR__ . '/..';
-$testsDir = __DIR__;
+$rootDir = __DIR__ . '/../..';
+$travisDir = __DIR__;
 
 if (getenv('NETTE') !== 'default') {
-	$composerFile = $testsDir . '/composer-' . getenv('NETTE') . '.json';
+	$composerFile = $travisDir . '/composer-' . getenv('NETTE') . '.json';
 
 	unlink($rootDir . '/composer.json');
 	copy($composerFile, $rootDir . '/composer.json');
