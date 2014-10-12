@@ -32,6 +32,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$configurator->addParameters(array(
+			'wwwDir' =>  __DIR__ . '/..',
 			'fixturesDir' =>  __DIR__ . '/../fixtures',
 			'tempDir' => $tempDir,
 			'container' => array(
