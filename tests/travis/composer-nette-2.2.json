@@ -43,6 +43,8 @@
 		"latte/latte": "2.2.*",
 		"tracy/tracy": "2.2.*",
 
+		"leafo/lessphp": "~0.4",
+
 		"mockery/mockery": "0.7.*",
 		"phpunit/phpunit": "3.7.*",
 		"jakub-onderka/php-parallel-lint": "~0.7"

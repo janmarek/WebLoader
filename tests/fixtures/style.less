@@ -1,0 +1,41 @@
+@import 'style2.less';
+
+div.banners {
+  .clearFix();
+  padding: 0 0 20px;
+  margin: 0 10px;
+  border-bottom: @borderLight 1px solid;
+
+  & > div {
+    float: left;
+    width: 610px;
+    height: 194px;
+    background: @bgBanner;
+    margin: 20px 0 0 20px;
+    position: relative;
+
+    h3 {
+      width: auto;
+      color: @textRed;
+      font-weight: 600;
+      padding: 10px 20px;
+      margin: 10px 10px 0 10px;
+      text-shadow: 0 2px 0 rgba(0, 0, 0, .3);
+      display: inline-block;
+      font-size: 24px;
+    }
+
+    h3, p {
+      color: @white;
+    }
+    p {
+      font-size: 13px;
+      max-width: 360px;
+      padding: 10px;
+
+      strong {
+        font-weight: 600;
+      }
+    }
+  }
+}
