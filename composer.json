@@ -22,6 +22,8 @@
 		"leafo/lessphp": "Lessphp is a composer for LESS written in PHP."
 	},
 	"require-dev": {
+		"leafo/lessphp": "~0.4",
+
 		"mockery/mockery": "0.7.*",
 		"phpunit/phpunit": "3.7.*",
 		"jakub-onderka/php-parallel-lint": "~0.7"

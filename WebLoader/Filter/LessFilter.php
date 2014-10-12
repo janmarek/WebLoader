@@ -42,7 +42,7 @@ class LessFilter
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
 			$this->getLessC()->importDir = pathinfo($file, PATHINFO_DIRNAME) . '/';
-			return $this->getLessC()->parse($code);
+			return $this->getLessC()->compile($code);
 		}
 
 		return $code;

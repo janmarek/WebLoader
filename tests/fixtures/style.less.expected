@@ -1,0 +1,57 @@
+.clearFix {
+  display: block;
+  zoom: 1;
+}
+.clearFix:after {
+  content: " ";
+  display: block;
+  font-size: 0;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+div.banners {
+  display: block;
+  zoom: 1;
+  padding: 0 0 20px;
+  margin: 0 10px;
+  border-bottom: #f4f4f4 1px solid;
+}
+div.banners:after {
+  content: " ";
+  display: block;
+  font-size: 0;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+div.banners > div {
+  float: left;
+  width: 610px;
+  height: 194px;
+  background: #f9f2e8;
+  margin: 20px 0 0 20px;
+  position: relative;
+}
+div.banners > div h3 {
+  width: auto;
+  color: #be2025;
+  font-weight: 600;
+  padding: 10px 20px;
+  margin: 10px 10px 0 10px;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.3);
+  display: inline-block;
+  font-size: 24px;
+}
+div.banners > div h3,
+div.banners > div p {
+  color: #ffffff;
+}
+div.banners > div p {
+  font-size: 13px;
+  max-width: 360px;
+  padding: 10px;
+}
+div.banners > div p strong {
+  font-weight: 600;
+}
