@@ -4,11 +4,6 @@ namespace WebLoader\Test\Filter;
 
 use WebLoader\Filter\CssUrlsFilter;
 
-/**
- * CompilerTest
- *
- * @author Jan Marek
- */
 class CssUrlsFilterTest extends \PHPUnit_Framework_TestCase
 {
 

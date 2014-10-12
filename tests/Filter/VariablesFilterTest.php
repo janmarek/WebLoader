@@ -4,11 +4,6 @@ namespace WebLoader\Test\Filter;
 
 use WebLoader\Filter\VariablesFilter;
 
-/**
- * CompilerTest
- *
- * @author Jan Marek
- */
 class VariablesFilterTest extends \PHPUnit_Framework_TestCase
 {
 
