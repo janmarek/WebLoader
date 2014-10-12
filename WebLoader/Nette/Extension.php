@@ -2,30 +2,20 @@
 
 namespace WebLoader\Nette;
 
-use Nette\Configurator;
-use Nette\DI\Compiler;
-use Nette\DI\CompilerExtension;
-use Nette\DI\Config\Helpers;
+use Nette\Config\Compiler;
+use Nette\Config\Configurator;
+use Nette\Config\Helpers;
 use Nette\DI\ContainerBuilder;
 use Nette\Utils\Finder;
+use Nette\Utils\PhpGenerator as Code;
 use Nette;
 use WebLoader\FileNotFoundException;
-
-if (!class_exists('Nette\DI\CompilerExtension')) {
-	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
-	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
-	class_alias('Nette\Config\Helpers', 'Nette\DI\Config\Helpers');
-}
-
-if (!class_exists('Nette\Configurator')) {
-	class_alias('Nette\Config\Configurator', 'Nette\Configurator');
-}
 
 
 /**
  * @author Jan Marek
  */
-class Extension extends CompilerExtension
+class Extension extends Nette\Config\CompilerExtension
 {
 
 	const DEFAULT_TEMP_PATH = 'webtemp';
@@ -153,7 +143,7 @@ class Extension extends CompilerExtension
 		// todo css media
 	}
 
-	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	public function afterCompile(Code\ClassType $class)
 	{
 		$meta = $class->properties['meta'];
 		$meta->value['types']['webloader\\loaderfactory'] = $meta->value['types']['webloader\\nette\\loaderfactory'];

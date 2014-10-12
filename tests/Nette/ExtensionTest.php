@@ -2,14 +2,8 @@
 
 namespace WebLoader\Test\Nette;
 
+use Nette\Config\Configurator;
 use Nette\Utils\Finder;
-
-if (!class_exists('Nette\DI\CompilerExtension')) {
-	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
-	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
-	class_alias('Nette\Config\Helpers', 'Nette\DI\Config\Helpers');
-	class_alias('Nette\Config\Configurator', 'Nette\Configurator');
-}
 
 class ExtensionTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +18,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 			unlink((string) $file);
 		}
 
-		$configurator = new \Nette\Configurator();
+		$configurator = new Configurator();
 		$configurator->setTempDirectory($tempDir);
 
 		foreach ($configFiles as $file) {
