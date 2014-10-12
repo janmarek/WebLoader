@@ -1,13 +1,24 @@
 language: php
 
+env:
+  - NETTE=default # 2.0 dev
+  - NETTE=nette-2.0
+
 php:
   - 5.3
   - 5.4
   - 5.5
   - 5.6
+  - hhvm
+
+matrix:
+  allow_failures:
+    - php: hhvm
 
 before_script:
+  - php tests/prepare-composer.php
   - composer self-update
   - composer install --no-interaction --prefer-source --dev
+  - vendor/bin/parallel-lint -e php --exclude vendor .
 
-script: phpunit --configuration tests/phpunit.xml tests
+script: vendor/bin/phpunit --configuration tests/phpunit.xml tests
