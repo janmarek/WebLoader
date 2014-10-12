@@ -2,6 +2,7 @@
 	backupGlobals="false"
 	backupStaticAttributes="false"
 	bootstrap="bootstrap.php"
+	colors="true"
 	convertErrorsToExceptions="true"
 	convertNoticesToExceptions="true"
 	convertWarningsToExceptions="true">
