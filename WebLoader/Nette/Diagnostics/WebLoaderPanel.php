@@ -142,11 +142,11 @@ class WebLoaderPanel implements IBarPanel
 			return isset(static::$types[$extension]) ? static::$types[$extension] : $extension;
 		});
 
-		return $latte->renderToString(__DIR__ . '/WebLoaderPanel.latte', [
+		return $latte->renderToString(__DIR__ . '/WebLoaderPanel.latte', array(
 			'files' => $this->files,
 			'sizes' =>$this->sizes,
 			'size' => $this->size
-		]);
+		));
 	}
 	
 	/**
