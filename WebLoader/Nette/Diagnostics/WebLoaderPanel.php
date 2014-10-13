@@ -109,10 +109,10 @@ class WebLoaderPanel implements IBarPanel
 							'total' => 0,
 							'combined' => $combinedSize
 						),
-						'.' => [
+						'.' => array(
 							'total' => 0,
 							'combined' => 0
-						]
+						)
 					);
 				} elseif(!isset($this->sizes[$group][$extension])) {
 					$this->sizes[$group][$extension] = array(
