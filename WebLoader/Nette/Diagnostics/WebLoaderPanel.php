@@ -5,6 +5,7 @@ use Latte\Runtime\Filters;
 use Tracy\Debugger;
 use Tracy\IBarPanel;
 use WebLoader\Compiler;
+use Latte;
 
 /**
  * Debugger panel.
@@ -16,14 +17,11 @@ class WebLoaderPanel implements IBarPanel
 	/** @var Compiler[] */
 	private $compilers = array();
 	
-	/** @var int */
+	/** @var array */
 	private $size;
 	
 	/** @var array */
 	private $files;
-	
-	/** @var array */
-	private $remoteFiles;
 	
 	/** @var array */
 	private $sizes;
@@ -72,60 +70,61 @@ class WebLoaderPanel implements IBarPanel
 			return;
 		}
 		
-		$this->size = 0;
+		$this->size = array(
+			'total' => 0,
+			'combined' => 0
+		);
 		$this->files = array();
-		$this->remoteFiles = array();
 		$this->sizes = array();
 		
 		foreach ($this->compilers as $name => $compiler) {
 			
-			$this->size += $combinedSize = strlen($compiler->getContent());
+			$this->size['combined'] += $combinedSize = strlen($compiler->getContent());
+			$group = lcfirst(substr($name, $name[0] === 'c' ? 3 : 2));
 			
 			foreach ($compiler->getFileCollection()->getFiles() as $file) {
 				
-				$file = realpath($file);
+				$file = str_replace('\\', '/', realpath($file)); // woknajz
 				$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-				
-				if (!isset($this->files[$extension])) {
-					$this->files[$extension] = array();
+
+				if (!isset($this->files[$group])) {
+					$this->files[$group] = array(
+						$extension => array()
+					);
+				} elseif(!isset($this->files[$group][$extension])) {
+					$this->files[$group][$extension] = array();
 				}
 				
-				$this->files[$extension][] = array(
+				$this->files[$group][$extension][] = array(
 					'name' => substr($file, strlen($this->root)),
 					'full' => $file,
 					'size' => $size = filesize($file)
 				);
+
+				$this->size['total'] += $size;
 				
-				if (!isset($this->sizes[$extension])) {
-					$this->sizes[$extension] = array(
+				if (!isset($this->sizes[$group])) {
+					$this->sizes[$group] = array(
+						$extension => array(
+							'total' => 0,
+							'combined' => $combinedSize
+						),
+						'.' => [
+							'total' => 0,
+							'combined' => 0
+						]
+					);
+				} elseif(!isset($this->sizes[$group][$extension])) {
+					$this->sizes[$group][$extension] = array(
 						'total' => 0,
 						'combined' => $combinedSize
 					);
 				}
 				
-				$this->sizes[$extension]['total'] += $size;
-				
-			}
-			
-			foreach ($compiler->getFileCollection()->getRemoteFiles() as $file) {
-				
-				$url = parse_url($file);
-				$extension = strtolower(pathinfo($url['path'], PATHINFO_EXTENSION));
-				
-				// fixes http://fonts.googleapis.com/css?...
-				if (!$extension) {
-					$extension = strtolower(trim($url['path'], '/'));
-				}
+				$this->sizes[$group][$extension]['total'] += $size;
+				$this->sizes[$group]['.']['total'] += $size;
+				$this->sizes[$group]['.']['combined'] += $combinedSize;
 
-				if (!isset($this->remoteFiles[$extension])) {
-					$this->remoteFiles[$extension] = array();
-				}
-				
-				$this->remoteFiles[$extension][] = array(
-					'url' => (isset($url['scheme']) ? $url['scheme'] . ':' : '') . '//' . $url['host'] . $url['path'] . '?' . $url['query'],
-					'full' => $file
-				);
-				
 			}
 			
 		}
@@ -137,39 +136,17 @@ class WebLoaderPanel implements IBarPanel
 	 */
 	private function getTable()
 	{	
-		$table = '';
-		
-		foreach ($this->files as $extension => $files) {
-			
-			$type = isset(static::$types[$extension]) ? static::$types[$extension] : ('.' . $extension . ' files');
-			
-			$table .= '<h2>' . $type . ' (' . Filters::bytes($this->sizes[$extension]['total']) . ' total, ' . Filters::bytes($this->sizes[$extension]['combined']) . ' combined)</h2>';
-			$table .= '<table style="width: 100%;"><tr><th>File</th><th>Size</th></tr>';
-			
-			foreach ($files as $file) {
-				$table .= '<tr><td title="' . htmlspecialchars($file['full']) . '">' . htmlspecialchars($file['name']) . '</td><td>' . Filters::bytes($file['size']) . '</td></tr>';
-			}
-			
-			$table .= '</table>';
-			
-		}
-		
-		foreach ($this->remoteFiles as $extension => $files) {
-			
-			$type = 'Remote ' . (isset(static::$types[$extension]) ? static::$types[$extension] : ('.' . $extension . ' files'));
-			
-			$table .= '<h2>' . $type . '</h2>';
-			$table .= '<table style="width: 100%;"><tr><th>File URL</th></tr>';
-			
-			foreach ($files as $file) {
-				$table .= '<tr><td title="' . htmlspecialchars($file['full']) . '">' . htmlspecialchars($file['url']) . '</td></tr>';
-			}
-			
-			$table .= '</table>';
-			
-		}
-		
-		return $table;
+		$latte = new Latte\Engine;
+
+		$latte->addFilter('extension', function($extension) {
+			return isset(static::$types[$extension]) ? static::$types[$extension] : $extension;
+		});
+
+		return $latte->renderToString(__DIR__ . '/WebLoaderPanel.latte', [
+			'files' => $this->files,
+			'sizes' =>$this->sizes,
+			'size' => $this->size
+		]);
 	}
 	
 	/**
@@ -179,13 +156,7 @@ class WebLoaderPanel implements IBarPanel
 	public function getPanel()
 	{	
 		$this->compute();
-		
-		return $this->size ?
-			'<h1>WebLoader</h1>'
-			. '<div class="tracy-inner">'
-			. $this->getTable()
-			. '</div>'
-			: '';	
+		return $this->size ? $this->getTable() : '';
 	}
 
 	/**
@@ -200,7 +171,7 @@ class WebLoaderPanel implements IBarPanel
 		. '<img src="data:image/png;base64,'
 		. base64_encode(file_get_contents(__DIR__ . '/icon.png'))
 		. '" /> '
-		. Filters::bytes($this->size)
+		. Filters::bytes($this->size['combined'])
 		. '</span>';
 	}
 
