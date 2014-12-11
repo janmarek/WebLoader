@@ -28,9 +28,9 @@ class CssUrlsFilter
 		}
 
 		if ($basePath instanceof \Nette\Http\Request) {
-                    $this->basePath = $basePath->getUrl()->getBasePath();
+                    	$this->basePath = $basePath->getUrl()->getBasePath();
                 } else {
-                    $this->basePath = $basePath;
+                    	$this->basePath = $basePath;
                 }
 	}
 
