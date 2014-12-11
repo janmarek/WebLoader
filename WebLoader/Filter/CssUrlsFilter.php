@@ -11,13 +11,20 @@ namespace WebLoader\Filter;
 class CssUrlsFilter
 {
 
+	/**
+	 * @var string
+	 */
 	private $docRoot;
 
-	private $basePath;
+	/**
+	 * @var string
+	 */
+	protected $basePath;
 
 	/**
 	 * @param string $docRoot web document root
 	 * @param string $basePath base path
+	 * @throws \WebLoader\InvalidArgumentException
 	 */
 	public function __construct($docRoot, $basePath = '/')
 	{
@@ -27,6 +34,14 @@ class CssUrlsFilter
 			throw new \WebLoader\InvalidArgumentException('Given document root is not directory.');
 		}
 
+		$this->basePath = $basePath;
+	}
+
+	/**
+	 * @param string $basePath
+	 */
+	public function setBasePath($basePath)
+	{
 		$this->basePath = $basePath;
 	}
 
