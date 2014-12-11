@@ -27,11 +27,7 @@ class CssUrlsFilter
 			throw new \WebLoader\InvalidArgumentException('Given document root is not directory.');
 		}
 
-		if ($basePath instanceof \Nette\Http\Request) {
-                    	$this->basePath = $basePath->getUrl()->getBasePath();
-                } else {
-                    	$this->basePath = $basePath;
-                }
+		$this->basePath = $basePath instanceof \Nette\Http\Request ? $basePath->getUrl()->getBasePath() : $basePath;
 	}
 
 	/**
