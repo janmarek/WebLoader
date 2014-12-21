@@ -21,7 +21,7 @@
 		"nette/utils": "~2.2@dev"
 	},
 	"suggest": {
-		"leafo/lessphp": "Lessphp is a composer for LESS written in PHP.",
+		"oyejorge/less.php": "Lessphp is a composer for LESS written in PHP.",
 		"leafo/scssphp": "Scssphp is a composer for SCSS written in PHP."
 	},
 	"require-dev": {
@@ -44,7 +44,7 @@
 		"latte/latte": "~2.2@dev",
 		"tracy/tracy": "~2.2@dev",
 
-		"leafo/lessphp": "~0.4",
+		"oyejorge/less.php": "~1.5",
 		"leafo/scssphp": "~0.1",
 
 		"mockery/mockery": "0.7.*",
