@@ -14,7 +14,7 @@ class Compiler
 	private $outputDir;
 
 	/** @var bool */
-	private $joinFiles = true;
+	private $joinFiles = TRUE;
 
 	/** @var array */
 	private $filters = array();
@@ -29,7 +29,7 @@ class Compiler
 	private $namingConvention;
 
 	/** @var bool */
-	private $checkLastModified = true;
+	private $checkLastModified = TRUE;
 
 	public function __construct(IFileCollection $files, IOutputNamingConvention $convention, $outputDir)
 	{
@@ -78,7 +78,7 @@ class Compiler
 		$tempPath = Path::normalize($tempPath);
 
 		if (!is_dir($tempPath)) {
-			throw new FileNotFoundException('Temp path does not exist.');
+			throw new FileNotFoundException("Temp path '$tempPath' does not exist.");
 		}
 
 		if (!is_writable($tempPath)) {
@@ -167,14 +167,21 @@ class Compiler
 	 */
 	public function generate($ifModified = TRUE)
 	{
+		$files = $this->collection->getFiles();
+
+		if (!count($files)) {
+			return array();
+		}
+
 		if ($this->joinFiles) {
 			return array(
-				$this->generateFiles($this->collection->getFiles(), $ifModified)
+				$this->generateFiles($files, $ifModified),
 			);
+
 		} else {
 			$arr = array();
 
-			foreach ($this->collection->getFiles() as $file) {
+			foreach ($files as $file) {
 				$arr[] = $this->generateFiles(array($file), $ifModified);
 			}
 

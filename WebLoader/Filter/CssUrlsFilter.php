@@ -7,8 +7,6 @@ namespace WebLoader\Filter;
  *
  * @author Jan Marek
  * @license MIT
- *
- * @deprecated
  */
 class CssUrlsFilter
 {
@@ -100,6 +98,7 @@ class CssUrlsFilter
 			url\(                                     ## url(
 				\s*                                   ##   optional whitespace
 				([\'"])?                              ##   optional single/double quote
+				(?!data:)                             ##   keep data URIs
 				(   (?: (?:\\\\.)+                    ##     escape sequences
 					|   [^\'"\\\\,()\s]+              ##     safe characters
 					|   (?(1)   (?!\1)[\'"\\\\,() \t] ##       allowed special characters

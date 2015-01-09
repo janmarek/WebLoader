@@ -25,6 +25,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$configurator->addParameters(array(
+			'wwwDir' =>  __DIR__ . '/..',
 			'fixturesDir' =>  __DIR__ . '/../fixtures',
 			'tempDir' => $tempDir,
 			'container' => array(
@@ -35,7 +36,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$extension = new \WebLoader\Nette\Extension();
 		$extension->install($configurator);
 
-		$this->container = $configurator->createContainer();
+		$this->container = @$configurator->createContainer(); // sends header X-Powered-By, ...
 	}
 
 	public function testJsCompilerService()

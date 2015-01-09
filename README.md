@@ -45,8 +45,7 @@ Template:
 Example with Nette Framework extension used
 -------------------------------------------
 
-
-Configuration in config.neon:
+Configuration in `app/config/config.neon`:
 
 ```html
 extensions:
@@ -65,53 +64,49 @@ webloader:
 			files:
 				- style.css
 				- {files: ["*.css", "*.less"], from: %appDir%/presenters} # Nette\Utils\Finder support
-			filters:
-				- @wlCssFilter
 			fileFilters:
 				- @lessFilter
+				- @wlCssFilter
 	js:
 		default:
 			remoteFiles:
 				- http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js
 				- http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js
 			files:
-				- %appDir%/../libs/nette/nette/client-side/forms/netteForms.js
+				- %appDir%/../libs/nette/nette/client-side/netteForms.js
 				- web.js
 ```
 
-BasePresenter.php:
+For older versions of Nette, you have to register the extension in `app/bootstrap.php`:
 
 ```php
-	/** @var CssLoader */
-	private $cssLoader;
+$webloaderExtension = new \WebLoader\Nette\Extension();
+$webloaderExtension->install($configurator);
+```
 
-	/** @var JavaScriptLoader */
-	private $jsLoader;
+Usage in `app/presenters/BasePresenter.php`:
 
+```php
+	/** @var \WebLoader\Nette\LoaderFactory @inject */
+	public $webLoader;
 
-	/**
-	 * @param CssLoader $cssLoader
-	 * @param JavaScriptLoader $jsLoader
-	 */
-	public function injectWebloaders(CssLoader $cssLoader, JavaScriptLoader $jsLoader)
+	/** @return CssLoader */
+	protected function createComponentCss()
 	{
-		$this->cssLoader = $cssLoader;
-		$this->jsLoader = $jsLoader;
+		return $this->webLoader->createCssLoader('default');
 	}
 
-	/**
-	 * @return CssLoader
-	 */
-	public function createComponentCss()
+	/** @return JavaScriptLoader */
+	protected function createComponentJs()
 	{
-		return $this->cssLoader;
+		return $this->webLoader->createJavaScriptLoader('default');
 	}
+```
 
-	/**
-	 * @return JavaScriptLoader
-	 */
-	public function createComponentJs()
-	{
-		return $this->jsLoader;
-	}
+
+Template:
+
+```html
+{control css}
+{control js}
 ```

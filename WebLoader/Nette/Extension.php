@@ -2,24 +2,24 @@
 
 namespace WebLoader\Nette;
 
-// from Kdyby
-if (!class_exists('Nette\DI\CompilerExtension')) {
-	class_alias('Nette\Config\CompilerExtension', 'Nette\DI\CompilerExtension');
-	class_alias('Nette\Config\Compiler', 'Nette\DI\Compiler');
-	class_alias('Nette\Config\Helpers', 'Nette\DI\Config\Helpers');
-}
+use Nette\Configurator;
+use Nette\DI\Compiler;
+use Nette\DI\CompilerExtension;
+use Nette\DI\Config\Helpers;
+use Nette\DI\ContainerBuilder;
+use Nette\Utils\Finder;
+use Nette;
+use WebLoader\FileNotFoundException;
 
-if (isset(\Nette\Loaders\NetteLoader::getInstance()->renamed['Nette\Configurator']) || !class_exists('Nette\Configurator')) {
-	unset(\Nette\Loaders\NetteLoader::getInstance()->renamed['Nette\Configurator']); // fuck you
-	class_alias('Nette\Config\Configurator', 'Nette\Configurator');
-}
+
 
 /**
  * @author Jan Marek
  */
-class Extension extends \Nette\DI\CompilerExtension
+class Extension extends CompilerExtension
 {
 
+	const DEFAULT_TEMP_PATH = 'webtemp';
 	const EXTENSION_NAME = 'webloader';
 
 	public function getDefaultConfig()
@@ -28,8 +28,8 @@ class Extension extends \Nette\DI\CompilerExtension
 			'jsDefaults' => array(
 				'factory' => 'createJavaScriptLoader',
 				'sourceDir' => '%wwwDir%/js',
-				'tempDir' => '%wwwDir%/webtemp',
-				'tempPath' => 'webtemp',
+				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
+				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
@@ -40,8 +40,8 @@ class Extension extends \Nette\DI\CompilerExtension
 			'cssDefaults' => array(
 				'factory' => 'createCssLoader',
 				'sourceDir' => '%wwwDir%/css',
-				'tempDir' => '%wwwDir%/webtemp',
-				'tempPath' => 'webtemp',
+				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
+				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
@@ -71,19 +71,25 @@ class Extension extends \Nette\DI\CompilerExtension
 
 		$builder->parameters['webloader'] = $config;
 
-		$builder->addDefinition($this->prefix('factory'))
-			->setClass('WebLoader\LoaderFactory');
-
+		$loaderFactoryTempPaths = array();
 
 		foreach (array('css', 'js') as $type) {
 			foreach ($config[$type] as $name => $wlConfig) {
-				$configDefault = $config[$type . 'Defaults'];
-				$this->addWebLoader($builder, $type . ucfirst($name), array_merge($configDefault, $wlConfig));
+				$wlConfig = Helpers::merge($wlConfig, $config[$type . 'Defaults']);
+				$this->addWebLoader($builder, $type . ucfirst($name), $wlConfig);
+				$loaderFactoryTempPaths[strtolower($name)] = $wlConfig['tempPath'];
+
+				if (!is_dir($wlConfig['tempDir']) || !is_writable($wlConfig['tempDir'])) {
+					throw new CompilationException(sprintf("You must create a writable directory '%s'", $wlConfig['tempDir']));
+				}
 			}
 		}
+
+		$builder->addDefinition($this->prefix('factory'))
+			->setClass('WebLoader\Nette\LoaderFactory', array($loaderFactoryTempPaths));
 	}
 
-	private function addWebLoader(\Nette\DI\ContainerBuilder $builder, $name, $config)
+	private function addWebLoader(ContainerBuilder $builder, $name, $config)
 	{
 		$filesServiceName = $this->prefix($name . 'Files');
 
@@ -94,22 +100,25 @@ class Extension extends \Nette\DI\CompilerExtension
 		foreach ($config['files'] as $file) {
 			// finder support
 			if (is_array($file) && isset($file['files']) && (isset($file['in']) || isset($file['from']))) {
-				$finder = \Nette\Utils\Finder::findFiles($file['files']);
+				$finder = Finder::findFiles($file['files']);
 
 				if (isset($file['exclude'])) {
 					$finder->exclude($file['exclude']);
 				}
 
 				if (isset($file['in'])) {
-					$finder->in($file['in']);
+					$finder->in(is_dir($file['in']) ? $file['in'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['in']);
 				} else {
-					$finder->from($file['from']);
+					$finder->from(is_dir($file['from']) ? $file['from'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['from']);
 				}
 
 				foreach ($finder as $foundFile) {
-					$files->addSetup('addFile', array((string) $foundFile));
+					/** @var \SplFileInfo $foundFile */
+					$files->addSetup('addFile', array($foundFile->getPathname()));
 				}
+
 			} else {
+				$this->checkFileExists($file, $config['sourceDir']);
 				$files->addSetup('addFile', array($file));
 			}
 		}
@@ -146,12 +155,36 @@ class Extension extends \Nette\DI\CompilerExtension
 		// todo css media
 	}
 
-	public function install(\Nette\Configurator $configurator)
+	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	{
+		$meta = $class->properties['meta'];
+		$meta->value['types']['webloader\\loaderfactory'] = $meta->value['types']['webloader\\nette\\loaderfactory'];
+
+		$init = $class->methods['initialize'];
+		$init->addBody('if (!class_exists(?, ?)) class_alias(?, ?);', array('WebLoader\\LoaderFactory', FALSE, 'WebLoader\\Nette\\LoaderFactory', 'WebLoader\\LoaderFactory'));
+	}
+
+	public function install(Configurator $configurator)
 	{
 		$self = $this;
-		$configurator->onCompile[] = function ($configurator, $compiler) use ($self) {
+		$configurator->onCompile[] = function ($configurator, Compiler $compiler) use ($self) {
 			$compiler->addExtension($self::EXTENSION_NAME, $self);
 		};
+	}
+
+	/**
+	 * @param string $file
+	 * @param string $sourceDir
+	 * @throws FileNotFoundException
+	 */
+	protected function checkFileExists($file, $sourceDir)
+	{
+		if (!file_exists($file)) {
+			$tmp = rtrim($sourceDir, '/\\') . DIRECTORY_SEPARATOR . $file;
+			if (!file_exists($tmp)) {
+				throw new FileNotFoundException(sprintf("Neither '%s' or '%s' was found", $file, $tmp));
+			}
+		}
 	}
 
 }
