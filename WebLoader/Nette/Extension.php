@@ -26,7 +26,7 @@ class Extension extends CompilerExtension
 	{
 		return array(
 			'jsDefaults' => array(
-				'factory' => 'createJavaScriptLoader',
+				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/js',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
@@ -38,7 +38,7 @@ class Extension extends CompilerExtension
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
 			),
 			'cssDefaults' => array(
-				'factory' => 'createCssLoader',
+				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/css',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
@@ -143,13 +143,8 @@ class Extension extends CompilerExtension
 			$compiler->addSetup('addFileFilter', array($filter));
 		}
 
-		if (isset($config['factory'])) {
-			$builder->addDefinition($this->prefix($name . 'Loader'))
-				->setFactory('@' . $this->prefix('factory') . '::' . $config['factory'])
-				->setArguments(array(
-					$builder->getDefinition($this->prefix($name . 'Compiler')),
-					$config['tempPath']
-				));
+		if(isset($config['debug']) && $config['debug']) {
+			$compiler->addSetup('enableDebugging');
 		}
 
 		// todo css media

@@ -55,9 +55,6 @@ services:
 	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
 	lessFilter: WebLoader\Filter\LessFilter
 
-	cssLoader: @webloader.cssDefaultLoader
-	jsLoader: @webloader.jsDefaultLoader
-
 webloader:
 	css:
 		default:

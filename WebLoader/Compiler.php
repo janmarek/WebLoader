@@ -31,6 +31,9 @@ class Compiler
 	/** @var bool */
 	private $checkLastModified = TRUE;
 
+	/** @var bool */
+	private $debugging = FALSE;
+
 	public function __construct(IFileCollection $files, IOutputNamingConvention $convention, $outputDir)
 	{
 		$this->collection = $files;
@@ -58,6 +61,15 @@ class Compiler
 	public static function createJsCompiler(IFileCollection $files, $outputDir)
 	{
 		return new static($files, DefaultOutputNamingConvention::createJsConvention(), $outputDir);
+	}
+
+
+	/**
+	 * @param bool $allow
+	 */
+	public function enableDebugging($allow = TRUE)
+	{
+		$this->debugging = (bool) $allow;
 	}
 
 	/**
@@ -195,7 +207,7 @@ class Compiler
 		$path = $this->outputDir . '/' . $name;
 		$lastModified = $this->checkLastModified ? $this->getLastModified($files) : 0;
 
-		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path)) {
+		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path) || $this->debugging === TRUE) {
 			$outPath = in_array('safe', stream_get_wrappers()) ? 'safe://' . $path : $path;
 			file_put_contents($outPath, $this->getContent($files));
 		}
