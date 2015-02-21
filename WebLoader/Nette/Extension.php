@@ -112,9 +112,17 @@ class Extension extends CompilerExtension
 					$finder->from(is_dir($file['from']) ? $file['from'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['from']);
 				}
 
+				$foundFilesList = array();
+
 				foreach ($finder as $foundFile) {
 					/** @var \SplFileInfo $foundFile */
-					$files->addSetup('addFile', array($foundFile->getPathname()));
+					$foundFilesList[] = $foundFile->getPathname();
+				}
+
+				sort($foundFilesList);
+
+				foreach ($foundFilesList as $foundFilePathname) {
+					$files->addSetup('addFile', array($foundFilePathname));
 				}
 
 			} else {
