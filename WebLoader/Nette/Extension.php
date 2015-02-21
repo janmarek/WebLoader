@@ -26,6 +26,7 @@ class Extension extends CompilerExtension
 	{
 		return array(
 			'jsDefaults' => array(
+				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/js',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
@@ -37,6 +38,7 @@ class Extension extends CompilerExtension
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
 			),
 			'cssDefaults' => array(
+				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/css',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
@@ -139,6 +141,10 @@ class Extension extends CompilerExtension
 
 		foreach ($config['fileFilters'] as $filter) {
 			$compiler->addSetup('addFileFilter', array($filter));
+		}
+
+		if (isset($config['debug']) && $config['debug']) {
+			$compiler->addSetup('enableDebugging');
 		}
 
 		// todo css media
