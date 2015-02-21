@@ -10,7 +10,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 	/** @var \Nette\DI\Container */
 	private $container;
 
-	private function prepareContainer($class, $configFiles)
+	private function prepareContainer($configFiles)
 	{
 		$tempDir = __DIR__ . '/../temp';
 		foreach (Finder::findFiles('*')->exclude('.gitignore')->from($tempDir . '/cache') as $file) {
@@ -28,9 +28,6 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 			'wwwDir' =>  __DIR__ . '/..',
 			'fixturesDir' =>  __DIR__ . '/../fixtures',
 			'tempDir' => $tempDir,
-			'container' => array(
-				'class' => $class,
-			),
 		));
 
 		$extension = new \WebLoader\Nette\Extension();
@@ -41,13 +38,13 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
 	public function testJsCompilerService()
 	{
-		$this->prepareContainer('JsCompilerServiceContainer', array(__DIR__ . '/../fixtures/extension.neon'));
+		$this->prepareContainer(array(__DIR__ . '/../fixtures/extension.neon'));
 		$this->assertInstanceOf('WebLoader\Compiler', $this->container->getService('webloader.jsDefaultCompiler'));
 	}
 
 	public function testExcludeFiles()
 	{
-		$this->prepareContainer('ExcludeFilesContainer', array(__DIR__ . '/../fixtures/extension.neon'));
+		$this->prepareContainer(array(__DIR__ . '/../fixtures/extension.neon'));
 		$files = $this->container->getService('webloader.jsExcludeCompiler')->getFileCollection()->getFiles();
 
 		$this->assertTrue(in_array(realpath(__DIR__ . '/../fixtures/a.txt'), $files));
@@ -56,7 +53,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
 	public function testJoinFilesOn()
 	{
-		$this->prepareContainer('JoinFilesOnContainer', array(
+		$this->prepareContainer(array(
 			__DIR__ . '/../fixtures/extension.neon',
 			__DIR__ . '/../fixtures/extensionJoinFilesTrue.neon',
 		));
@@ -65,7 +62,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
 	public function testJoinFilesOff()
 	{
-		$this->prepareContainer('JoinFilesOffContainer', array(
+		$this->prepareContainer(array(
 			__DIR__ . '/../fixtures/extension.neon',
 			__DIR__ . '/../fixtures/extensionJoinFilesFalse.neon',
 		));
@@ -74,7 +71,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 
 	public function testJoinFilesOffInOneService()
 	{
-		$this->prepareContainer('JoinFilesOffInOneServiceContainer', array(
+		$this->prepareContainer(array(
 			__DIR__ . '/../fixtures/extension.neon',
 		));
 		$this->assertFalse($this->container->getService('webloader.cssJoinOffCompiler')->getJoinFiles());
