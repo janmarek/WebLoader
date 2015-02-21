@@ -161,7 +161,12 @@ class Extension extends CompilerExtension
 	public function afterCompile(Nette\PhpGenerator\ClassType $class)
 	{
 		$meta = $class->properties['meta'];
-		$meta->value['types']['webloader\\loaderfactory'] = $meta->value['types']['webloader\\nette\\loaderfactory'];
+		if (array_key_exists('webloader\\nette\\loaderfactory', $meta->value['types'])) {
+			$meta->value['types']['webloader\\loaderfactory'] = $meta->value['types']['webloader\\nette\\loaderfactory'];
+		}
+		if (array_key_exists('WebLoader\\Nette\\LoaderFactory', $meta->value['types'])) {
+			$meta->value['types']['WebLoader\\LoaderFactory'] = $meta->value['types']['WebLoader\\Nette\\LoaderFactory'];
+		}
 
 		$init = $class->methods['initialize'];
 		$init->addBody('if (!class_exists(?, ?)) class_alias(?, ?);', array('WebLoader\\LoaderFactory', FALSE, 'WebLoader\\Nette\\LoaderFactory', 'WebLoader\\LoaderFactory'));
