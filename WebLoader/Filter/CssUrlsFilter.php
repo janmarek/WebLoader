@@ -17,7 +17,7 @@ class CssUrlsFilter
 
 	/**
 	 * @param string $docRoot web document root
-	 * @param string $basePath base path
+	 * @param string|\Nette\Http\Request $basePath base path
 	 */
 	public function __construct($docRoot, $basePath = '/')
 	{
@@ -27,7 +27,7 @@ class CssUrlsFilter
 			throw new \WebLoader\InvalidArgumentException('Given document root is not directory.');
 		}
 
-		$this->basePath = $basePath;
+		$this->basePath = $basePath instanceof \Nette\Http\Request ? $basePath->getUrl()->getBasePath() : $basePath;
 	}
 
 	/**
