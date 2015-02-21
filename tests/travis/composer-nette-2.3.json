@@ -1,0 +1,57 @@
+{
+	"name": "janmarek/webloader",
+	"description": "Tool for loading or deploying CSS and JS files into web pages",
+	"keywords": ["webloader", "css", "javascript", "assets", "nette"],
+	"homepage": "http://addons.nette.org/cs/webloader",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jan Marek",
+			"email": "mail@janmarek.net"
+		}
+	],
+	"autoload": {
+		"psr-0": {
+			"WebLoader": ""
+		}
+	},
+	"require": {
+		"nette/application": "2.3.*@rc",
+		"nette/di": "2.3.*@rc",
+		"nette/utils": "2.3.*@rc"
+	},
+	"suggest": {
+		"oyejorge/less.php": "Lessphp is a composer for LESS written in PHP.",
+		"leafo/lessphp": "Lessphp is a composer for LESS written in PHP."
+	},
+	"require-dev": {
+		"nette/application": "2.3.*@rc",
+		"nette/bootstrap": "2.3.*@rc",
+		"nette/caching": "2.3.*@rc",
+		"nette/component-model": "~2.2@rc",
+		"nette/database": "2.3.*@rc",
+		"nette/deprecated": "~2.2@rc",
+		"nette/di": "2.3.*@rc",
+		"nette/finder": "2.3.*@rc",
+		"nette/forms": "2.3.*@rc",
+		"nette/http": "2.3.*@rc",
+		"nette/mail": "2.3.*@rc",
+		"nette/neon": "2.3.*@rc",
+		"nette/php-generator": "2.3.*@rc",
+		"nette/reflection": "2.3.*@rc",
+		"nette/robot-loader": "2.3.*@rc",
+		"nette/safe-stream": "2.3.*@rc",
+		"nette/security": "2.3.*@rc",
+		"nette/tokenizer": "~2.2@rc",
+		"nette/utils": "2.3.*@rc",
+		"latte/latte": "2.3.*@rc",
+		"tracy/tracy": "2.3.*@rc",
+
+		"oyejorge/less.php": "~1.5",
+		"leafo/scssphp": "~0.1",
+
+		"mockery/mockery": "0.7.*",
+		"phpunit/phpunit": "3.7.*",
+		"jakub-onderka/php-parallel-lint": "~0.7"
+	}
+}
