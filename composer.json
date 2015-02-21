@@ -53,7 +53,7 @@
 	},
 	"extra": {
 		"branch-alias": {
-			"dev-nette-2.1": "2.3-dev"
+			"dev-nette-2.2": "2.3-dev"
 		}
 	}
 }
