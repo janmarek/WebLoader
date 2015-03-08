@@ -12,12 +12,14 @@ class Process
 {
 
 	/**
-	 * @param string
-	 * @param string|NULL
+	 * @param string $cmd
+	 * @param string|NULL $stdin
+	 * @param string|NULL $cwd
+	 * @param array|NULL $env
 	 * @return string
 	 * @throws \RuntimeExeption
 	 */
-	public static function run($cmd, $stdin = NULL)
+	public static function run($cmd, $stdin = NULL, $cwd = NULL, array $env = NULL)
 	{
 		$descriptorspec = array(
 			0 => array('pipe', 'r'), // stdin
@@ -26,7 +28,7 @@ class Process
 		);
 
 		$pipes = array();
-		$proc = proc_open($cmd, $descriptorspec, $pipes);
+		$proc = proc_open($cmd, $descriptorspec, $pipes, $cwd, $env);
 
 		if (!empty($stdin)) {
 			fwrite($pipes[0], $stdin . PHP_EOL);
