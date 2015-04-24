@@ -128,10 +128,12 @@ class CssUrlsFilter
 
 		$self = $this;
 
-		return preg_replace_callback($regexp, function ($matches) use ($self, $file)
+		$absolutized = preg_replace_callback($regexp, function ($matches) use ($self, $file)
 		{
 			return "url('" . $self->absolutizeUrl($matches[2], $matches[1], $file) . "')";
 		}, $code);
+
+		return $absolutized ? $absolutized : $code;
 	}
 
 }
