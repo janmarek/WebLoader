@@ -141,8 +141,8 @@ class FileCollection implements IFileCollection
 	public function clear()
 	{
 		$this->files = array();
-		$this->remoteFiles = array();
 		$this->watchFiles = array();
+		$this->remoteFiles = array();
 	}
 
 	/**
