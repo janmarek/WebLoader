@@ -24,6 +24,11 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 			__DIR__ . '/fixtures/b.txt',
 			__DIR__ . '/fixtures/c.txt',
 		));
+		$fileCollection->shouldReceive('getWatchFiles')->andReturn(array(
+			__DIR__ . '/fixtures/a.txt',
+			__DIR__ . '/fixtures/b.txt',
+			__DIR__ . '/fixtures/c.txt',
+		));
 
 		$convention = Mockery::mock('WebLoader\IOutputNamingConvention');
 		$convention->shouldReceive('getFilename')->andReturnUsing(function ($files, $compiler) {
