@@ -23,4 +23,8 @@ interface IFileCollection
 	 */
 	public function getRemoteFiles();
 
+	/**
+	 * @return array
+	 */
+	public function getWatchFiles();
 }
