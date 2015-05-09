@@ -17,6 +17,9 @@ class FileCollection implements IFileCollection
 	private $files = array();
 
 	/** @var array */
+	private $watchFiles = array();
+
+	/** @var array */
 	private $remoteFiles = array();
 
 	/**
@@ -138,6 +141,7 @@ class FileCollection implements IFileCollection
 	public function clear()
 	{
 		$this->files = array();
+		$this->watchFiles = array();
 		$this->remoteFiles = array();
 	}
 
@@ -157,4 +161,36 @@ class FileCollection implements IFileCollection
 		return $this->root;
 	}
 
+	/**
+	 * Add watch file
+	 * @param $file string filename
+	 */
+	public function addWatchFile($file)
+	{
+		if (in_array($file, $this->watchFiles)) {
+			return;
+		}
+
+		$this->watchFiles[] = $file;
+	}
+
+	/**
+	 * Add watch files
+	 * @param array|\Traversable $files array list of files
+	 */
+	public function addWatchFiles($files)
+	{
+		foreach ($files as $file) {
+			$this->addWatchFile($file);
+		}
+	}
+
+	/**
+	 * Get watch file list
+	 * @return array
+	 */
+	public function getWatchFiles()
+	{
+		return array_values($this->watchFiles);
+	}
 }
