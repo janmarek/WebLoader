@@ -1,4 +1,4 @@
-﻿WebLoader [![Build Status](https://secure.travis-ci.org/janmarek/WebLoader.png?branch=master)](http://travis-ci.org/janmarek/WebLoader)
+﻿WebLoader [![Build Status](https://travis-ci.org/geniv/WebLoader.svg?branch=master)](http://travis-ci.org/geniv/WebLoader)
 =======================
 
 Component for CSS and JS files loading
