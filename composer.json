@@ -1,5 +1,5 @@
 {
-	"name": "janmarek/webloader",
+	"name": "geniv/webloader",
 	"description": "Tool for loading or deploying CSS and JS files into web pages",
 	"keywords": ["webloader", "css", "javascript", "assets", "nette"],
 	"homepage": "http://addons.nette.org/cs/webloader",
