@@ -38,7 +38,7 @@ class LessBinFilter
 	public function __invoke($code, \WebLoader\Compiler $loader, $file)
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'less') {
-			$code = Process::run("{$this->bin} -", $code, dirname($file), $this->env);;
+			$code = Process::run("{$this->bin} -", $code, dirname($file), $this->env);
 		}
 
 		return $code;
