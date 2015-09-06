@@ -26,6 +26,7 @@ class Extension extends CompilerExtension
 	{
 		return array(
 			'jsDefaults' => array(
+				'checkLastModified' => TRUE,
 				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/js',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
@@ -39,6 +40,7 @@ class Extension extends CompilerExtension
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
 			),
 			'cssDefaults' => array(
+				'checkLastModified' => TRUE,
 				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/css',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
@@ -144,6 +146,8 @@ class Extension extends CompilerExtension
 		if (isset($config['debug']) && $config['debug']) {
 			$compiler->addSetup('enableDebugging');
 		}
+
+		$compiler->addSetup('setCheckLastModified', array($config['checkLastModified']));
 
 		// todo css media
 	}
