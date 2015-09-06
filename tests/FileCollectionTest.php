@@ -76,10 +76,12 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->object->addFile('a.txt');
 		$this->object->addRemoteFile('http://jquery.com/jquery.js');
+		$this->object->addWatchFile('b.txt');
 		$this->object->clear();
 
 		$this->assertEquals(array(), $this->object->getFiles());
 		$this->assertEquals(array(), $this->object->getRemoteFiles());
+		$this->assertEquals(array(), $this->object->getWatchFiles());
 	}
 
 	public function testRemoteFiles()
@@ -95,6 +97,19 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 			'http://google.com/angular.js',
 		);
 		$this->assertEquals($expected, $this->object->getRemoteFiles());
+	}
+
+	public function testWarchFiles()
+	{
+		$this->object->addWatchFile(__DIR__ . '/fixtures/a.txt');
+		$this->object->addWatchFile(__DIR__ . '/fixtures/b.txt');
+		$this->object->addWatchFiles(array(__DIR__ . '/fixtures/c.txt'));
+		$expected = array(
+			__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'a.txt',
+			__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'b.txt',
+			__DIR__ . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'c.txt',
+		);
+		$this->assertEqualPaths($expected, $this->object->getWatchFiles());
 	}
 
 	public function testTraversableFiles()

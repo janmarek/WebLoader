@@ -1,4 +1,4 @@
-﻿WebLoader [![Build Status](https://secure.travis-ci.org/janmarek/WebLoader.png?branch=master)](http://travis-ci.org/janmarek/WebLoader)
+﻿WebLoader [![Build Status](https://travis-ci.org/geniv/WebLoader.svg?branch=master)](http://travis-ci.org/geniv/WebLoader)
 =======================
 
 Component for CSS and JS files loading
@@ -21,6 +21,8 @@ protected function createComponentCss()
 		'style.css',
 		WWW_DIR . '/colorbox/colorbox.css',
 	));
+
+	$files->addWatchFiles(Finder::findFiles('*.css', '*.less')->in(WWW_DIR . '/css'));
 
 	$compiler = WebLoader\Compiler::createCssCompiler($files, WWW_DIR . '/temp');
 
@@ -54,6 +56,7 @@ extensions:
 services:
 	wlCssFilter: WebLoader\Filter\CssUrlsFilter(%wwwDir%)
 	lessFilter: WebLoader\Filter\LessFilter
+	jwlCssMinFilter: Joseki\Webloader\CssMinFilter
 
 webloader:
 	css:
@@ -61,9 +64,15 @@ webloader:
 			files:
 				- style.css
 				- {files: ["*.css", "*.less"], from: %appDir%/presenters} # Nette\Utils\Finder support
+			filters:
+				- @jwlCssMinFilter
 			fileFilters:
 				- @lessFilter
 				- @wlCssFilter
+			watchFiles:		# only watch modify file
+				- {files: ["*.css", "*.less"], from: css}
+				- {files: ["*.css", "*.less"], in: css}
+
 	js:
 		default:
 			remoteFiles:

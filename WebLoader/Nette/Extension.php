@@ -31,6 +31,7 @@ class Extension extends CompilerExtension
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
+				'watchFiles' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
 				'fileFilters' => array(),
@@ -43,6 +44,7 @@ class Extension extends CompilerExtension
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
+				'watchFiles' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
 				'fileFilters' => array(),
@@ -126,7 +128,7 @@ class Extension extends CompilerExtension
 					$foundFilesList[] = $foundFile->getPathname();
 				}
 
-				sort($foundFilesList);
+				natsort($foundFilesList);
 
 				foreach ($foundFilesList as $foundFilePathname) {
 					$files->addSetup('addFile', array($foundFilePathname));
@@ -135,6 +137,32 @@ class Extension extends CompilerExtension
 			} else {
 				$this->checkFileExists($file, $config['sourceDir']);
 				$files->addSetup('addFile', array($file));
+			}
+		}
+
+		foreach ($config['watchFiles'] as $file) {
+			// finder support
+			if (is_array($file) && isset($file['files']) && (isset($file['in']) || isset($file['from']))) {
+				$finder = Finder::findFiles($file['files']);
+
+				if (isset($file['exclude'])) {
+					$finder->exclude($file['exclude']);
+				}
+
+				if (isset($file['in'])) {
+					$finder->in(is_dir($file['in']) ? $file['in'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['in']);
+				} else {
+					$finder->from(is_dir($file['from']) ? $file['from'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['from']);
+				}
+
+				foreach ($finder as $foundFile) {
+					/** @var \SplFileInfo $foundFile */
+					$files->addSetup('addWatchFile', array($foundFile->getPathname()));
+				}
+
+			} else {
+				$this->checkFileExists($file, $config['sourceDir']);
+				$files->addSetup('addWatchFile', array($file));
 			}
 		}
 
