@@ -126,7 +126,7 @@ class Extension extends CompilerExtension
 					$foundFilesList[] = $foundFile->getPathname();
 				}
 
-				sort($foundFilesList);
+				natsort($foundFilesList);
 
 				foreach ($foundFilesList as $foundFilePathname) {
 					$files->addSetup('addFile', array($foundFilePathname));
