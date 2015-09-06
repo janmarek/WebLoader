@@ -31,6 +31,7 @@ class Extension extends CompilerExtension
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
+				'watchFiles' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
 				'fileFilters' => array(),
@@ -43,6 +44,7 @@ class Extension extends CompilerExtension
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
 				'tempPath' => self::DEFAULT_TEMP_PATH,
 				'files' => array(),
+				'watchFiles' => array(),
 				'remoteFiles' => array(),
 				'filters' => array(),
 				'fileFilters' => array(),
@@ -104,38 +106,12 @@ class Extension extends CompilerExtension
 			->setClass('WebLoader\FileCollection')
 			->setArguments(array($config['sourceDir']));
 
-		foreach ($config['files'] as $file) {
-			// finder support
-			if (is_array($file) && isset($file['files']) && (isset($file['in']) || isset($file['from']))) {
-				$finder = Finder::findFiles($file['files']);
+		foreach ($this->findFiles($config['files'], $config['sourceDir']) as $file) {
+			$files->addSetup('addFile', array($file));
+		}
 
-				if (isset($file['exclude'])) {
-					$finder->exclude($file['exclude']);
-				}
-
-				if (isset($file['in'])) {
-					$finder->in(is_dir($file['in']) ? $file['in'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['in']);
-				} else {
-					$finder->from(is_dir($file['from']) ? $file['from'] : $config['sourceDir'] . DIRECTORY_SEPARATOR . $file['from']);
-				}
-
-				$foundFilesList = array();
-
-				foreach ($finder as $foundFile) {
-					/** @var \SplFileInfo $foundFile */
-					$foundFilesList[] = $foundFile->getPathname();
-				}
-
-				natsort($foundFilesList);
-
-				foreach ($foundFilesList as $foundFilePathname) {
-					$files->addSetup('addFile', array($foundFilePathname));
-				}
-
-			} else {
-				$this->checkFileExists($file, $config['sourceDir']);
-				$files->addSetup('addFile', array($file));
-			}
+		foreach ($this->findFiles($config['watchFiles'], $config['sourceDir']) as $file) {
+			$files->addSetup('addWatchFile', array($file));
 		}
 
 		$files->addSetup('addRemoteFiles', array($config['remoteFiles']));
@@ -192,6 +168,51 @@ class Extension extends CompilerExtension
 		$configurator->onCompile[] = function ($configurator, Compiler $compiler) use ($self) {
 			$compiler->addExtension($self::EXTENSION_NAME, $self);
 		};
+	}
+
+	/**
+	 * @param array $filesConfig
+	 * @param string $sourceDir
+	 * @return array
+	 */
+	private function findFiles(array $filesConfig, $sourceDir)
+	{
+		$normalizedFiles = array();
+
+		foreach ($filesConfig as $file) {
+			// finder support
+			if (is_array($file) && isset($file['files']) && (isset($file['in']) || isset($file['from']))) {
+				$finder = Finder::findFiles($file['files']);
+
+				if (isset($file['exclude'])) {
+					$finder->exclude($file['exclude']);
+				}
+
+				if (isset($file['in'])) {
+					$finder->in(is_dir($file['in']) ? $file['in'] : $sourceDir . DIRECTORY_SEPARATOR . $file['in']);
+				} else {
+					$finder->from(is_dir($file['from']) ? $file['from'] : $sourceDir . DIRECTORY_SEPARATOR . $file['from']);
+				}
+
+				$foundFilesList = array();
+				foreach ($finder as $foundFile) {
+					/** @var \SplFileInfo $foundFile */
+					$foundFilesList[] = $foundFile->getPathname();
+				}
+
+				natsort($foundFilesList);
+
+				foreach ($foundFilesList as $foundFilePathname) {
+					$normalizedFiles[] = $foundFilePathname;
+				}
+
+			} else {
+				$this->checkFileExists($file, $sourceDir);
+				$normalizedFiles[] = $file;
+			}
+		}
+
+		return $normalizedFiles;
 	}
 
 	/**

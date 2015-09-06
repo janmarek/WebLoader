@@ -185,26 +185,29 @@ class Compiler
 		}
 
 		if ($this->joinFiles) {
+			$watchFiles = $this->checkLastModified ? array_unique(array_merge($files, $this->collection->getWatchFiles())) : array();
+
 			return array(
-				$this->generateFiles($files, $ifModified),
+				$this->generateFiles($files, $ifModified, $watchFiles),
 			);
 
 		} else {
 			$arr = array();
 
 			foreach ($files as $file) {
-				$arr[] = $this->generateFiles(array($file), $ifModified);
+				$watchFiles = $this->checkLastModified ? array_unique(array_merge(array($file), $this->collection->getWatchFiles())) : array();
+				$arr[] = $this->generateFiles(array($file), $ifModified, $watchFiles);
 			}
 
 			return $arr;
 		}
 	}
 
-	protected function generateFiles(array $files, $ifModified)
+	protected function generateFiles(array $files, $ifModified, array $watchFiles = array())
 	{
 		$name = $this->namingConvention->getFilename($files, $this);
 		$path = $this->outputDir . '/' . $name;
-		$lastModified = $this->checkLastModified ? $this->getLastModified($files) : 0;
+		$lastModified = $this->checkLastModified ? $this->getLastModified($watchFiles) : 0;
 
 		if (!$ifModified || !file_exists($path) || $lastModified > filemtime($path) || $this->debugging === TRUE) {
 			$outPath = in_array('safe', stream_get_wrappers()) ? 'safe://' . $path : $path;
