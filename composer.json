@@ -21,9 +21,9 @@
 		"nette/utils": "~2.3@dev"
 	},
 	"suggest": {
-		"oyejorge/less.php": "Lessphp is a composer for LESS written in PHP.",
-		"leafo/scssphp": "Scssphp is a composer for SCSS written in PHP.",
-		"joseki/webloader-filters": "Webloader filter"
+		"oyejorge/less.php": "LESS compiler written in PHP.",
+		"leafo/scssphp": "SCSS compiler written in PHP.",
+		"joseki/webloader-filters": "CSSMin & JSMin filters written in PHP."
 	},
 	"require-dev": {
 		"nette/application": "~2.3@dev",
