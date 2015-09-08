@@ -99,7 +99,7 @@ class FileCollectionTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $this->object->getRemoteFiles());
 	}
 
-	public function testWarchFiles()
+	public function testWatchFiles()
 	{
 		$this->object->addWatchFile(__DIR__ . '/fixtures/a.txt');
 		$this->object->addWatchFile(__DIR__ . '/fixtures/b.txt');
