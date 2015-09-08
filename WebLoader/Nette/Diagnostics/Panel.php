@@ -155,7 +155,7 @@ class Panel implements IBarPanel
 		$this->compute();
 
 		return '<span title="WebLoader">'
-			. '<img src="data:image/png;base64,' . base64_encode(file_get_contents(__DIR__ . '/icon.png')) . '" /> '
+			. '<svg viewBox="0 -50 600 600" style="vertical-align: bottom; width:1.23em; height:1.55em"><polygon fill="#1565C0" points="75.089,23.98 58.245,108.778 403.138,108.778 392.289,163.309 47.111,163.309 30.549,248.104 375.445,248.104 356.027,344.887 217.273,390.856 96.789,344.887 105.069,302.921 20.272,302.921 0,404.559 199.286,480.791 428.831,404.559 504.771,23.98"/></svg>'
 			. Filters::bytes($this->size['combined'])
 		. '</span>';
 	}
