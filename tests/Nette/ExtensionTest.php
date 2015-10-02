@@ -77,4 +77,22 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($this->container->getService('webloader.cssJoinOffCompiler')->getJoinFiles());
 	}
 
+	public function testExtensionName()
+	{
+		$tempDir = __DIR__ . '/../temp';
+		$class = 'ExtensionNameServiceContainer';
+
+		$configurator = new \Nette\Configurator();
+		$configurator->setTempDirectory($tempDir);
+		$configurator->addParameters(array('container' => array('class' => $class)));
+		$configurator->onCompile[] = function ($configurator, \Nette\DI\Compiler $compiler) {
+			$compiler->addExtension('Foo', new \WebLoader\Nette\Extension());
+		};
+		$configurator->addConfig(__DIR__ . '/../fixtures/extensionName.neon', false);
+		$container = $configurator->createContainer();
+
+		$this->assertInstanceOf('WebLoader\Compiler', $container->getService('Foo.cssDefaultCompiler'));
+		$this->assertInstanceOf('WebLoader\Compiler', $container->getService('Foo.jsDefaultCompiler'));
+	}
+
 }

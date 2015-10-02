@@ -18,16 +18,21 @@ class LoaderFactory
 	/** @var array */
 	private $tempPaths;
 
+	/** @var string */
+	private $extensionName;
+
 	/**
 	 * @param array $tempPaths
+	 * @param string $extensionName
 	 * @param IRequest $httpRequest
 	 * @param Container $serviceLocator
 	 */
-	public function __construct(array $tempPaths, IRequest $httpRequest, Container $serviceLocator)
+	public function __construct(array $tempPaths, $extensionName, IRequest $httpRequest, Container $serviceLocator)
 	{
 		$this->httpRequest = $httpRequest;
 		$this->serviceLocator = $serviceLocator;
 		$this->tempPaths = $tempPaths;
+		$this->extensionName = $extensionName;
 	}
 
 	/**
@@ -37,7 +42,7 @@ class LoaderFactory
 	public function createCssLoader($name)
 	{
 		/** @var Compiler $compiler */
-		$compiler = $this->serviceLocator->getService('webloader.css' . ucfirst($name) . 'Compiler');
+		$compiler = $this->serviceLocator->getService($this->extensionName . '.css' . ucfirst($name) . 'Compiler');
 		return new CssLoader($compiler, $this->formatTempPath($name));
 	}
 
@@ -48,7 +53,7 @@ class LoaderFactory
 	public function createJavaScriptLoader($name)
 	{
 		/** @var Compiler $compiler */
-		$compiler = $this->serviceLocator->getService('webloader.js' . ucfirst($name) . 'Compiler');
+		$compiler = $this->serviceLocator->getService($this->extensionName . '.js' . ucfirst($name) . 'Compiler');
 		return new JavaScriptLoader($compiler, $this->formatTempPath($name));
 	}
 
