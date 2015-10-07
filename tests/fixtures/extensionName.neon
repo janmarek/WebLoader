@@ -1,0 +1,15 @@
+Foo:
+  cssDefaults:
+    sourceDir: %appDir%/../fixtures
+    tempDir: %appDir%/../temp
+  jsDefaults:
+    sourceDir: %appDir%/../fixtures
+    tempDir: %appDir%/../temp
+  css:
+    default:
+      files:
+        - dir/one.css
+  js:
+    default:
+      files:
+        - dir/one.js
