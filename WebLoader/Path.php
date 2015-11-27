@@ -13,7 +13,7 @@ class Path
 		$res = array();
 
 		foreach ($pieces as $piece) {
-			if ($piece === '.' || empty($piece)) {
+			if ($piece === '.' || $piece === '') {
 				continue;
 			}
 			if ($piece === '..') {
