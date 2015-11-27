@@ -16,6 +16,9 @@ class Compiler
 	/** @var bool */
 	private $joinFiles = TRUE;
 
+	/** @var bool */
+	private $absoluteUri = FALSE;
+
 	/** @var array */
 	private $filters = array();
 
@@ -97,6 +100,24 @@ class Compiler
 		}
 
 		$this->outputDir = $tempPath;
+	}
+
+	/**
+	 * Get absolute uri.
+	 * @return bool
+	 */
+	public function getAbsoluteUri()
+	{
+		return $this->absoluteUri;
+	}
+
+	/**
+	 * Set absolute uri
+	 * @param bool $absoluteUri
+	 */
+	public function setAbsoluteUri($absoluteUri)
+	{
+		$this->absoluteUri = (bool) $absoluteUri;
 	}
 
 	/**
