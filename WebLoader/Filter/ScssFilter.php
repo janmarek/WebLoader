@@ -44,7 +44,7 @@ class ScssFilter
 	public function __invoke($code, \WebLoader\Compiler $loader, $file)
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'scss') {
-			$this->getScssC()->setImportPaths(pathinfo($file, PATHINFO_DIRNAME) . '/');
+			$this->getScssC()->setImportPaths(array('', pathinfo($file, PATHINFO_DIRNAME) . '/'));
 			return $this->getScssC()->compile($code);
 		}
 
