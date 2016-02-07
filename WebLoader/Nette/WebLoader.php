@@ -2,6 +2,7 @@
 
 namespace WebLoader\Nette;
 
+use Nette\Http\IRequest;
 use WebLoader\Compiler;
 use WebLoader\FileCollection;
 
@@ -14,15 +15,19 @@ use WebLoader\FileCollection;
 abstract class WebLoader extends \Nette\Application\UI\Control
 {
 
+	/** @var IRequest */
+	private $httpRequest;
+
 	/** @var \WebLoader\Compiler */
 	private $compiler;
 
 	/** @var string */
 	private $tempPath;
 
-	public function __construct(Compiler $compiler, $tempPath)
+	public function __construct(Compiler $compiler, IRequest $httpRequest, $tempPath)
 	{
 		parent::__construct();
+		$this->httpRequest = $httpRequest;
 		$this->compiler = $compiler;
 		$this->tempPath = $tempPath;
 	}
@@ -96,7 +101,14 @@ abstract class WebLoader extends \Nette\Application\UI\Control
 
 	protected function getGeneratedFilePath($file)
 	{
-		return $this->tempPath . '/' . $file->file . '?' . $file->lastModified;
+		$absoluteUri = null;
+
+		if ($this->compiler->getAbsoluteUri()) {
+			$uri = $this->httpRequest->getUrl();
+			$absoluteUri = $uri->scheme . '://' . $uri->authority;
+		}
+
+		return $absoluteUri . $this->tempPath . '/' . $file->file . '?' . $file->lastModified;
 	}
 
 }

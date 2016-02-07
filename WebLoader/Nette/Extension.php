@@ -27,6 +27,7 @@ class Extension extends CompilerExtension
 		return array(
 			'jsDefaults' => array(
 				'checkLastModified' => TRUE,
+				'absoluteUri' => FALSE,
 				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/js',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
@@ -41,6 +42,7 @@ class Extension extends CompilerExtension
 			),
 			'cssDefaults' => array(
 				'checkLastModified' => TRUE,
+				'absoluteUri' => FALSE,
 				'debug' => FALSE,
 				'sourceDir' => '%wwwDir%/css',
 				'tempDir' => '%wwwDir%/' . self::DEFAULT_TEMP_PATH,
@@ -126,6 +128,7 @@ class Extension extends CompilerExtension
 				$config['tempDir'],
 			));
 
+		$compiler->addSetup('setAbsoluteUri', array($config['absoluteUri']));
 		$compiler->addSetup('setJoinFiles', array($config['joinFiles']));
 
 		if ($builder->parameters['webloader']['debugger']) {

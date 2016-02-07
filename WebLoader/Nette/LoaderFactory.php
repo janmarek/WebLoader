@@ -43,7 +43,7 @@ class LoaderFactory
 	{
 		/** @var Compiler $compiler */
 		$compiler = $this->serviceLocator->getService($this->extensionName . '.css' . ucfirst($name) . 'Compiler');
-		return new CssLoader($compiler, $this->formatTempPath($name));
+		return new CssLoader($compiler, $this->httpRequest, $this->formatTempPath($name));
 	}
 
 	/**
@@ -54,7 +54,7 @@ class LoaderFactory
 	{
 		/** @var Compiler $compiler */
 		$compiler = $this->serviceLocator->getService($this->extensionName . '.js' . ucfirst($name) . 'Compiler');
-		return new JavaScriptLoader($compiler, $this->formatTempPath($name));
+		return new JavaScriptLoader($compiler, $this->httpRequest, $this->formatTempPath($name));
 	}
 
 	/**
