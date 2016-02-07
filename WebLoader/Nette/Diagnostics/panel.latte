@@ -8,7 +8,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr n:foreach="$extensions as $extension => $files">
+			<tr n:foreach="$extensions as $extension => $extensionFiles">
 				<td colspan="2" style="padding: 0;">
 					<table style="width: 100%;">
 						<thead>
@@ -18,7 +18,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr n:foreach="$files as $file">
+							<tr n:foreach="$extensionFiles as $file">
 								<td title="{$file['full']}">{$file['name']}</td>
 								<td>{$file['size']|bytes}</td>
 							</tr>
