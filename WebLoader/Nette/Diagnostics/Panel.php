@@ -121,7 +121,7 @@ class Panel implements IBarPanel
 			$this->sizes[$group]['.']['combined'] += $compilerCombinedSize;
 		}
 
-		return $this->size = $size + array('ratio' => $size['original'] !== 0 ? ($size['combined'] / $size['original']) * 100 : 0);
+		return $this->size = $size + array('ratio' => $size['original'] !== 0 ? ($size['combined'] / ($size['original'] ?: 1)) * 100 : 0);
 	}
 
 	/**
