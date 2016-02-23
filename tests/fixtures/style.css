@@ -1,0 +1,23 @@
+@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic);
+
+body {
+	background: url(img/boxed-bg.jpg);
+}
+
+.greedy-match {
+	background: url("img/\"layer1.jpg"), url('img\'/layer2.jpg');
+}
+
+.addslashes-if-unquoted {
+	background: url(img/'layer1.jpg);
+}
+
+.quote-mismatch {
+	background: url("img/layer2.jpg');
+}
+
+ul {
+	list-style-image: url(
+		data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==
+	);
+}
