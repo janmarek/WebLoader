@@ -34,6 +34,12 @@ class Compiler
 	/** @var bool */
 	private $debugging = FALSE;
 
+	/** @var bool */
+	private $async = FALSE;
+
+	/** @var bool */
+	private $defer = FALSE;
+
 	public function __construct(IFileCollection $files, IOutputNamingConvention $convention, $outputDir)
 	{
 		$this->collection = $files;
@@ -115,6 +121,42 @@ class Compiler
 	public function setJoinFiles($joinFiles)
 	{
 		$this->joinFiles = (bool) $joinFiles;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isAsync()
+	{
+		return $this->async;
+	}
+
+	/**
+	 * @param boolean $async
+	 * @return Compiler
+	 */
+	public function setAsync($async)
+	{
+		$this->async = (bool) $async;
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isDefer()
+	{
+		return $this->defer;
+	}
+
+	/**
+	 * @param boolean $defer
+	 * @return Compiler
+	 */
+	public function setDefer($defer)
+	{
+		$this->defer = $defer;
+		return $this;
 	}
 
 	/**

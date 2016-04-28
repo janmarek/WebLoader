@@ -77,6 +77,42 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($this->container->getService('webloader.cssJoinOffCompiler')->getJoinFiles());
 	}
 
+	public function testAsyncOn()
+	{
+		$this->prepareContainer(array(
+			__DIR__ . '/../fixtures/extension.neon',
+			__DIR__ . '/../fixtures/extensionAsyncTrue.neon',
+		));
+		$this->assertTrue($this->container->getService('webloader.jsDefaultCompiler')->isAsync());
+	}
+
+	public function testAsyncOff()
+	{
+		$this->prepareContainer(array(
+			__DIR__ . '/../fixtures/extension.neon',
+			__DIR__ . '/../fixtures/extensionAsyncFalse.neon',
+		));
+		$this->assertFalse($this->container->getService('webloader.jsDefaultCompiler')->isAsync());
+	}
+
+	public function testDeferOn()
+	{
+		$this->prepareContainer(array(
+			__DIR__ . '/../fixtures/extension.neon',
+			__DIR__ . '/../fixtures/extensionDeferTrue.neon',
+		));
+		$this->assertTrue($this->container->getService('webloader.jsDefaultCompiler')->isDefer());
+	}
+
+	public function testDeferOff()
+	{
+		$this->prepareContainer(array(
+			__DIR__ . '/../fixtures/extension.neon',
+			__DIR__ . '/../fixtures/extensionDeferFalse.neon',
+		));
+		$this->assertFalse($this->container->getService('webloader.jsDefaultCompiler')->isDefer());
+	}
+
 	public function testExtensionName()
 	{
 		$tempDir = __DIR__ . '/../temp';
