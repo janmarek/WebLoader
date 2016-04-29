@@ -20,7 +20,10 @@ class JavaScriptLoader extends WebLoader
 	 */
 	public function getElement($source)
 	{
-		return Html::el("script")->type("text/javascript")->src($source);
+		$el = Html::el("script");
+		$this->getCompiler()->isAsync() ? $el = $el->addAttributes(['async' => TRUE]) : NULL;
+		$this->getCompiler()->isDefer() ? $el = $el->addAttributes(['defer' => TRUE]) : NULL;
+		return $el->type("text/javascript")->src($source);
 	}
 
 }
