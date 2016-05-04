@@ -154,7 +154,7 @@ class Extension extends CompilerExtension
 
 	public function afterCompile(Nette\PhpGenerator\ClassType $class)
 	{
-		$meta = $class->properties['meta'];
+		$meta = $class->getProperties()['meta'];
 		if (array_key_exists('webloader\\nette\\loaderfactory', $meta->value['types'])) {
 			$meta->value['types']['webloader\\loaderfactory'] = $meta->value['types']['webloader\\nette\\loaderfactory'];
 		}
