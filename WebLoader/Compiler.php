@@ -140,7 +140,7 @@ class Compiler
 		$modified = 0;
 
 		foreach ($files as $file) {
-			$modified = max($modified, filemtime($file));
+			$modified = max($modified, filemtime(realpath($file)));
 		}
 
 		return $modified;
