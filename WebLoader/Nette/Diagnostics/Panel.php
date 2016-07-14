@@ -137,7 +137,7 @@ class Panel implements IBarPanel
 		});
 
 		return $latte->renderToString(__DIR__ . '/panel.latte', array(
-			'files' => $this->files,
+			'filesArr' => $this->files,
 			'sizes' => $this->sizes,
 			'size' => $this->size
 		));
