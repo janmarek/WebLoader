@@ -20,7 +20,15 @@ class JavaScriptLoader extends WebLoader
 	 */
 	public function getElement($source)
 	{
-		return Html::el("script")->type("text/javascript")->src($source);
+		$el = Html::el("script")->type("text/javascript")->src($source);
+
+		$nonce = $this->getCompiler()->getNonce();
+		if ($nonce)
+		{
+			$el->nonce($nonce);
+		}
+
+		return $el;
 	}
 
 }

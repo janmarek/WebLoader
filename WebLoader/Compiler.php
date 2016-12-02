@@ -34,6 +34,9 @@ class Compiler
 	/** @var bool */
 	private $debugging = FALSE;
 
+	/** @var string */
+	private $nonce = NULL;
+
 	public function __construct(IFileCollection $files, IOutputNamingConvention $convention, $outputDir)
 	{
 		$this->collection = $files;
@@ -69,6 +72,22 @@ class Compiler
 	public function enableDebugging($allow = TRUE)
 	{
 		$this->debugging = (bool) $allow;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getNonce()
+	{
+		return $this->nonce;
+	}
+
+	/**
+	 * @param string $nonce
+	 */
+	public function setNonce($nonce)
+	{
+        	$this->nonce = $nonce;
 	}
 
 	/**

@@ -37,6 +37,7 @@ class Extension extends CompilerExtension
 				'filters' => array(),
 				'fileFilters' => array(),
 				'joinFiles' => TRUE,
+				'nonce' => NULL,
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
 			),
 			'cssDefaults' => array(
@@ -51,6 +52,7 @@ class Extension extends CompilerExtension
 				'filters' => array(),
 				'fileFilters' => array(),
 				'joinFiles' => TRUE,
+				'nonce' => NULL,
 				'namingConvention' => '@' . $this->prefix('cssNamingConvention'),
 			),
 			'js' => array(
@@ -126,7 +128,8 @@ class Extension extends CompilerExtension
 				$config['tempDir'],
 			));
 
-		$compiler->addSetup('setJoinFiles', array($config['joinFiles']));
+		$compiler->addSetup('setJoinFiles', array($config['joinFiles']))
+			->addSetup('setNonce', array($config['nonce']));
 
 		if ($builder->parameters['webloader']['debugger']) {
 			$compiler->addSetup('@' . $this->prefix('tracyPanel') . '::addLoader', array(
