@@ -90,7 +90,6 @@ class Compiler
         	$this->nonce = $nonce;
 	}
 
-
 	/**
 	 * Get temp path
 	 * @return string

@@ -83,7 +83,7 @@ class ExtensionTest extends \PHPUnit_Framework_TestCase
 			__DIR__ . '/../fixtures/extension.neon',
 			__DIR__ . '/../fixtures/extensionNonce.neon',
 		));
-		$this->assertEqual('rAnd0m123', $this->container->getService('webloader.jsDefaultCompiler')->getNonce());
+		$this->assertEquals('rAnd0m123', $this->container->getService('webloader.jsDefaultCompiler')->getNonce());
 	}
 
 	public function testNonceNotSet()
