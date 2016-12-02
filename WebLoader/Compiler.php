@@ -216,7 +216,7 @@ class Compiler
 
 		return (object) array(
 			'file' => $name,
-			'lastModified' => $lastModified,
+			'lastModified' => filemtime($path),
 			'sourceFiles' => $files,
 		);
 	}

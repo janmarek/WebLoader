@@ -107,7 +107,7 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
 
 		$files = $this->object->generate();
 
-		$this->assertTrue(is_numeric($files[0]->lastModified), 'Generate does not provide last modified timestamp correctly.');
+		$this->assertTrue(is_numeric($files[0]->lastModified) && $files[0]->lastModified > 0, 'Generate does not provide last modified timestamp correctly.');
 
 		$content = file_get_contents($this->object->getOutputDir() . '/' . $files[0]->file);
 
