@@ -38,6 +38,9 @@ class Extension extends CompilerExtension
 				'fileFilters' => array(),
 				'joinFiles' => TRUE,
 				'namingConvention' => '@' . $this->prefix('jsNamingConvention'),
+				'sriHashingAlgorithms' => array(
+					'sha256',
+				),
 			),
 			'cssDefaults' => array(
 				'checkLastModified' => TRUE,
@@ -52,6 +55,9 @@ class Extension extends CompilerExtension
 				'fileFilters' => array(),
 				'joinFiles' => TRUE,
 				'namingConvention' => '@' . $this->prefix('cssNamingConvention'),
+				'sriHashingAlgorithms' => array(
+					'sha256',
+				),
 			),
 			'js' => array(
 
@@ -148,6 +154,10 @@ class Extension extends CompilerExtension
 		}
 
 		$compiler->addSetup('setCheckLastModified', array($config['checkLastModified']));
+
+		foreach ($config['sriHashingAlgorithms'] as $algorithm) {
+			$compiler->addSetup('addSriHashingAlgorithm', array($algorithm));
+		}
 
 		// todo css media
 	}

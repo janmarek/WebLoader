@@ -21,7 +21,7 @@ class JavaScriptLoader extends WebLoader
 	public function getElement($source)
 	{
 		$content = $this->getCompiledFileContent($source);
-		$sriChecksum = $this->getSriChecksums($content);
+		$sriChecksum = $this->getSriChecksums($content) ?: false;
 
 		return Html::el("script")
 			->integrity($sriChecksum)

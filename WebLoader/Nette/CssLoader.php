@@ -114,7 +114,7 @@ class CssLoader extends WebLoader
 	{
 		$alternate = $this->alternate ? ' alternate' : '';
 		$content = $this->getCompiledFileContent($source);
-		$sriChecksum = $this->getSriChecksums($content);
+		$sriChecksum = $this->getSriChecksums($content) ?: false;
 
 		return Html::el('link')
 			->integrity($sriChecksum)

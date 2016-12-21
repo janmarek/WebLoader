@@ -117,31 +117,30 @@ abstract class WebLoader extends \Nette\Application\UI\Control
 	}
 
 	/**
-	 * Generate Subresource Integrity checksums for all hashing algorithms
+	 * Generate Subresource Integrity checksums for all set hashing algorithms
 	 *
-	 * @link https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
 	 * @param string $fileContent
 	 * @return string
 	 */
 	protected function getSriChecksums($fileContent)
 	{
-		// TODO add to config webloader.css.default.sriHashingAlgorithm: []
-
-		$hashingAlgorithms = [
-			'sha256',
-			'sha384',
-			'sha512',
-		];
-
 		$checksums = [];
 
-		foreach ($hashingAlgorithms as $algorithm) {
+		foreach ($this->compiler->getSriHashingAlgorithms() as $algorithm) {
 			$checksums[] = $this->getOneSriChecksum($algorithm, $fileContent);
 		}
 
 		return implode(' ', $checksums);
 	}
 
+	/**
+	 * Generate Subresource Integrity checksum
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+	 * @param string $hashingAlgorithm
+	 * @param string $fileContent
+	 * @return string
+	 */
 	private function getOneSriChecksum($hashingAlgorithm, $fileContent)
 	{
 		$hash = hash($hashingAlgorithm, $fileContent, true);
