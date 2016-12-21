@@ -20,7 +20,13 @@ class JavaScriptLoader extends WebLoader
 	 */
 	public function getElement($source)
 	{
-		return Html::el("script")->type("text/javascript")->src($source);
+		$content = $this->getCompiledFileContent($source);
+		$sriChecksum = $this->getSriChecksums($content);
+
+		return Html::el("script")
+			->integrity($sriChecksum)
+			->type("text/javascript")
+			->src($source);
 	}
 
 }
