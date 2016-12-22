@@ -112,13 +112,17 @@ class CssLoader extends WebLoader
 	 */
 	public function getElement($source)
 	{
-		if ($this->alternate) {
-			$alternate = ' alternate';
-		} else {
-			$alternate = '';
-		}
+		$alternate = $this->alternate ? ' alternate' : '';
+		$content = $this->getCompiledFileContent($source);
+		$sriChecksum = $this->getSriChecksums($content) ?: false;
 
-		return Html::el("link")->rel("stylesheet".$alternate)->type($this->type)->media($this->media)->title($this->title)->href($source);
+		return Html::el('link')
+			->integrity($sriChecksum)
+			->rel('stylesheet' . $alternate)
+			->type($this->type)
+			->media($this->media)
+			->title($this->title)
+			->href($source);
 	}
 
 }

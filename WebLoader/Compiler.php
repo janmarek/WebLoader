@@ -34,6 +34,9 @@ class Compiler
 	/** @var bool */
 	private $debugging = FALSE;
 
+	/** @var array */
+	private $sriHashingAlgorithms = array();
+
 	public function __construct(IFileCollection $files, IOutputNamingConvention $convention, $outputDir)
 	{
 		$this->collection = $files;
@@ -301,6 +304,25 @@ class Compiler
 		}
 
 		$this->fileFilters[] = $filter;
+	}
+
+	/**
+	 * Add hashing algorithm for Subresource Integrity checksum
+	 *
+	 * @link https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+	 * @param string $algorithm
+	 */
+	public function addSriHashingAlgorithm($algorithm)
+	{
+		$this->sriHashingAlgorithms[] = $algorithm;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSriHashingAlgorithms()
+	{
+		return $this->sriHashingAlgorithms;
 	}
 
 	/**
