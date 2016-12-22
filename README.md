@@ -72,8 +72,8 @@ webloader:
 			watchFiles:		# only watch modify file
 				- {files: ["*.css", "*.less"], from: css}
 				- {files: ["*.css", "*.less"], in: css}
-            sriHashingAlgorithms: # allowed values are sha256, sha384, and sha512, multiple can be specified
-                - sha256
+			sriHashingAlgorithms: # allowed values are sha256, sha384, and sha512, multiple can be specified
+				- sha256
 
 	js:
 		default:
@@ -83,8 +83,8 @@ webloader:
 			files:
 				- %appDir%/../libs/nette/nette/client-side/netteForms.js
 				- web.js
-            sriHashingAlgorithms: # allowed values are sha256, sha384, and sha512, multiple can be specified
-                - sha256
+			sriHashingAlgorithms: # allowed values are sha256, sha384, and sha512, multiple can be specified
+				- sha256
 ```
 
 For older versions of Nette, you have to register the extension in `app/bootstrap.php`:
