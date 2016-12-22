@@ -17,13 +17,7 @@ class WebLoaderTest extends \PHPUnit_Framework_TestCase
 
 	const HASHES_TEST_STRING = 'testString';
 
-	const FILE_COLLECTION_ROOT_PATH = __DIR__ . '/../fixtures';
-
-	const SOURCE_FILE_DIR_PATH = __DIR__ . '/../fixtures/dir';
-
 	const SOURCE_FILE_NAME = 'one.css';
-
-	const TEMP_PATH = __DIR__ . '/../temp';
 
 	private $hashes = [
 		self::HASHES_SHA256 => 'sha256-Ss8LOdnEdmcJo2ifVTrAGrVQVF/6RUTfwLLOqC+6AqM=',
@@ -31,12 +25,22 @@ class WebLoaderTest extends \PHPUnit_Framework_TestCase
 		self::HASHES_SHA512 => 'sha512-xIr1p/bUqFH8ikNO7WOKsabvaOGdvK6JSsZ8n7xbywGCuOcSOz3zyeTct2kMIxA/A9wX9UNSBxzrKk6yBLJrkQ==',
 	];
 
+	private $fileCollectionRootPath;
+
+	private $sourceFileDirPath;
+
+	private $tempPath;
+
 	public function setUp()
 	{
-		@mkdir(self::TEMP_PATH);
+		$this->fileCollectionRootPath = __DIR__ . '/../fixtures';
+		$this->sourceFileDirPath = __DIR__ . '/../fixtures/dir';
+		$this->tempPath = __DIR__ . '/../temp';
+
+		@mkdir($this->tempPath);
 		copy(
-			self::SOURCE_FILE_DIR_PATH  . '/' . self::SOURCE_FILE_NAME,
-			self::TEMP_PATH . '/' . self::SOURCE_FILE_NAME
+			$this->sourceFileDirPath  . '/' . self::SOURCE_FILE_NAME,
+			$this->tempPath . '/' . self::SOURCE_FILE_NAME
 		);
 	}
 
@@ -89,9 +93,9 @@ class WebLoaderTest extends \PHPUnit_Framework_TestCase
 		$compiler = $this->getCompiler();
 		$webloader = $this->getWebLoader($compiler);
 		$compiledFileContentResult = $webloader->getCompiledFileContentResult(
-			self::SOURCE_FILE_DIR_PATH . '/' . self::SOURCE_FILE_NAME
+			$this->sourceFileDirPath . '/' . self::SOURCE_FILE_NAME
 		);
-		$expected = file_get_contents(self::SOURCE_FILE_DIR_PATH . '/' . self::SOURCE_FILE_NAME);
+		$expected = file_get_contents($this->sourceFileDirPath . '/' . self::SOURCE_FILE_NAME);
 
 		$this->assertSame($expected, $compiledFileContentResult);
 	}
@@ -102,8 +106,8 @@ class WebLoaderTest extends \PHPUnit_Framework_TestCase
 	 */
 	private function getCompiler($hashingAlgorithms = [])
 	{
-		$files = new FileCollection(self::FILE_COLLECTION_ROOT_PATH);
-		$compiler = new Compiler($files, new DefaultOutputNamingConvention(), self::TEMP_PATH);
+		$files = new FileCollection($this->fileCollectionRootPath);
+		$compiler = new Compiler($files, new DefaultOutputNamingConvention(), $this->tempPath);
 
 		foreach ($hashingAlgorithms as $alhorithm) {
 			$compiler->addSriHashingAlgorithm($alhorithm);
@@ -114,26 +118,29 @@ class WebLoaderTest extends \PHPUnit_Framework_TestCase
 
 	/**
 	 * @param Compiler $compiler
-	 * @return WebLoader
+	 * @return WebLoaderTestImplementation
 	 */
 	private function getWebLoader(Compiler $compiler)
 	{
-		return new class($compiler, self::TEMP_PATH) extends WebLoader
-		{
-			public function getCompiledFileContentResult($source)
-			{
-				return $this->getCompiledFileContent($source);
-			}
+		return new WebLoaderTestImplementation($compiler, $this->tempPath);
+	}
+}
 
-			public function getSriChecksumsResult($fileContent)
-			{
-				return $this->getSriChecksums($fileContent);
-			}
 
-			public function getElement($source)
-			{
-				// not important now
-			}
-		};
+class WebLoaderTestImplementation extends WebLoader
+{
+	public function getCompiledFileContentResult($source)
+	{
+		return $this->getCompiledFileContent($source);
+	}
+
+	public function getSriChecksumsResult($fileContent)
+	{
+		return $this->getSriChecksums($fileContent);
+	}
+
+	public function getElement($source)
+	{
+		// not important now
 	}
 }
