@@ -229,7 +229,7 @@ class Extension extends CompilerExtension
 		if (!file_exists($file)) {
 			$tmp = rtrim($sourceDir, '/\\') . DIRECTORY_SEPARATOR . $file;
 			if (!file_exists($tmp)) {
-				throw new FileNotFoundException(sprintf("Neither '%s' or '%s' was found", $file, $tmp));
+				throw new FileNotFoundException(sprintf("Neither '%s' or '%s' was not found", $file, $tmp));
 			}
 		}
 	}
