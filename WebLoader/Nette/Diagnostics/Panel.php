@@ -96,6 +96,8 @@ class Panel implements IBarPanel
 				$compilerCombinedSize += $generatedSize;
 
 				foreach ($generated->sourceFiles as $file) {
+                                    
+                                    
 					$extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 					$file = str_replace('\\', DIRECTORY_SEPARATOR, realpath($file));
 
@@ -105,9 +107,9 @@ class Panel implements IBarPanel
 					if (!isset($this->sizes[$group][$extension])) {
 						$this->sizes[$group][$extension] = array('original' => 0);
 					}
-
+                                        
 					$this->files[$group][$extension][] = array(
-							'name' => substr($file, strlen($this->root) + 1),
+							'name' => basename($file),
 							'full' => $file,
 							'size' => $fileSize = filesize($file)
 					);
