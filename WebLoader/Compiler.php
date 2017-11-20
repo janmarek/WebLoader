@@ -157,10 +157,14 @@ class Compiler
 			$files = $this->collection->getFiles();
 		}
 
+
 		// load content
 		$content = '';
 		foreach ($files as $file) {
-			$content .= PHP_EOL . $this->loadFile($file);
+			if ($content !== '') {
+				$content .= PHP_EOL;
+			}
+			$content .= $this->loadFile($file);
 		}
 
 		// apply filters
