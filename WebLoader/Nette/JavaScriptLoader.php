@@ -20,7 +20,7 @@ class JavaScriptLoader extends WebLoader
 	 */
 	public function getElement($source)
 	{
-		return Html::el("script")->type("text/javascript")->src($source);
+		return Html::el("script")->src($source);
 	}
 
 }
