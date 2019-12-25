@@ -2,19 +2,14 @@ language: php
 
 env:
   - NETTE=default # 2.3 dev
-  - NETTE=nette-2.3
+  - NETTE=nette-3.0
 
 php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - hhvm
+  - 7.1
 
 matrix:
   allow_failures:
-    - php: 7.0
-    - php: hhvm
+    - php: 7.1
 
 before_script:
   - php tests/travis/prepare-composer.php
