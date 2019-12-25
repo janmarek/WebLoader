@@ -1,5 +1,5 @@
 {
-	"name": "bicisteadm/webloader",
+	"name": "janmarek/webloader",
 	"description": "Tool for loading or deploying CSS and JS files into web pages",
 	"keywords": ["webloader", "css", "javascript", "assets", "nette"],
 	"homepage": "http://addons.nette.org/cs/webloader",
@@ -40,9 +40,9 @@
 		"nette/mail": "~3.0@dev",
 		"nette/neon": "~3.0@dev",
 		"nette/php-generator": "~3.0@dev",
-		"nette/reflection": "~3.0@dev",
+		"nette/reflection": "~2.4@dev",
 		"nette/robot-loader": "~3.0@dev",
-		"nette/safe-stream": "~3.0@dev",
+		"nette/safe-stream": "~2.4@dev",
 		"nette/security": "~3.0@dev",
 		"nette/tokenizer": "~3.0@dev",
 		"nette/utils": "~3.0@dev",
