@@ -3,7 +3,7 @@
 namespace WebLoader;
 
 /**
- * @author Jan Marek
+  @author Jan Marek
  */
 interface IFileCollection
 {
