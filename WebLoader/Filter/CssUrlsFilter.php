@@ -55,7 +55,7 @@ class CssUrlsFilter
 	public function absolutizeUrl($url, $quote, $cssFile)
 	{
 		// is already absolute
-		if (preg_match('/^([a-z]+:\/)?\//', $url)) {
+		if (preg_match('/^([a-z]+:|\/)/i', $url)) {
 			return $url;
 		}
 
@@ -71,7 +71,7 @@ class CssUrlsFilter
 
 		$path = $this->cannonicalizePath($path);
 
-		return $quote === '"' ? addslashes($path) : $path;
+		return !$quote ? addslashes($path) : $path;
 	}
 
 	/**
@@ -107,30 +107,22 @@ class CssUrlsFilter
 	 */
 	public function __invoke($code, \WebLoader\Compiler $loader, $file = null)
 	{
-		// thanks to kravco
-		$regexp = '~
-			(?<![a-z])
-			url\(                                     ## url(
-				\s*                                   ##   optional whitespace
-				([\'"])?                              ##   optional single/double quote
-				(?!data:)                             ##   keep data URIs
-				(   (?: (?:\\\\.)+                    ##     escape sequences
-					|   [^\'"\\\\,()\s]+              ##     safe characters
-					|   (?(1)   (?!\1)[\'"\\\\,() \t] ##       allowed special characters
-						|       ^                     ##       (none, if not quoted)
-						)
-					)*                                ##     (greedy match)
-				)
-				(?(1)\1)                              ##   optional single/double quote
-				\s*                                   ##   optional whitespace
-			\)                                        ## )
-		~xs';
+		$regexp = '/
+			url\(           ## url(
+				\s*             ## optional space
+				([\'"])?        ## optional quote
+				([^\)]+)            ## anything up to ")" character
+				(?(1)\1)        ## optional quote
+				\s*             ## optional space
+			\)              ## )
+		/ix';
 
-		$self = $this;
-
-		return preg_replace_callback($regexp, function ($matches) use ($self, $file)
+		return preg_replace_callback($regexp, function ($matches) use ($file)
 		{
-			return "url('" . $self->absolutizeUrl($matches[2], $matches[1], $file) . "')";
+			$path = trim($matches[2]);	// Remove new lines, spaces, etc
+			$path = trim($path, '\'"');	// Remove quotes on each end (if any)
+
+			return "url('" . $this->absolutizeUrl($path, $matches[1], $file) . "')";
 		}, $code);
 	}
 
